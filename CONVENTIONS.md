@@ -78,6 +78,27 @@ src/
 - Alt text required on all `<img>` elements
 - Verify color contrast when using accent colors on backgrounds
 
+## Git Conventions
+
+**Commit messages:** [Conventional Commits](https://www.conventionalcommits.org/) format.
+- `feat:` new feature or page (→ minor version bump)
+- `fix:` bug fix (→ patch version bump)
+- `docs:` documentation only
+- `style:` formatting, no logic change
+- `refactor:` code change that neither fixes nor adds
+- `chore:` dependencies, config, build tooling
+- `content:` blog post additions or edits (→ patch version bump)
+- Subject line: imperative mood, ~50 chars. Body for "why" when not obvious.
+
+**Branches:** Use feature branches for new development (e.g., `feat/dark-mode`, `fix/og-image`). Direct commits to `main` are fine for small fixes, docs, and config changes. Prefer branches when the work is worth documenting as a PR.
+
+**Pull requests:** Use PRs as breadcrumbs — a narrative record of what changed and why. Not required for every change, but encouraged for anything you'd want to retrace later. Squash merge to keep `main` history clean.
+
+**Versioning:** Semver in `package.json`, interpreted for a website:
+- `0.x.0` — pre-launch milestones (current stage)
+- `1.0.0` — launch
+- Post-launch: minor for features (new page type, dark mode), patch for fixes and content
+
 ## Don'ts
 
 - Don't add dependencies without discussion
