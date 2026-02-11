@@ -34,6 +34,8 @@ html {
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent layout “jump” when pages have/don’t have scrollbars. */
+  scrollbar-gutter: stable;
 }
 
 ::selection {
