@@ -57,8 +57,8 @@ src/
 
 - Blog posts live in `src/content/blog/` as `.mdx` files
 - **Required frontmatter:** `title` (string), `description` (string), `date` (date)
-- **Optional frontmatter:** `updated` (date), `draft` (boolean, default false), `tags` (string[]), `image` (string)
-- `draft: true` posts are filtered from listings but still build — useful for WIP
+- **Optional frontmatter:** `updated` (date), `draft` (see below), `tags` (string[]), `image` (string)
+- **Draft states:** `false` (default) = published · `true` = real work-in-progress · `"placeholder"` = AI-generated test content to be removed before launch. Both `true` and `"placeholder"` are filtered from production listings but visible in dev.
 - Files prefixed with `_` are ignored by the content loader
 - Dates formatted `en-US`, long month (e.g., "January 15, 2025")
 - The `Prose` wrapper styles rendered MDX content; this pattern may be revisited during typography work
