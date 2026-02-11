@@ -1,9 +1,10 @@
 export const SITE = {
-  title: 'GW',
-  description: 'Explorations at the intersection of technology, creativity, and purpose.',
+  title: 'Graham Wright',
+  description: 'A non-profit leader committed to learning, building, and sharing in public. Technology, creativity, growth, and mission-driven work.',
   language: 'en',
+  url: 'https://gtw.dev',
   author: {
-    name: 'GTW',
-    url: 'https://gtw.dev',
+    name: 'Graham Wright',
+    url: 'https://gtw.dev'
   },
 } as const;

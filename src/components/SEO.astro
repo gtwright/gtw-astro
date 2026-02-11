@@ -23,7 +23,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const imageURL = new URL(image, Astro.site);
 
 const pageTitle = title === 'Home'
-  ? `${SITE.title} — ${SITE.description}`
+  ? `${SITE.title} | Home`
   : `${title} | ${SITE.title}`;
 
 // JSON-LD: WebSite (all pages)
