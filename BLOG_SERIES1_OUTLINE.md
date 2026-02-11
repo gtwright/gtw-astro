@@ -256,11 +256,12 @@ Posts continue to be organized around ideas and decisions. PRs or commits may be
 
 ### Part 18: Analytics Without Surveillance
 
-**Scope:**Privacy-respecting analytics integration.
+**Scope:** Privacy-respecting analytics integration.
 
-- The case for knowing what's happening on your site without tracking individuals.
-- Evaluating options: Cloudflare Web Analytics, Umami, Plausible, Fathom.
-- Implementation and what we're actually measuring.
+- **Baseline:** Cloudflare Web Analytics (behavioral) + Cloudflare Observability for infrastructure/performance metrics. These come free with the platform and require minimal setup.
+- **Open source bake-off:** Evaluate self-hostable analytics platforms as a potential recommendation for work. Short list: Umami, Matomo, PostHog, Plausible, and Rybbit. PostHog is the current front-runner (product analytics + session replay + feature flags), but worth a structured comparison before committing.
+- What we're actually measuring and why — the case for knowing what's happening without tracking individuals.
+- Implementation on this site, and what translates to organizational use.
 
 ---
 
