@@ -13,8 +13,10 @@ bun run dev          # astro dev
 bun run check        # astro check
 bun run build        # astro check && astro build
 bun run preview      # astro preview
-bun run deploy       # astro build && wrangler deploy
+bun run deploy       # astro build && wrangler deploy (manual)
 ```
+
+**Deployment:** Commits to `main` auto-deploy via Cloudflare GitHub integration to `https://gtw-astro.gtwright.workers.dev/`. Manual deploy via `bun run deploy` also available. Production domain TBD.
 
 ## Project Structure
 
