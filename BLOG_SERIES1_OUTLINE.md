@@ -270,7 +270,7 @@ These are things I expect to write about but haven't sequenced yet:
 
 - **Responsive images deep dive** — migrating to a cloud provider, or optimizing the current setup further.
 - **Blog content blocks** — galleries, sliders, mosaics, Medium-style image sizing as MDX components.
-- **Video and audio** — native hosting, embeds, accessible media players.
+- **Video and audio** — Mux as the primary platform for both video and audio (has an official Astro integration). Accessible media players, embed patterns.
 - **Author pages** — if/when multiple authors become relevant.
 - **Project pages** — a separate content type for non-blog work.
 - **Accessibility and WCAG compliance** — targeting WCAG 2.2 AAA where achievable, AA as the floor. Screen reader testing, focus management, skip links, ARIA landmarks, color contrast, motion preferences, keyboard navigation, and form accessibility. Ongoing — not a one-time checklist.
