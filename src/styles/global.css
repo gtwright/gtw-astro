@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --font-headline: "Fraunces Variable", "Georgia", serif;
+  --font-body: "Source Serif 4 Variable", "Georgia", serif;
+  --font-ui: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* Surfaces */
+  --color-bg: #ffffff; /* header/footer + overall page chrome */
+  --color-main-bg: #f6f4ee; /* very light grey-cream for main content */
+  --color-surface: #ffffff; /* cards / panels (kept white for now) */
+
+  /* Typography */
+  --color-text: #161513;
+  --color-muted: color-mix(in oklab, var(--color-text) 55%, #6f6a63 45%);
+
+  /* Accents */
+  --color-accent-interactive: #c75a25; /* burnt orange (interactive) */
+  --color-accent-atmosphere: #2f3a52; /* dusty navy (non-interactive / future dark base) */
+
+  /* Back-compat aliases (deprecated): remove once references are updated. */
+  --color-accent: var(--color-accent-interactive);
+  --color-accent-2: var(--color-accent-atmosphere);
+
+  /* Lines */
+  --color-border: color-mix(in oklab, var(--color-text) 12%, transparent);
+}
+
+html {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-accent-interactive) 20%, transparent);
+}
+
+h1 {
+  font-family: var(--font-headline);
+  font-variation-settings: "opsz" 104, "wght" 720, "SOFT" 50, "WONK" 1;
+}

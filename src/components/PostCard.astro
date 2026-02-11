@@ -1,0 +1,48 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  slug: string;
+  tags?: string[];
+}
+
+const { title, description, date, slug, tags = [] } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="py-8" transition:name={`post-${slug}`}>
+  <a href={`/blog/${slug}`} class="group no-underline block">
+    <h2
+      transition:name={`post-title-${slug}`}
+      class="font-(family-name:--font-headline) text-2xl sm:text-3xl font-semibold leading-tight text-(--color-text) m-0 mb-2 group-hover:text-(--color-accent-interactive) transition-colors"
+    >
+      {title}
+    </h2>
+  </a>
+  <div class="flex items-center gap-3 mb-3">
+    <time datetime={date.toISOString()} class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
+      {formattedDate}
+    </time>
+    {tags.length > 0 && (
+      <>
+        <span class="text-(--color-border)">·</span>
+        <div class="flex gap-2">
+          {tags.map((tag) => (
+            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </>
+    )}
+  </div>
+  <p class="font-(family-name:--font-body) text-base text-(--color-muted) leading-relaxed m-0">
+    {description}
+  </p>
+</article>

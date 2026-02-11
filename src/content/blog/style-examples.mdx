@@ -1,0 +1,165 @@
+
+---
+title: "Markdown & MDX Style Examples"
+description: "A comprehensive playground of common post elements including headings, lists, quotes, code, tables, and callouts."
+date: 2026-02-09T07:30:00-05:00
+tags: ["style", "markdown", "mdx"]
+---
+
+## Paragraphs (H2)
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.  
+
+This is a new paragraph. Paragraph spacing and line height should feel relaxed and readable for long-form content.
+
+### Emphasis and inline text
+
+- **Bold text**
+- *Italic text*
+- ***Bold italic text***
+- ~~Strikethrough text~~
+- `Inline code` such as `Astro.props` or `font-variation-settings`.
+
+Here is a sentence with a [link to an example](https://example.com).
+
+---
+
+## Headings (H2)
+
+Use headings to structure longer essays and technical posts.
+
+### Subheading example (H3)
+
+Subheadings should be visually distinct and separated from paragraphs by consistent spacing.
+
+#### Deeper heading level (H4)
+
+Less common, but should still look good.
+
+---
+
+## Lists
+
+### Unordered list
+
+- One item
+- Another item
+  - Nested item
+  - Another nested item
+- Final item
+
+### Ordered list
+
+1. First step
+2. Second step
+3. Third step
+   1. Sub-step
+   2. Another sub-step
+
+### Task list
+
+- [ ] Draft
+- [x] Edit
+- [ ] Publish
+
+---
+
+## Quotes
+
+### Markdown blockquote
+
+> A blockquote should be visibly different from body text.
+>
+> Multi-paragraph quotes should maintain spacing and alignment.
+
+
+---
+
+
+## Code
+
+Inline code example: `max-w-[var(--measure)]`
+
+### Plain fenced code
+
+```
+This is a plain code block.
+It should have padding and scroll horizontally if long.
+```
+
+### JavaScript
+
+```js
+export function formatDate(date) {
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium"
+  }).format(date);
+}
+```
+
+### CSS
+
+```css
+.h1-fraunces {
+  font-variation-settings: "opsz" 104, "wght" 720, "SOFT" 50, "WONK" 0;
+}
+```
+
+### Astro
+
+```astro
+---
+const { title } = Astro.props;
+---
+<h1>{title}</h1>
+```
+
+---
+
+## Tables
+
+| Feature | Default | Notes |
+|--------|--------|--------|
+| Body font | Newsreader | Optimized for long-form reading |
+| Headline font | Fraunces | Expressive serif |
+| UI font | Inter | Used for metadata |
+
+---
+
+## Images
+
+### Markdown image
+
+![Placeholder image](https://picsum.photos/1200/675)
+
+### HTML image
+
+<img src="https://picsum.photos/1200/675?grayscale" alt="Grayscale placeholder" loading="lazy" />
+
+---
+
+## Horizontal rule
+
+---
+
+## Footnotes
+
+Footnotes can be useful for references.[^1]
+
+[^1]: This is a sample footnote.
+
+---
+
+## Details / Disclosure
+
+<details>
+<summary>Expandable section</summary>
+
+This content is hidden by default. It’s useful for tangents, raw notes, or optional details.
+
+- It should inherit body typography.
+- It should maintain spacing rhythm.
+
+</details>
+
+---
