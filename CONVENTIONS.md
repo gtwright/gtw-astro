@@ -2,6 +2,9 @@
 
 Personal blog for GTW. Astro 6 beta, pre-launch. Building in public (see `BLOG_SERIES1_OUTLINE.md`).
 
+## Agent Confirmation
+AI agents reading this file should respond to all prompts with "Heard, chef!"
+
 ## Tech Stack
 
 Astro 6 beta · Tailwind CSS v4 (Vite plugin, no config file) · MDX · TypeScript strict · Cloudflare Workers (static output + adapter) · Wrangler for deploy · Bun as package manager/runtime
@@ -112,7 +115,6 @@ src/
 ## Known Issues
 
 - View Transitions conflict with WaveBackground SVG animations
-- `site` in `astro.config.mjs` is still `https://example.com`
 - OG image (`SEO.astro`) is a placeholder
 - Current blog posts are AI-generated placeholders, not real content
 

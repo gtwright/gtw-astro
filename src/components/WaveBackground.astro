@@ -15,7 +15,7 @@ interface Props {
   /**
    * Optional inline style string.
    * Useful for overriding CSS variables, e.g.:
-   * style="--waves-accent: var(--color-accent-interactive); --waves-bg: #050506;"
+   * style="--waves-accent: var(--color-accent-interactive); --waves-bg: var(--color-text);"
    */
   style?: string;
   /** Optional min-height utility classes for the root section. */
@@ -316,7 +316,7 @@ const mergedStyle = styleParts.length ? styleParts.join('; ') : undefined;
     --waves-thread-2: color-mix(in oklab, var(--waves-accent) 72%, var(--waves-thread-shade) 28%);
     --waves-thread-3: color-mix(in oklab, var(--waves-accent) 60%, var(--waves-thread-shade) 40%);
 
-    --waves-pulse-core: #ffffff;
+    --waves-pulse-core: var(--color-surface);
     --waves-pulse-1: var(--waves-thread-2);
     --waves-pulse-2: var(--waves-thread-1);
     --waves-pulse-3: var(--waves-thread-3);

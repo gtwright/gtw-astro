@@ -4,7 +4,7 @@ import { SITE } from '../consts';
 import Base from '../layouts/Base.astro';
 // import heroImage from '../assets/Freebie-GradientTextures-02.jpg';
 
-const posts = (await getCollection('blog'))
+const posts = (await getCollection('posts'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -12,7 +12,7 @@ const posts = (await getCollection('blog'))
 
 <Base title="Home" description={SITE.description}>
   <section class="relative isolate overflow-hidden">
-    <div class="mx-auto max-w-3xl px-8 min-h-[calc(100svh-4.5rem)] py-10">
+    <div class="mx-auto max-w-3xl px-6 min-h-[calc(100svh-4.5rem)] py-10">
       <div class="min-h-[calc(100svh-4.5rem-5rem)] flex flex-col items-center justify-center w-full">
         <div class="text-center flex flex-col items-center -mt-4">
           <h3 class="font-(family-name:--font-ui) text-xs uppercase tracking-widest text-(--color-muted) mb-4">
@@ -30,7 +30,7 @@ const posts = (await getCollection('blog'))
             <h2 class="font-(family-name:--font-ui) text-xs uppercase tracking-widest text-(--color-muted)">
               Recent posts
             </h2>
-            <a href="/blog" class="font-(family-name:--font-ui) text-sm font-medium text-(--color-accent-interactive) no-underline hover:underline">
+            <a href="/posts" class="font-(family-name:--font-ui) text-sm font-medium text-(--color-accent-interactive) no-underline hover:underline">
               View all
             </a>
           </div>
@@ -38,7 +38,7 @@ const posts = (await getCollection('blog'))
             {posts.map((post) => (
               <li class="py-3 flex items-baseline justify-between gap-4">
                 <a
-                  href={`/blog/${post.id}`}
+                  href={`/posts/${post.id}`}
                   class="min-w-0 font-(family-name:--font-headline) text-lg sm:text-xl font-medium leading-snug text-(--color-text) no-underline hover:text-(--color-accent-interactive) transition-colors line-clamp-1"
                 >
                   {post.data.title}
