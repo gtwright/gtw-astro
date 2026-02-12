@@ -114,7 +114,7 @@ src/
 
 ## Known Issues
 
-- OG image (`SEO.astro`) is a placeholder
+None currently tracked.
 
 ## Maintaining This File
 
