@@ -1,0 +1,5 @@
+# Old blog slugs -> new canonical slugs
+/beethoven            /posts/beethoven     301
+
+# Section move (splat)
+/blog/*                  /posts/:splat                 308
