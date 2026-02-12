@@ -19,10 +19,6 @@
   --color-accent-interactive: #c75a25; /* burnt orange (interactive) */
   --color-accent-atmosphere: #2f3a52; /* dusty navy (non-interactive / future dark base) */
 
-  /* Back-compat aliases (deprecated): remove once references are updated. */
-  --color-accent: var(--color-accent-interactive);
-  --color-accent-2: var(--color-accent-atmosphere);
-
   /* Lines */
   --color-border: color-mix(in oklab, var(--color-text) 12%, transparent);
 }

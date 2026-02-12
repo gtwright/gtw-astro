@@ -114,9 +114,7 @@ src/
 
 ## Known Issues
 
-- View Transitions conflict with WaveBackground SVG animations
 - OG image (`SEO.astro`) is a placeholder
-- Current blog posts are AI-generated placeholders, not real content
 
 ## Maintaining This File
 
