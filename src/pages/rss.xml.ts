@@ -8,7 +8,7 @@ export async function GET(context: APIContext) {
     throw new Error('site is required in astro.config.mjs for RSS feed generation');
   }
 
-  const posts = (await getCollection('blog'))
+  const posts = (await getCollection('posts'))
     .filter((post) => !post.data.draft)
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
@@ -20,7 +20,7 @@ export async function GET(context: APIContext) {
       title: post.data.title,
       description: post.data.description,
       pubDate: post.data.date,
-      link: `/blog/${post.id}`,
+      link: `/posts/${post.id}`,
     })),
   });
 }

@@ -13,11 +13,11 @@ const formattedDate = date.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
-});
+}); 
 ---
 
 <article class="py-8" transition:name={`post-${slug}`}>
-  <a href={`/blog/${slug}`} class="group no-underline block">
+  <a href={`/posts/${slug}`} class="group no-underline block">
     <h2
       transition:name={`post-title-${slug}`}
       class="font-(family-name:--font-headline) text-2xl sm:text-3xl font-semibold leading-tight text-(--color-text) m-0 mb-2 group-hover:text-(--color-accent-interactive) transition-colors"

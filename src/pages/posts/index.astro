@@ -4,7 +4,7 @@ import { SITE } from '../../consts';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 
-const posts = (await getCollection('blog'))
+const posts = (await getCollection('posts'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---

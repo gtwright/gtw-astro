@@ -11,10 +11,10 @@ Everything through Part 10 ships before the site goes live. The goal is a credib
 - Project documentation in place (CLAUDE.md, README, .cursorrules)
 - Typography is dialed in (not perfect, but intentional)
 - Images work correctly with responsive sizing and modern formats
-- 404 page exists
-- robots.txt exists
-- Placeholder content is replaced with real writing
-- Diagnostic/test pages are removed
+- 404 page exists ✓
+- robots.txt exists ✓
+- Placeholder content is replaced with real writing ✓
+- Diagnostic/test pages removed or intentionally kept (waves, beethoven)
 - Site is deployed to a real domain on Cloudflare
 - Accessibility fundamentals in place (semantic HTML, color contrast, keyboard navigation, skip links) — WCAG 2.2 AA as the floor, AAA as the target
 
@@ -26,36 +26,22 @@ What's explicitly **not** required for launch: dark mode, search, tags/categorie
 
 These posts establish *why* the site exists and *how* decisions will be made. They intentionally precede implementation. No PR accompanies these — they're pure thinking.
 
-### Post 0.1: Why Build Yet Another Blog?
+### Post 0.1: Hello World — Why Build This? ✓
 
-- Blogging as a thinking tool, not a publishing channel.
-- Writing for durability, not velocity.
-- Why a custom build instead of Substack / Medium / Ghost.
-- The motivation: a content-first personal site for writing about technology, creativity, and nonprofit leadership.
+- Keeping technical skills sharp while in a leadership role.
+- A personal sandbox for testing before committing resources at work.
+- Creating shareable artifacts from learning, experiments, and decision frameworks.
+- Breadcrumbs for future self — documenting choices and lessons learned.
+- Why build from scratch instead of using a platform (Substack, Medium, Ghost) — ownership and the build as part of the learning.
+- Committing to writing about technology, creative practice, and mission-driven leadership.
 
-### Post 0.2: Principles and Constraints
+### Post 0.2: Why I Chose Astro and Cloudflare Workers for My Blog (draft)
 
-- Static-first mindset.
-- Low maintenance, high clarity.
-- Content > chrome.
-- Explicit over clever.
-- Learning in public without performative complexity.
-- Accessibility as a foundational constraint, not a post-launch checklist — WCAG 2.2 AA as the floor, AAA as the target.
+Consolidates the original 0.2 (Principles), 0.3 (Choosing Astro), and 0.4 (Deployment Philosophy) into a single post covering decisions made before writing any code.
 
-### Post 0.3: Choosing Astro v6 (Beta)
-
-- Why Astro as a framework — static-first with an escape hatch, content collections, and the "islands" mental model.
-- Why Astro over Next.js, Hugo, 11ty, etc.
-- Why v6 *now* — living on the edge intentionally, and what that trade-off looks like in a learning project.
-- What risks are acceptable and what I expect to change as v6 stabilizes.
-
-### Post 0.4: Deployment Philosophy — Following the Platform's Default
-
-- Cloudflare as the target platform.
-- Why Astro v6 defaults to Workers.
-- Cloudflare's convergence on Workers as a full-stack runtime.
-- Light comparison: Pages vs Workers.
-- Decision: start with Workers for optionality, even if it's overkill today.
+- **Principles and constraints:** Static-first mindset. Low maintenance, high clarity. Content > chrome. Explicit over clever. Learning in public without performative complexity. Accessibility as a foundational constraint (WCAG 2.2 AA floor, AAA target).
+- **Choosing Astro v6 (beta):** Why Astro — static-first with an escape hatch, content collections, islands mental model. Why Astro over Next.js, Hugo, 11ty. Why v6 now — living on the edge intentionally, trade-offs in a learning project.
+- **Deployment philosophy:** Cloudflare as the target platform. Why Astro v6 defaults to Workers. Pages vs Workers comparison. Starting with Workers for optionality, even if overkill today.
 
 ---
 
@@ -115,7 +101,7 @@ Work in this section happened iteratively, not linearly. Posts are organized by 
 - Astro content collections: defining a schema in `content.config.ts` for type-safe frontmatter.
 - The schema choices: `title`, `description`, `date`, `draft`, `tags`, `image`, `updated`. Why each field exists and what `draft: true` buys you.
 - MDX over plain Markdown — future-proofing for embedded components without paying a cost today.
-- File-based routing: `src/pages/blog/index.astro` for the listing, `[...slug].astro` for individual posts.
+- File-based routing: `src/pages/posts/index.astro` for the listing, `[...slug].astro` for individual posts.
 - The `PostCard` component: a simple, scannable entry in a post list.
 - What we're deferring: tag pages, search, pagination, reading time estimates.
 
@@ -142,7 +128,7 @@ Work in this section happened iteratively, not linearly. Posts are organized by 
 - `@astrojs/sitemap` — automatic sitemap generation with zero config.
 - `robots.txt` — a trivial file that signals professionalism and controls crawlers.
 - Canonical URLs: what they are and why they matter.
-- Placeholder OG image: good enough to ship, easy to replace.
+- OG image: placeholder removed, real image TBD. `SEO.astro` still defaults to `/og-default.png`.
 - What we're deferring: per-post OG images (generated or manual), analytics/tracking.
 
 ### Part 8: Images — Responsive, Modern, and Good Enough for Now
@@ -167,16 +153,17 @@ Work in this section happened iteratively, not linearly. Posts are organized by 
 - The problem: View Transitions and heavy SVG animations don't play well together. Diagnosing the "blunt transition" on `/waves`.
 - Building diagnostic tools and writing up findings as a debugging practice.
 - Respecting `prefers-reduced-motion`: ensuring animations degrade gracefully for users who need them to.
-- What we're deferring: a permanent fix for the waves/transitions conflict, removing diagnostic pages before launch (handled in Part 10).
+- Resolution: `transition:persist` on the WaveBackground root element keeps SVG animations alive across navigations.
+- What we're deferring: removing diagnostic pages before launch (handled in Part 10).
 
 ### Part 10: Going Live — 404, Cleanup, Domain, and Deploy
 
 **Scope:**404 page, remove test/diagnostic files, real domain, production deployment.
 
 - Building a 404 page that's helpful, not embarrassing.
-- Cleaning up before launch: removing `test-transitions.astro`, `waves.astro` (or deciding to keep it), diagnostic scripts, placeholder OG image.
-- Replacing AI-generated blog posts with real content.
-- Updating the About page with a real bio.
+- Cleaning up before launch: `test-transitions.astro` removed, `waves.astro` and `beethoven.astro` kept intentionally, placeholder OG image removed.
+- Replacing AI-generated blog posts with real content. ✓
+- Updating the About page with a real bio. (Still lorem ipsum.)
 - Buying/configuring the domain and Cloudflare DNS.
 - Updating `astro.config.mjs` with the production URL.
 - Verifying sitemap, RSS, canonical URLs, and OG tags in production.
@@ -280,7 +267,7 @@ These are things I expect to write about but haven't sequenced yet:
 - **Pagination** — when the post count justifies it.
 - **Redirects** — handling URL changes, moved content, and vanity URLs (Cloudflare redirects, `_redirects` file, or Astro middleware).
 - **Schema.org best practices** — auditing and expanding structured data beyond the current WebSite and BlogPosting schemas (BreadcrumbList, FAQPage, Person, etc.).
-- **Resolving the View Transitions / WaveBackground conflict** — the technical deep-dive once a clean solution exists.
+- ~~**Resolving the View Transitions / WaveBackground conflict**~~ — resolved with `transition:persist` on the WaveBackground root element.
 
 ---
 

@@ -5,7 +5,7 @@ import Base from '../../layouts/Base.astro';
 import Prose from '../../components/Prose.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('posts');
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -23,7 +23,7 @@ const formattedDate = post.data.date.toLocaleDateString('en-US', {
   day: 'numeric',
 });
 
-const allPosts = (await getCollection('blog'))
+const allPosts = (await getCollection('posts'))
   .filter((p) => !p.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
@@ -44,7 +44,7 @@ const nextPost = allPosts[currentIndex - 1];
     <header class="mb-10">
       <a
         id="post-back-link"
-        href="/blog"
+        href="/posts"
         class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
       >
         <span aria-hidden="true">←</span>
@@ -80,7 +80,7 @@ const nextPost = allPosts[currentIndex - 1];
     {(prevPost || nextPost) && (
       <nav class="mt-16 pt-8 border-t border-(--color-border) grid grid-cols-2 gap-8">
         {prevPost ? (
-          <a href={`/blog/${prevPost.id}`} class="group no-underline">
+          <a href={`/posts/${prevPost.id}`} class="group no-underline">
             <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Older</span>
             <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
               {prevPost.data.title}
@@ -88,7 +88,7 @@ const nextPost = allPosts[currentIndex - 1];
           </a>
         ) : <div />}
         {nextPost ? (
-          <a href={`/blog/${nextPost.id}`} class="group no-underline text-right">
+          <a href={`/posts/${nextPost.id}`} class="group no-underline text-right">
             <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Newer</span>
             <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
               {nextPost.data.title}
