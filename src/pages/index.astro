@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-import { SITE } from '../consts';
+import { Icon } from 'astro-icon/components';
+import { SITE, SOCIAL } from '../consts';
 import Base from '../layouts/Base.astro';
 // import heroImage from '../assets/Freebie-GradientTextures-02.jpg';
 
@@ -53,6 +54,20 @@ const posts = (await getCollection('posts'))
             ))}
           </ul>
         </div>
+
+        <nav aria-label="Social links" class="mt-8 flex items-center justify-center gap-5">
+          {SOCIAL.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.name}
+              class="text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors"
+            >
+              <Icon name={link.icon} class="size-5" />
+            </a>
+          ))}
+        </nav>
       </div>
     </div>
   </section>
