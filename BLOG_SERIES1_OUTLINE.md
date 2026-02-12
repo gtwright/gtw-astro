@@ -70,7 +70,33 @@ Work in this section happened iteratively, not linearly. Posts are organized by 
 - The philosophy: AI assistants are collaborators, and collaborators need onboarding materials.
 - What we're deferring: editorial workflow, publishing automation, detailed content planning docs — these need a more mature project to be useful.
 
-### Part 3: A Design System Before Any Design
+### Part 3: Content Collections and the Blog Loop
+
+**Scope:**Content schema, MDX setup, blog listing, dynamic post routes, PostCard component.
+
+- Why content comes before styling — you need something to look at before you can design how it looks.
+- Astro content collections: defining a schema in `content.config.ts` for type-safe frontmatter.
+- The schema choices: `title`, `description`, `date`, `draft`, `tags`, `image`, `updated`. Why each field exists and what `draft: true` buys you.
+- MDX over plain Markdown — future-proofing for embedded components without paying a cost today.
+- File-based routing: `src/pages/posts/index.astro` for the listing, `[...slug].astro` for individual posts.
+- The `PostCard` component: a simple, scannable entry in a post list.
+- What we're deferring: tag pages, search, pagination, reading time estimates.
+
+### Part 4: Layout, Navigation, and the Bones of Every Page
+
+**Scope:**Base layout, Header, Footer, site constants.
+
+- Why the skeleton comes before styling — get the structure and landmarks in place, then make it look good.
+- The `Base.astro` layout: a single HTML shell that every page inherits.
+- `consts.ts` as the canonical place for site-wide values (title, description, author).
+- Sticky header with backdrop blur — a small UX touch that signals polish.
+- Footer with copyright and RSS link.
+- Why a minimal nav (Home, Blog, About) is a feature, not a limitation.
+- Semantic HTML and landmark roles: `<header>`, `<nav>`, `<main>`, `<footer>` — getting the document outline right from the start.
+- Skip-to-content link and keyboard navigation: ensuring the site is usable without a mouse.
+- What we're deferring: mobile hamburger menu, breadcrumbs.
+
+### Part 5: A Design System Before Any Design
 
 **Scope:**Tailwind v4, custom theme tokens, variable fonts, global styles.
 
@@ -82,7 +108,7 @@ Work in this section happened iteratively, not linearly. Posts are organized by 
 - Setting up `global.css` as the single source of truth for design tokens.
 - What we're deferring: dark mode, responsive breakpoint tuning, component-level design tokens.
 
-### Part 4: Typography — Making Prose Look Right
+### Part 6: Typography — Making Prose Look Right
 
 **Scope:**Prose component, fine-tuned styles for all Markdown elements.
 
@@ -93,30 +119,6 @@ Work in this section happened iteratively, not linearly. Posts are organized by 
 - Decisions about vertical rhythm, font sizes, and spacing.
 - Readable font sizes and sufficient line heights as an accessibility baseline — not just aesthetics.
 - What we're deferring: dark mode typography adjustments, print styles.
-
-### Part 5: Content Collections and the Blog Loop
-
-**Scope:**Content schema, MDX setup, blog listing, dynamic post routes, PostCard component.
-
-- Astro content collections: defining a schema in `content.config.ts` for type-safe frontmatter.
-- The schema choices: `title`, `description`, `date`, `draft`, `tags`, `image`, `updated`. Why each field exists and what `draft: true` buys you.
-- MDX over plain Markdown — future-proofing for embedded components without paying a cost today.
-- File-based routing: `src/pages/posts/index.astro` for the listing, `[...slug].astro` for individual posts.
-- The `PostCard` component: a simple, scannable entry in a post list.
-- What we're deferring: tag pages, search, pagination, reading time estimates.
-
-### Part 6: Layout, Navigation, and the Bones of Every Page
-
-**Scope:**Base layout, Header, Footer, site constants.
-
-- The `Base.astro` layout: a single HTML shell that every page inherits.
-- `consts.ts` as the canonical place for site-wide values (title, description, author).
-- Sticky header with backdrop blur — a small UX touch that signals polish.
-- Footer with copyright and RSS link.
-- Why a minimal nav (Home, Blog, About) is a feature, not a limitation.
-- Semantic HTML and landmark roles: `<header>`, `<nav>`, `<main>`, `<footer>` — getting the document outline right from the start.
-- Skip-to-content link and keyboard navigation: ensuring the site is usable without a mouse.
-- What we're deferring: mobile hamburger menu, breadcrumbs.
 
 ### Part 7: SEO, RSS, Sitemap, and robots.txt — The Invisible Features
 
