@@ -5,8 +5,10 @@ import { SITE, SOCIAL } from '../consts';
 import Base from '../layouts/Base.astro';
 // import heroImage from '../assets/Freebie-GradientTextures-02.jpg';
 
-const posts = (await getCollection('posts'))
-  .filter((post) => !post.data.draft)
+const posts = (await getCollection('posts', ({ data }) => {
+    if (import.meta.env.PROD) return !data.draft;
+    return true;
+  }))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 ---

@@ -118,6 +118,7 @@ Work in this section happened iteratively, not linearly. Posts are organized by 
 - The `style-examples.mdx` post as a living typography specimen.
 - Decisions about vertical rhythm, font sizes, and spacing.
 - Readable font sizes and sufficient line heights as an accessibility baseline — not just aesthetics.
+- Copy-to-clipboard button on code blocks — a small UX touch that matters for a technical blog.
 - What we're deferring: dark mode typography adjustments, print styles.
 
 ### Part 7: SEO, RSS, Sitemap, and robots.txt — The Invisible Features

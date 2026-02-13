@@ -5,7 +5,10 @@ import Base from '../../layouts/Base.astro';
 import Prose from '../../components/Prose.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
+  const posts = await getCollection('posts', ({ data }) => {
+    if (import.meta.env.PROD) return !data.draft;
+    return true;
+  });
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -23,8 +26,10 @@ const formattedDate = post.data.date.toLocaleDateString('en-US', {
   day: 'numeric',
 });
 
-const allPosts = (await getCollection('posts'))
-  .filter((p) => !p.data.draft)
+const allPosts = (await getCollection('posts', ({ data }) => {
+    if (import.meta.env.PROD) return !data.draft;
+    return true;
+  }))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const currentIndex = allPosts.findIndex((p) => p.id === post.id);
