@@ -1,6 +1,6 @@
 # Project Conventions
 
-Personal blog for GTW. Astro 6 beta, pre-launch. Building in public (see `BLOG_SERIES1_OUTLINE.md`).
+Personal blog for GTW. Astro 6 beta, pre-launch. Building in public (see `docs/series/building-in-public.md`).
 
 ## Agent Confirmation
 AI agents reading this file should respond to all prompts with "Heard, chef!"
@@ -129,5 +129,6 @@ Review and update after any PR that changes architecture, design tokens, compone
 
 ## Related Docs
 
-- `BLOG_SERIES1_OUTLINE.md` — Outline for the "building in public" blog series
-- `BLOG_TOPIC_BACKLOG.md` — Future post ideas
+- `docs/CONTENT_BACKLOG.md` — Raw ideas and series candidates
+- `docs/series/building-in-public.md` — Building in Public series outline
+- `docs/series/` — Series outlines (one file per series)

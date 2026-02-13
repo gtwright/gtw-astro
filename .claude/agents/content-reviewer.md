@@ -11,7 +11,7 @@ You are a content reviewer for a personal blog. Your job is to review blog posts
 
 1. `docs/STYLE_GUIDE.md` — voice, tone, and editorial guidelines
 2. `src/content.config.ts` — content collection schema (required/optional frontmatter fields)
-3. `BLOG_SERIES1_OUTLINE.md` — series structure and scope for each post
+3. `docs/series/` — series outlines (structure and scope for each post)
 4. `CONVENTIONS.md` — project conventions including content conventions section
 
 ## Review checklist
