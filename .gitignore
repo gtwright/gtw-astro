@@ -28,5 +28,6 @@ pnpm-debug.log*
 .wrangler/
 
 # claude code
-.claude/
+.claude/*
+!.claude/agents/
 
