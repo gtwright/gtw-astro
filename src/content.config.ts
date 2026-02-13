@@ -18,7 +18,6 @@ const posts = defineCollection({
 const tags = defineCollection({
   loader: glob({ pattern: '*.yaml', base: './src/content/tags' }),
   schema: z.object({
-    displayName: z.string().optional(),
     description: z.string().optional(),
   }),
 });
