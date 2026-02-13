@@ -3,9 +3,9 @@ date: 2026-02-11T00:01:00-05:00
 description: Astro v6 beta, Cloudflare Workers, and the guiding principles behind this build — why these tools, and what I'm counting on.
 draft: false
 tags:
-- building-in-public
-- astro
-- cloudflare
+- Building in Public
+- Astro
+- Cloudflare
 title: Why I Chose Astro and Cloudflare Workers for this Blog
 ---
 
@@ -60,7 +60,7 @@ I also already use Cloudflare for DNS and have experience with the platform from
 
 For a static blog, Workers is arguably overkill. Pages would be fine. But starting with Workers gives me optionality — if I want to add server-side features later (API routes, edge functions, session handling), the infrastructure is already there. And since Astro's adapter handles the wiring, the day-to-day experience is identical: I run `astro build`, deploy with Wrangler, and the site is live at the edge.
 
-**The practical setup is simple:** static output mode in Astro, the `@astrojs/cloudflare` adapter, and a `wrangler.toml` that's about ten lines long. Commits to `main` auto-deploy through Cloudflare's GitHub integration. That's it.
+**The practical setup is simple:** static output mode in Astro, the `@astrojs/cloudflare` adapter, and a `wrangler.jsonc` that's about ten lines long. Commits to `main` auto-deploy through Cloudflare's GitHub integration. That's it.
 
 ## What I'm counting on
 

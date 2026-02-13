@@ -28,7 +28,9 @@ src/
 ├── assets/              # Static images
 ├── components/          # .astro components (Header, Footer, PostCard, Prose, SEO, WaveBackground)
 ├── consts.ts            # Site metadata (SITE object)
-├── content/blog/        # MDX blog posts (content collection)
+├── lib/                 # Shared utilities (tags.ts)
+├── content/posts/       # MDX blog posts (content collection)
+├── content/tags/        # Optional tag metadata (YAML, content collection)
 ├── content.config.ts    # Collection schema (Zod)
 ├── layouts/Base.astro   # Single base layout
 ├── pages/               # File-based routing (index, about, blog/index, blog/[...slug], rss.xml, waves, test-transitions)
@@ -62,8 +64,9 @@ src/
 
 - Blog posts live in `src/content/blog/` as `.mdx` files
 - **Required frontmatter:** `title` (string), `description` (string), `date` (date)
-- **Optional frontmatter:** `updated` (date), `draft` (see below), `tags` (string[]), `image` (string)
+- **Optional frontmatter:** `updated` (date), `draft` (see below), `tags` (display-ready string[], see below), `image` (string)
 - **Draft states:** `false` (default) = published · `true` = real work-in-progress · `"placeholder"` = AI-generated test content to be removed before launch. Both `true` and `"placeholder"` are filtered from production listings but visible in dev.
+- **Tags** are display-ready in frontmatter (e.g. `"Building in Public"`, `"MDX"`, `"AI"`). URL slugs are derived automatically via `toSlug()` in `src/lib/tags.ts`. An optional `tags` content collection (`src/content/tags/*.yaml`) can provide extra metadata (descriptions) for individual tags but is not required for basic tag usage.
 - Files prefixed with `_` are ignored by the content loader
 - Dates formatted `en-US`, long month (e.g., "January 15, 2025")
 - The `Prose` wrapper styles rendered MDX content; this pattern may be revisited during typography work

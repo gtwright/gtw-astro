@@ -15,4 +15,12 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { posts };
+const tags = defineCollection({
+  loader: glob({ pattern: '*.yaml', base: './src/content/tags' }),
+  schema: z.object({
+    displayName: z.string().optional(),
+    description: z.string().optional(),
+  }),
+});
+
+export const collections = { posts, tags };

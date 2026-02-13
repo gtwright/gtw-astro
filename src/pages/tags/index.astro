@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE } from '../../consts';
+import Base from '../../layouts/Base.astro';
+import { toTagUrl } from '../../lib/tags';
+
+const posts = await getCollection('posts', ({ data }) => {
+  if (import.meta.env.PROD) return !data.draft;
+  return true;
+});
+
+const tagMap = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    tagMap.set(tag, (tagMap.get(tag) ?? 0) + 1);
+  }
+}
+
+const tags = [...tagMap.entries()]
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+---
+
+<Base title="Tags" description={`All tags on ${SITE.title}.`}>
+  <div class="mx-auto max-w-3xl px-6 pt-16 pb-12">
+    <header class="mb-12">
+      <a
+        href="/posts"
+        class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
+      >
+        <span aria-hidden="true">&larr;</span>
+        <span>All Posts</span>
+      </a>
+      <h1 class="font-(family-name:--font-headline) text-4xl sm:text-5xl font-bold leading-tight tracking-tight mb-4">
+        Tags
+      </h1>
+      <div class="flex items-center justify-between">
+        <p class="font-(family-name:--font-ui) text-sm text-(--color-muted) m-0">
+          {tags.length} {tags.length === 1 ? 'tag' : 'tags'}
+        </p>
+        <div class="flex gap-1 font-(family-name:--font-ui) text-xs uppercase tracking-wide" id="sort-toggle">
+          <button
+            data-sort="count"
+            class="px-2 py-1 rounded transition-colors text-(--color-text) cursor-pointer bg-transparent border-0"
+          >
+            By count
+          </button>
+          <button
+            data-sort="alpha"
+            class="px-2 py-1 rounded transition-colors text-(--color-muted) hover:text-(--color-text) cursor-pointer bg-transparent border-0"
+          >
+            Alphabetical
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <ul id="tag-list" class="list-none p-0 m-0 grid gap-2">
+      {tags.map(([tag, count]) => (
+        <li data-tag={tag} data-count={count}>
+          <a
+            href={toTagUrl(tag)}
+            class="flex items-center justify-between py-3 px-4 rounded-lg no-underline hover:bg-(--color-surface) transition-colors group"
+          >
+            <span class="font-(family-name:--font-ui) text-base tracking-wide text-(--color-text) group-hover:text-(--color-accent-interactive) transition-colors">
+              {tag}
+            </span>
+            <span class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
+              {count}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>
+
+<script>
+  const toggle = document.getElementById('sort-toggle');
+  const list = document.getElementById('tag-list');
+  if (toggle && list) {
+    const buttons = toggle.querySelectorAll('button');
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sort = btn.dataset.sort;
+
+        buttons.forEach((b) => {
+          if (b === btn) {
+            b.classList.remove('text-(--color-muted)', 'hover:text-(--color-text)');
+            b.classList.add('text-(--color-text)');
+          } else {
+            b.classList.remove('text-(--color-text)');
+            b.classList.add('text-(--color-muted)', 'hover:text-(--color-text)');
+          }
+        });
+
+        const items = [...list.querySelectorAll('li')];
+        items.sort((a, b) => {
+          if (sort === 'alpha') {
+            return (a.dataset.tag ?? '').localeCompare(b.dataset.tag ?? '');
+          }
+          const countDiff = Number(b.dataset.count) - Number(a.dataset.count);
+          if (countDiff !== 0) return countDiff;
+          return (a.dataset.tag ?? '').localeCompare(b.dataset.tag ?? '');
+        });
+
+        for (const item of items) {
+          list.appendChild(item);
+        }
+      });
+    });
+  }
+</script>

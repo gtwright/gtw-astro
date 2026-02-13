@@ -1,4 +1,6 @@
 ---
+import { toTagUrl } from '../lib/tags';
+
 interface Props {
   title: string;
   description: string;
@@ -34,9 +36,9 @@ const formattedDate = date.toLocaleDateString('en-US', {
         <span class="text-(--color-border)">·</span>
         <div class="flex gap-2">
           {tags.map((tag) => (
-            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">
+            <a href={toTagUrl(tag)} class="font-(family-name:--font-ui) text-xs text-(--color-muted) tracking-wide no-underline hover:text-(--color-accent-interactive) transition-colors">
               {tag}
-            </span>
+            </a>
           ))}
         </div>
       </>

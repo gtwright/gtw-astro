@@ -1,10 +1,12 @@
 ---
-title: "First Boot — Scaffolding an Astro v6 Project on Cloudflare Workers"
-description: "Scaffolding a new Astro v6 beta project with Bun, TypeScript strict mode, and the Cloudflare Workers adapter. From bun create astro to first deploy."
+title: "First Boot — Scaffolding an Astro v6 Project"
+description: "Turning the Astro and Cloudflare decisions into a running project — from bun create astro to first deploy, and knowing when to stop."
 date: 2026-02-14
 draft: true
-tags: ["building-in-public", "astro", "cloudflare", "beta"]
+tags: ["Building in Public", "Astro", "Cloudflare"]
 ---
+
+*This is Part 1 of [Building in Public](/tags/building-in-public), a series documenting the construction of this site.*
 
 The [previous post](/posts/why-astro-cloudflare) covered the reasoning behind choosing Astro and Cloudflare Workers. This one covers what happened next: turning those decisions into a running project.
 
@@ -32,7 +34,9 @@ I expected this to be straightforward. It wasn't, quite. Neither `bun create ast
 bun add astro@beta
 ```
 
-This pulls in the latest v6 beta and updates `package.json` accordingly. A minor papercut, but worth noting if you're trying to do the same thing. The [Astro v6 upgrade guide](https://v6.docs.astro.build/en/guides/upgrade-to/v6/) covers what's changed. From here on out, everything I build is on the version Cloudflare will be optimizing for.
+This pulls in the latest v6 beta and updates `package.json` accordingly. The [Astro v6 upgrade guide](https://v6.docs.astro.build/en/guides/upgrade-to/v6/) covers what's changed. From here on out, everything I build is on the version Cloudflare will be optimizing for.
+
+A small lesson here: if you're adopting a beta, the scaffolding tools may not support it yet. Plan for a two-step process — scaffold stable, then upgrade. It's a minor papercut, but the kind of thing that costs you thirty minutes of confusion if you don't expect it.
 
 ## Adding the Cloudflare adapter
 
@@ -113,11 +117,13 @@ Wrangler comes along with the Cloudflare adapter, so there's nothing else to ins
 
 I'm skipping over the Cloudflare account setup and Wrangler authentication here — it's straightforward and [well-documented](https://developers.cloudflare.com/workers/get-started/guide/).
 
+The takeaway from this step is how little is required. Five config files, three commands (scaffold, build, deploy), and the site is live at the edge. The beta adds some version-matching friction — making sure Astro and the Cloudflare adapter are on compatible beta tracks — but the core workflow is clean.
+
 ## Connecting GitHub
 
-With the manual deploy working, I connected the GitHub repo to Cloudflare's deployment integration. Commits to `main` now trigger automatic deploys. This isn't CI/CD in any serious sense — there are no tests, no linting, no checks beyond what `astro build` does — but it means I can push and see changes live without a manual deploy every time.
+With the manual deploy working, I connected the GitHub repo to Cloudflare's deployment integration. Commits to `main` now trigger automatic deploys. This isn't CI/CD in any serious sense — there are no tests, no linting, no checks beyond what `astro build` does. A broken commit goes live immediately. But the friction is low enough that I'd rather keep moving and add guardrails when there's something worth guarding.
 
-Whether this holds up as the project grows is an open question. At some point I'll want quality gates — type checking, maybe accessibility checks, maybe Lighthouse scores. For now, the friction is low enough that I'd rather keep moving and add those guardrails when there's something worth guarding.
+Whether this holds up as the project grows is an open question. At some point I'll want quality gates — type checking, maybe accessibility checks, maybe Lighthouse scores. For now, the auto-deploy gives me fast feedback loops, and that matters more at this stage than safety nets.
 
 ## What the project looks like at this point
 

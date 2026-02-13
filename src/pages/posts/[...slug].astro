@@ -3,6 +3,7 @@ import type { InferGetStaticPropsType } from 'astro';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Prose from '../../components/Prose.astro';
+import { toTagUrl } from '../../lib/tags';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => {
@@ -70,7 +71,7 @@ const nextPost = allPosts[currentIndex - 1];
             <span class="text-(--color-border)">·</span>
             <div class="flex gap-2">
               {post.data.tags.map((tag) => (
-                <span class="uppercase tracking-wide text-xs">{tag}</span>
+                <a href={toTagUrl(tag)} class="tracking-wide text-xs no-underline hover:text-(--color-accent-interactive) transition-colors">{tag}</a>
               ))}
             </div>
           </>
