@@ -117,7 +117,7 @@ src/
 
 ## Future Considerations
 
-- **Testing:** No test suite yet. Playwright for e2e browser tests (tag links resolve, pages render correctly, interactive behavior like sort toggles). Unit tests for utility functions (`toSlug`, etc.). Worth adding when there's enough surface area to justify the setup.
+- **Testing:** No test suite yet. Playwright for e2e browser tests (tag links resolve, pages render correctly, interactive behavior like sort toggles). Unit tests for utility functions (`toSlug`, etc.). Lighthouse CI for performance, accessibility, and SEO score thresholds. Playwright and Lighthouse share headless browser infrastructure, so set them up together. Worth adding when there's enough surface area to justify the setup.
 
 ## Known Issues
 
