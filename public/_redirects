@@ -3,3 +3,6 @@
 
 # Section move (splat)
 /blog/*                  /posts/:splat                 308
+
+/sitemap.xml        /sitemap-index.xml
+/sitemap            /sitemap-index.xml
