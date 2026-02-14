@@ -11,9 +11,13 @@ Preparing for the AWS AI Practitioner certification. Posts built around self-des
 
 ### Data Pipeline at the BSO
 Real-world data engineering in a nonprofit/cultural org: ELT, data warehouse architecture, data activation, and the insights layer. What it takes to build a modern data pipeline when you're not a tech company.
+####Reference pipeline using all open-source or free tools, for the benefit of smaller orgs
 
 ### Performance History & Data Visualization
 Expanding on previous work visualizing orchestral performance history data. The Beethoven/BSO chart is a starting point — there's a larger story about what decades of programming data reveal.
+
+### HENRY 2.0
+Updating archives.bso.org. Modernizing the site, re-platforming the source data, building a pipeline (DBT/Dagster), and final search index (Typesense)
 
 ---
 

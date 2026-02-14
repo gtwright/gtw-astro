@@ -270,7 +270,6 @@ These are things I expect to write about but haven't sequenced yet:
 - **Pagination** — when the post count justifies it.
 - **Redirects** — handling URL changes, moved content, and vanity URLs (Cloudflare redirects, `_redirects` file, or Astro middleware).
 - **Schema.org best practices** — auditing and expanding structured data beyond the current WebSite and BlogPosting schemas (BreadcrumbList, FAQPage, Person, etc.).
-- ~~**Resolving the View Transitions / WaveBackground conflict**~~ — resolved with `transition:persist` on the WaveBackground root element.
 
 ---
 
@@ -279,7 +278,7 @@ These are things I expect to write about but haven't sequenced yet:
 - **Phase 0 is pure framing.** Decisions and principles documented before any code is written. They establish the "why" that the rest of the series builds on.
 - **Posts lead with ideas, not code.** The series is organized around decisions, trade-offs, and lessons learned — not line-by-line code walkthroughs. PRs and commits are referenced when useful but aren't the organizing structure.
 - **Pre-launch posts are retroactive.** The work wasn't done in neat post-sized chunks. We built iteratively, then grouped by theme.
-- **"What we're deferring" is load-bearing.** Every post explicitly names what we chose *not* to do. This is as important as what we did — it shows intentional scope management.
+- **"What we're deferring" is load-bearing.** Every post explicitly names what we chose *not* to do. This is as important as what we did — it shows intentional scope management. To keep focused, each post should only reference deferred topics that are relevant to the theme of that post, not the entire backlog.
 - **Documentation is split intentionally.** Lightweight project docs (CLAUDE.md, README) come early because they shape how AI-assisted work happens. The full publishing workflow comes later because it needs a mature project to be meaningful. Part 2 and Part 14 are two halves of the same story.
 - **The image tooling decision is documented as a point-in-time snapshot.** Astro 6 was in beta during this work. The right answer may change. We documented the reasoning, not just the choice.
 

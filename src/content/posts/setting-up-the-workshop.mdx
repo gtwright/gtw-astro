@@ -1,9 +1,111 @@
 ---
-title: "Setting Up the Workshop — Project Documentation for AI-Assisted Development"
-description: "Why CLAUDE.md and .cursorrules come before most building. Onboarding your AI collaborators with persistent context about architecture, conventions, and constraints."
+title: "Setting Up the Workshop — Documenting for AI Collaborators"
+description: "Why CLAUDE.md and .cursorrules come before most building. Onboarding AI collaborators with persistent context about architecture, conventions, and constraints."
 date: 2026-02-17
 draft: true
 tags: ["Building in Public", "AI", "Documentation"]
 ---
 
-Part 2 of the Building in Public series.
+*This is Part 2 of [Building in Public](/tags/building-in-public), a series documenting the construction of this site.*
+
+The [previous post](/posts/first-boot) ended with a working project — scaffolded, deployed, and doing almost nothing. Before writing any components or content, I spent time on something that still looks like nothing from the user perspective: project documentation.
+
+This might seem premature. The project had four config files and a single boilerplate page. What's there to document? The answer has less to do with the project's current size and more to do with how I plan to build it.
+
+## Choosing tools in a moving landscape
+
+Like many people right now, I've been testing various AI assistants and coding tools. On the IDE front alone, I've spent time in [Windsurf](https://windsurf.com/) and [Kiro](https://kiro.dev/) in addition to Cursor and my old standby VS Code. On the assistant side, I've explored Claude, Chat GPT/Codex, and Gemini, plus some experiments with foundation models via AWS Bedrock. I do my best to follow the broader landscape, but there's not enough time.
+
+It's time to make a choice between spreading my time across multiple tools, getting a shallow feel for each, or committing to one pairing and learning more deeply. I'm chosing the second approach: Claude Code as my primary AI assistant, running inside and/or alongside Cursor as my IDE.
+
+The choice wasn't arbitrary, but I didn't do a formal evaluation either. Claude Code impressed me with how it handles multi-file changes, git operations, and contextual understanding of project structure. Cursor gives me a familiar editing experience with AI capabilities available when I want them. Together they cover a range from quick inline completions to substantive refactoring and content work.
+
+This could change at any moment. What I care about is a setup that represents **best practice for these two tools without being so deeply vendor-locked that switching would be painful**. That concern shaped my decisions that followed.
+
+## Documentation as the safety blanket
+
+When you start a new session with an AI coding assistant, it reads certain files automatically to understand your project. Claude Code reads `CLAUDE.md`. Cursor reads `.cursorrules`. These files are your chance to shape every interaction that follows — the conventions the assistant should follow, the patterns it should use, the mistakes it should avoid.
+
+Without them, you're re-explaining the same context every session. With them, the assistant starts each conversation already understanding your architecture, your preferences, and your constraints. The return on investment is immediate and compounds over time.
+
+As a manager, I've seen the difference between onboarding a new team member with good documentation versus throwing them into the job cold. AI assistants are the same, except they get "onboarded" fresh every session. The documentation isn't optional overhead: without it, you're cursed to keep repeating yourself _ad nauseum_.
+
+The question now is how to build that documentation while balancing tool-specific best practice with avoiding vendor lock-in.
+
+## Thin entry points, one source of truth
+
+The architecture I arrived at: tool-specific files (`CLAUDE.md`, `.cursorrules`) are thin pointers. The real substance lives in a single shared document.
+
+Here's the actual `CLAUDE.md`:
+
+```markdown
+# CLAUDE.md
+
+Read `CONVENTIONS.md` for all project conventions, design tokens,
+and architecture details.
+
+## Claude Code Notes
+
+- Run `bun run check` before considering any task complete
+- When modifying components, verify `Props` interface is defined and typed
+- When working with colors or fonts, reference `src/styles/global.css`
+  `@theme` block — never introduce raw hex values in components
+- When creating or editing blog posts, follow frontmatter schema
+  in `src/content.config.ts`
+- Never add a `Co-Authored-By` line to commit messages
+```
+
+That's it. Five rules specific to Claude Code's behavior, and a pointer to the real conventions document. `.cursorrules` is nearly identical — same pointer, same rules, minus the commit message convention (which is Claude Code-specific).
+
+This approach isn't unique to documentation. It's the same principle as a design system: define once, reference everywhere, allow local overrides where tools diverge. Maintaining one document is sustainable. Maintaining three copies of the same information is not.
+
+If a different assistant or IDE becomes the better choice next month, adding a new entry point is one file. The substance stays the same.
+
+## CONVENTIONS.md — the shared foundation
+
+The conventions file is the real work. It covers:
+
+- **Tech stack** — not just what we're using, but the specific versions and why (Astro 6 beta, Tailwind v4, Bun, Cloudflare Workers)
+- **Project structure** — where things live and why
+- **Design tokens** — fonts, colors, and the pattern for deriving them (`color-mix` in oklab)
+- **Component conventions** — Props interfaces, scoped styles, View Transitions
+- **Content conventions** — frontmatter schema, draft states, tag format
+- **Git conventions** — commit messages, branching strategy, versioning
+- **Accessibility** — WCAG targets, landmark requirements
+- **Don'ts** — explicit anti-patterns (raw hex colors, missing Props interfaces, committing placeholder content)
+
+This file started small and keeps growing alongside the project. Each time I made an architectural decision or established a pattern, it went into CONVENTIONS.md. The file is both documentation and contract — it describes what exists *and* constrains what gets built next.
+
+## A style guide for voice
+
+Separate from the technical conventions, I wrote a style guide (`docs/STYLE_GUIDE.md`) that defines the editorial voice for blog content. It exists primarily as context for the content reviewer agent, but it shapes how I think about writing too.
+
+The guide describes a specific posture: lead with questions rather than conclusions, make reasoning visible, name downsides and uncertainty, treat the reader as a peer. It lists what to avoid — solutionist framing, "thought leadership" language, overconfident claims. The quality check at the end asks whether the writing sounds like someone thinking carefully or someone selling an idea.
+
+This matters because AI assistants are very good at producing confident, polished prose that says nothing. The style guide is a corrective — it tells the assistant (and reminds me) that uncertainty is a feature, not a weakness.
+
+I'd write the style guide earlier if I were starting over. It didn't exist for the first several posts, and retrofitting voice consistency is harder than establishing it from the start. If you're building a content site with AI assistance, the editorial voice document might be the single most important file you create.
+
+## Specialized agents
+
+Beyond the general project context, I've defined three review agents — specialized roles that Claude Code can delegate to when the task fits:
+
+- **Content reviewer** — checks posts against the style guide, validates SEO metadata, ensures series continuity
+- **UI reviewer** — audits components for design token usage, accessibility, CSS architecture, and technical SEO markup
+- **QA reviewer** — validates build pipeline, routing, Cloudflare compatibility, and content collection integrity
+
+Each agent is a Markdown file in `.claude/agents/` with a focused checklist and access to specific tools. The content reviewer can read files and search code but can't edit anything. The QA reviewer can also run shell commands to verify builds.
+
+These agents are a recent addition — I've run each one a handful of times. The content reviewer has been the most useful so far. Having a defined editorial checklist makes review feel less subjective, and it catches things I'd miss on my own read-through: metadata issues, voice drift, missing series links. The UI reviewer has flagged design token violations I wouldn't have noticed until they caused visual inconsistencies. The QA reviewer is currently a checklist waiting for a test suite; its "Testing" section is all future considerations. That's fine. The role exists even when the tooling doesn't, and having the checklist clarifies what "quality" means for this project.
+
+## Content planning documents
+
+The last piece of the documentation system is content planning. This evolved from a single series outline into a three-level structure:
+
+- **Content backlog** (`docs/CONTENT_BACKLOG.md`) — raw ideas and series candidates. The intake funnel where topics land before they have a home.
+- **Series outlines** (`docs/series/*.md`) — themed collections with an arc, a sequence, and scope definitions for each post. The Building in Public outline is the most developed.
+- **Draft posts** (`src/content/posts/*.mdx` with `draft: true`) — once an idea graduates from outline to draft, it lives in the content directory.
+
+Ideas flow from backlog to series to draft to published. The backlog is intentionally loose — a place to capture something interesting without committing to a format or sequence. Series outlines are more structured, with "what we're deferring" sections that make scope explicit. Drafts are real writing.
+
+The [next post](/posts/content-collections-blog-loop) covers content collections and the blog loop — defining a content schema, setting up MDX, and building the listing and post routes. That's where the project starts having something to look at.

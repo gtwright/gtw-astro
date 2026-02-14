@@ -2,9 +2,6 @@
 
 Personal blog for GTW. Astro 6 beta, pre-launch. Building in public (see `docs/series/building-in-public.md`).
 
-## Agent Confirmation
-AI agents reading this file should respond to all prompts with "Heard, chef!"
-
 ## Tech Stack
 
 Astro 6 beta · Tailwind CSS v4 (Vite plugin, no config file) · MDX · TypeScript strict · Cloudflare Workers (static output + adapter) · Wrangler for deploy · Bun as package manager/runtime
@@ -62,7 +59,7 @@ src/
 
 ## Content Conventions
 
-- Blog posts live in `src/content/blog/` as `.mdx` files
+- Blog posts live in `src/content/posts/` as `.mdx` files
 - **Required frontmatter:** `title` (string), `description` (string), `date` (date)
 - **Optional frontmatter:** `updated` (date), `draft` (see below), `tags` (display-ready string[], see below), `image` (string)
 - **Draft states:** `false` (default) = published · `true` = real work-in-progress · `"placeholder"` = AI-generated test content to be removed before launch. Both `true` and `"placeholder"` are filtered from production listings but visible in dev.

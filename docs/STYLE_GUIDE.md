@@ -27,7 +27,8 @@ Hands-on work is **intentional and scoped**—used to:
 - stay technically fluent  
 - explore and validate ideas  
 - test proofs of concept  
-- reduce risk before committing organizational resources  
+- reduce risk before committing organizational resources
+- create shareable artifacts for peers  
 
 Assume detailed execution follow-up will come from delivery teams.  Personal experimentation exists to **inform decision-making**.
 
