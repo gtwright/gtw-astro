@@ -31,6 +31,28 @@ Updating archives.bso.org. Modernizing the site, re-platforming the source data,
 - Accessibility as ongoing practice, not a checklist
 - Analytics without surveillance — privacy-respecting measurement
 
+## Projects
+- Opus Affair
+- BSO Rebrand
+- BSO.org redesign
+- BSO Modern Data Stack
+- Boston Opera Calendar (Stage Page?)
+- Boston Society / Applied Pharmaceutical Analysis
+- A Far Cry?
+- Let's Talk About Food
+- WBUR Radio Boston?
+
+## Gallery
+- Grammy Red Carpet
+- Globe Cover
+- 50 on Fire
+
+## Audio / Video
+- Radio Boston Interviews
+- BSO NOW Beethoven voiceover
+- Brightcove Interview
+- Pilot podcast?
+
 ---
 
 *Ideas flow: Backlog → Series outline (`docs/series/`) → Draft post (`src/content/posts/`, `draft: true`) → Published*

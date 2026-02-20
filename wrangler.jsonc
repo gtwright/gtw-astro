@@ -8,5 +8,8 @@
 	"assets": {
 		"directory": "./dist",
 		"binding": "ASSETS"
-	}
+	},
+	"routes": [
+		{ "pattern": "www.graham-wright.com", "custom_domain": true }
+	  ]
 }

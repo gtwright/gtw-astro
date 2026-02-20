@@ -34,6 +34,20 @@ Assume detailed execution follow-up will come from delivery teams.  Personal exp
 
 ---
 
+## Target Audience
+
+Three overlapping audiences, all grounded in nonprofit cultural organizations (especially performing arts) with potential relevance to mission-driven orgs more broadly:
+
+1. **Closest peers** — CTOs, CIOs, Chief Digital Officers, and similar executives in nonprofit cultural orgs. The relationship is mutual: can they learn from what I've done, and can I learn from them? These readers engage with both strategy and implementation.
+
+2. **Adjacent executives** — CEOs, CFOs, CMOs, COOs in nonprofit cultural orgs who are interested in the impact of digital, data, and technology work in their domains. They may also be recruiting for roles like mine. These readers care about outcomes, tradeoffs, and organizational implications more than implementation details.
+
+3. **Hands-on builders** — Technical practitioners in nonprofit and cultural orgs working with data warehouses, ecommerce platforms, digital products, and similar projects. These readers want to see how decisions were made and how things were built in real operating conditions.
+
+All three audiences share a context: resource constraints, mission accountability, and the tension between ambition and capacity that defines work in mission-driven organizations.
+
+---
+
 ## Core Tone
 
 Balance:

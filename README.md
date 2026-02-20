@@ -1,4 +1,4 @@
-# gtw.dev
+# graham-wright.com
 
 Personal site for Graham Wright. Built with Astro 6, Tailwind CSS v4, and MDX, deployed to Cloudflare Workers.
 
