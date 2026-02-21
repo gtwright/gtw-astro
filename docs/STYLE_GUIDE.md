@@ -116,6 +116,7 @@ Write as someone working through complex questions at the intersection of **tool
 - Evangelism, cynicism, or performative vulnerability.
 - Implicit competition with delivery teams or creative partners.
 - Quippy humor
+- Second-person tutorial voice ("when you start a session…", "your chance to…"). Write from experience, not as instruction. Peer-to-peer recommendations are fine; step-by-step "you" framing is not.
 
 ---
 

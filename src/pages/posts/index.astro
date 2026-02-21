@@ -5,10 +5,10 @@ import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 
 const posts = (await getCollection('posts', ({ data }) => {
-    if (import.meta.env.PROD) return !data.draft;
+    if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
     return true;
   }))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
 ---
 
 <Base title="Blog" description={`All posts from ${SITE.title}.`}>
@@ -27,9 +27,10 @@ const posts = (await getCollection('posts', ({ data }) => {
         <PostCard
           title={post.data.title}
           description={post.data.description}
-          date={post.data.date}
+          published={post.data.published}
           slug={post.id}
           tags={post.data.tags}
+          draft={post.data.draft}
         />
       ))}
     </div>

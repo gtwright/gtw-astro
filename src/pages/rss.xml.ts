@@ -9,8 +9,8 @@ export async function GET(context: APIContext) {
   }
 
   const posts = (await getCollection('posts'))
-    .filter((post) => !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+    .filter((post) => !post.data.draft && post.data.published <= new Date())
+    .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
 
   return rss({
     title: SITE.title,
@@ -19,7 +19,7 @@ export async function GET(context: APIContext) {
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,
-      pubDate: post.data.date,
+      pubDate: post.data.published,
       link: `/posts/${post.id}`,
     })),
   });

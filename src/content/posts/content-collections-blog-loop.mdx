@@ -1,9 +1,174 @@
 ---
-title: "Content Collections and the Blog Loop"
-description: "Defining a content schema, setting up MDX, building the blog listing and dynamic post routes. Why content comes before styling."
-date: 2026-02-20
-draft: true
-tags: ["Building in Public", "Astro", "MDX"]
+description: Defining a content schema, setting up MDX, building the blog listing and dynamic post routes. Why content comes before styling.
+published: 2026-02-20T12:00:00
+tags:
+- Site Build
+- Astro
+- MDX
+title: Content Collections and the Blog Loop
 ---
 
-Part 3 of the Building in Public series.
+*This is Part 3 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
+
+[Part 2](/posts/setting-up-the-workshop) set up the documentation that shapes every AI-assisted session. Now it's time to build something that actually produces pages — the content system and the routes that display it.
+
+I deliberately built this before touching layout, navigation, or styling. A blog needs something to look at before there's any point deciding how it looks. The content schema defines what information each post carries. The routes define how that content becomes pages. Everything visual comes after.
+
+## Defining the schema
+
+Astro's content collections provide type-safe frontmatter through Zod schemas. Here's the full schema from `content.config.ts`:
+
+```typescript
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
+import { glob } from 'astro/loaders';
+
+const posts = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/posts' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    published: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    draft: z.boolean().default(false),
+    tags: z.array(z.string()).default([]),
+    image: z.string().optional(),
+  }),
+});
+```
+
+A few things to note about this configuration. The `glob` loader scans `src/content/posts/` for `.md` and `.mdx` files, skipping anything prefixed with `_` — a convention for files I want in the directory but excluded from the collection. A `_template.mdx` file, for example, could live alongside real posts as a starting point for new drafts without Astro trying to build it as a page. The `z.coerce.date()` on `published` and `updated` means frontmatter can use plain datetime strings (`2026-02-20T12:00:00`) and Zod coerces them to Date objects. All dates are assumed to be local time (America/New_York) with no timezone offset in frontmatter. 
+
+_Sidenote_: Timezones are my nemesis — I've spent too many hours debugging event start times: live stream broadcasts with global audiences, historical performance archives with international tours, and data pipelines where every system has a different opinion about UTC offsets or IANA strings (or neither). A personal blog where every date is local time is a luxury.
+
+Here's the reasoning behind the intial schema:
+
+- **`title`** and **`description`** — required. The description serves double duty as the meta description for SEO and the excerpt on listing pages. I might differentiate between the preview description on listing pages and SEO/social description at a later date. This is good enough for now.
+- **`published`** — required. Drives sort order and display. Using `z.coerce.date()` rather than `z.date()` because frontmatter dates are strings, not native Date objects.
+- **`updated`** — optional. Signals when a post has been revised. Feeds into the SEO component's `article:modified_time` meta tag.
+- **`tags`** — defaults to an empty array. Display-ready strings in frontmatter (e.g., `"Site Build"`, `"Astro"`), with URL slugs derived at render time. This avoids storing duplicate representations.
+- **`image`** — optional. For a future Open Graph image per post. The field exists in the schema now so I don't have to migrate frontmatter later.
+- **`draft`** — a boolean, defaulting to `false`. Worth its own section.
+
+## Filtering: drafts and future dates
+
+The `draft` field is a simple boolean: `false` (the default) means published, `true` means work in progress. The filtering happens at query time, not at the schema level:
+
+```typescript
+const posts = await getCollection('posts', ({ data }) => {
+  if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
+  return true;
+});
+```
+
+In production, two things are excluded: anything with `draft: true`, and anything with a `published` date in the future. In development, everything shows up. This means I can write drafts in the same directory as published posts, see them while I'm working, and keep them out of the production build automatically. The future-date check is a safety net — not scheduled publishing, just insurance against deploying a post before it's ready if the date was set optimistically.
+
+## MDX over Markdown
+
+The content files use `.mdx` rather than `.md`. MDX lets you embed Astro components directly in content — interactive elements, custom callouts, anything that goes beyond what Markdown can express. The `@astrojs/mdx` integration handles this with zero configuration beyond adding it to `astro.config.mjs`:
+
+```javascript
+integrations: [mdx()],
+```
+
+I'm not using any MDX-specific features yet. Every post is currently plain Markdown that happens to live in an `.mdx` file. But the cost of using MDX from the start is zero, and migrating from `.md` to `.mdx` later — renaming files, updating the glob pattern, testing that nothing breaks — is friction I'd rather avoid. This is the kind of decision where the future-proofing costs nothing.
+
+## The blog listing
+
+The listing page at `src/pages/posts/index.astro` queries the collection, sorts by date, and renders a card for each post:
+
+```astro
+---
+const posts = (await getCollection('posts', ({ data }) => {
+    if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
+    return true;
+  }))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+---
+
+{posts.map((post) => (
+  <PostCard
+    title={post.data.title}
+    description={post.data.description}
+    published={post.data.published}
+    slug={post.id}
+    tags={post.data.tags}
+  />
+))}
+```
+
+The draft filter is repeated here and in the dynamic route. With only two consumers, a shared helper isn't worth the indirection yet.
+
+## PostCard
+
+The `PostCard` component is deliberately minimal — a title that links to the post, a formatted date, tags, and a description:
+
+```astro
+---
+interface Props {
+  title: string;
+  description: string;
+  published: Date;
+  slug: string;
+  tags?: string[];
+}
+
+const { title, description, published, slug, tags = [] } = Astro.props;
+---
+
+<article>
+  <a href={`/posts/${slug}`}>
+    <h2>{title}</h2>
+  </a>
+  <time datetime={published.toISOString()}>{formattedDate}</time>
+  {tags.map((tag) => <a href={toTagUrl(tag)}>{tag}</a>)}
+  <p>{description}</p>
+</article>
+```
+
+The Props interface is typed explicitly rather than inferred. This is a project convention — every component declares its interface so that both TypeScript and AI assistants can reason about the contract.
+
+## Dynamic post routes
+
+Individual posts are rendered by `src/pages/posts/[...slug].astro`. The rest spread (`...`) in the filename means the slug can contain path separators, though in practice all post IDs are flat filenames.
+
+```astro
+---
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => {
+    if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
+    return true;
+  });
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Content />
+```
+
+`getStaticPaths` tells Astro which pages to generate at build time — one per post, with the post data passed as props. The `render` function turns the MDX content into a component that can be placed directly in the template. Styling the rendered output comes later — [Part 6](/posts/typography) covers the typographic details.
+
+The route also builds prev/next navigation by finding the current post's position in the sorted list:
+
+```typescript
+const currentIndex = allPosts.findIndex((p) => p.id === post.id);
+const prevPost = allPosts[currentIndex + 1];
+const nextPost = allPosts[currentIndex - 1];
+```
+
+This gives every post a link to its chronological neighbors — a small navigation detail that helps readers move through the series without returning to the listing page.
+
+## A few decisions to recap
+
+- **Content before styling** — the schema and routes exist before any visual design. This means there's real content to look at when it's time to make design decisions.
+- **Draft and future-date filtering** — `draft: true` and future `published` dates both keep posts out of production. In dev, everything shows up. Simple filtering at query time, not at the schema level.
+- **MDX from the start** — no MDX features used yet, but migration cost avoided. The future-proofing costs nothing.
+- **Lean schema** — a single `posts` collection with only the fields that serve a purpose right now. Additional collections, richer metadata, and media support can come when there's a real need.
+
+The [next post](/posts/layout-navigation-bones) covers layout, navigation, and the structural skeleton that every page inherits.

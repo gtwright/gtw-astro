@@ -1,10 +1,10 @@
-# Building a Blog in Public: Series Outline
+# Site Build: Series Outline
 
 A series documenting the process of building a personal blog with Astro, from intent to production. Phase 0 covers the thinking — why build this, what principles guide it, and which tools to use. Pre-launch posts are grouped thematically. Post-launch posts are organized around ideas and decisions, not code diffs. Posts may reference PRs or commits for context, but the writing leads with the *idea* — the reasoning, trade-offs, and lessons — not a line-by-line walkthrough.
 
 ---
 
-## The Launch Line
+## The Launch Point
 
 Everything through Part 10 ships before the site goes live. The goal is a credible, polished blog with real content at a real domain — not a feature-complete platform. Specifically, launch means:
 

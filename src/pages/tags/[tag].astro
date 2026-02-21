@@ -7,7 +7,7 @@ import { toSlug } from '../../lib/tags';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => {
-    if (import.meta.env.PROD) return !data.draft;
+    if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
     return true;
   });
 
@@ -26,7 +26,7 @@ export async function getStaticPaths() {
     props: {
       displayName,
       slug,
-      posts: posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+      posts: posts.sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf()),
     },
   }));
 }
@@ -64,7 +64,7 @@ const description = tagEntry?.data.description;
         <PostCard
           title={post.data.title}
           description={post.data.description}
-          date={post.data.date}
+          published={post.data.published}
           slug={post.id}
           tags={post.data.tags}
         />

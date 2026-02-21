@@ -4,14 +4,15 @@ import { toTagUrl } from '../lib/tags';
 interface Props {
   title: string;
   description: string;
-  date: Date;
+  published: Date;
   slug: string;
   tags?: string[];
+  draft?: boolean | "placeholder";
 }
 
-const { title, description, date, slug, tags = [] } = Astro.props;
+const { title, description, published, slug, tags = [], draft } = Astro.props;
 
-const formattedDate = date.toLocaleDateString('en-US', {
+const formattedDate = published.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
@@ -19,7 +20,12 @@ const formattedDate = date.toLocaleDateString('en-US', {
 ---
 
 <article class="py-8" transition:name={`post-${slug}`}>
-  <a href={`/posts/${slug}`} class="group no-underline block">
+  <a href={`/posts/${slug}`} class="relative group no-underline block">
+    {draft && (
+      <span class="absolute -left-20 top-[0.6lh] -translate-y-1/2 font-(family-name:--font-ui) text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-amber-400 text-amber-950 hidden lg:block">
+        {draft === "placeholder" ? "Placeholder" : "Draft"}
+      </span>
+    )}
     <h2
       transition:name={`post-title-${slug}`}
       class="text-2xl sm:text-3xl font-semibold leading-tight text-(--color-text) m-0 mb-2 group-hover:text-(--color-accent-interactive) transition-colors"
@@ -28,7 +34,7 @@ const formattedDate = date.toLocaleDateString('en-US', {
     </h2>
   </a>
   <div class="flex items-center gap-3 mb-3">
-    <time datetime={date.toISOString()} class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
+    <time datetime={published.toISOString()} class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
       {formattedDate}
     </time>
     {tags.length > 0 && (

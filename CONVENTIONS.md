@@ -1,6 +1,6 @@
 # Project Conventions
 
-Personal blog for GTW. Astro 6 beta, pre-launch. Building in public (see `docs/series/building-in-public.md`).
+Personal blog for GTW. Astro 6 beta, pre-launch. Site Build series (see `docs/series/site-build.md`).
 
 ## Tech Stack
 
@@ -61,10 +61,11 @@ src/
 ## Content Conventions
 
 - Blog posts live in `src/content/posts/` as `.mdx` files
-- **Required frontmatter:** `title` (string), `description` (string), `date` (date)
-- **Optional frontmatter:** `updated` (date), `draft` (see below), `tags` (display-ready string[], see below), `image` (string)
-- **Draft states:** `false` (default) = published · `true` = real work-in-progress · `"placeholder"` = AI-generated test content to be removed before launch. Both `true` and `"placeholder"` are filtered from production listings but visible in dev.
-- **Tags** are display-ready in frontmatter (e.g. `"Building in Public"`, `"MDX"`, `"AI"`). URL slugs are derived automatically via `toSlug()` in `src/lib/tags.ts`. An optional `tags` content collection (`src/content/tags/*.yaml`) can provide extra metadata (descriptions) for individual tags but is not required for basic tag usage.
+- **Required frontmatter:** `title` (string), `description` (string), `published` (datetime, e.g. `2026-02-14T12:00:00`)
+- **Optional frontmatter:** `updated` (datetime), `draft` (boolean, default `false`), `tags` (display-ready string[], see below), `image` (string)
+- **Dates:** Use local datetime without timezone offset (e.g. `2026-02-14T12:00:00`). All dates are assumed to be America/New_York. Only the date portion is displayed currently, but time is tracked for potential future use. Add `updated` when a published post has been revised after its initial publication.
+- **Draft:** `false` (default) = published · `true` = work-in-progress. Drafts are filtered from production listings but visible in dev.
+- **Tags** are display-ready in frontmatter (e.g. `"Site Build"`, `"MDX"`, `"AI"`). URL slugs are derived automatically via `toSlug()` in `src/lib/tags.ts`. An optional `tags` content collection (`src/content/tags/*.yaml`) can provide extra metadata (descriptions) for individual tags but is not required for basic tag usage.
 - Files prefixed with `_` are ignored by the content loader
 - Dates formatted `en-US`, long month (e.g., "January 15, 2025")
 - The `.prose` class in `global.css` styles rendered MDX content (headings, paragraphs, code blocks, links, etc.)
@@ -128,5 +129,5 @@ Review and update after any PR that changes architecture, design tokens, compone
 ## Related Docs
 
 - `docs/CONTENT_BACKLOG.md` — Raw ideas and series candidates
-- `docs/series/building-in-public.md` — Building in Public series outline
+- `docs/series/site-build.md` — Site Build series outline
 - `docs/series/` — Series outlines (one file per series)

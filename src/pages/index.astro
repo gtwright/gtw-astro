@@ -6,10 +6,10 @@ import Base from '../layouts/Base.astro';
 // import heroImage from '../assets/Freebie-GradientTextures-02.jpg';
 
 const posts = (await getCollection('posts', ({ data }) => {
-    if (import.meta.env.PROD) return !data.draft;
+    if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
     return true;
   }))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf())
   .slice(0, 3);
 ---
 
@@ -47,10 +47,10 @@ const posts = (await getCollection('posts', ({ data }) => {
                   {post.data.title}
                 </a>
                 <time
-                  datetime={post.data.date.toISOString()}
+                  datetime={post.data.published.toISOString()}
                   class="shrink-0 font-(family-name:--font-ui) text-xs sm:text-sm text-(--color-muted)"
                 >
-                  {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  {post.data.published.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                 </time>
               </li>
             ))}

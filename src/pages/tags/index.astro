@@ -5,7 +5,7 @@ import Base from '../../layouts/Base.astro';
 import { toTagUrl } from '../../lib/tags';
 
 const posts = await getCollection('posts', ({ data }) => {
-  if (import.meta.env.PROD) return !data.draft;
+  if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
   return true;
 });
 
