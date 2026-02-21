@@ -23,7 +23,7 @@ bun run deploy       # astro build && wrangler deploy (manual)
 ```
 src/
 ├── assets/              # Static images
-├── components/          # .astro components (Header, Footer, PostCard, Prose, SEO, WaveBackground)
+├── components/          # .astro components (Header, Footer, PostCard, SEO, WaveBackground)
 ├── consts.ts            # Site metadata (SITE object)
 ├── lib/                 # Shared utilities (tags.ts)
 ├── content/posts/       # MDX blog posts (content collection)
@@ -53,7 +53,8 @@ src/
 ## Component Conventions
 
 - `.astro` single-file components with typed `Props` interface
-- `:global()` in scoped `<style>` for styling rendered child content (see `Prose.astro`)
+- Heading fonts are set globally in `global.css`: `h1`–`h2` use `--font-headline` (Fraunces, expressive/display), `h3`–`h4` use `--font-ui` (Inter, structural/functional). Only add explicit font classes in Tailwind when overriding these defaults or applying heading fonts to non-heading elements.
+- `.prose` in `global.css` styles rendered MDX content — keeps only content-specific properties (sizing, spacing, element styles), inheriting font-family from global heading/body rules
 - `transition:name` attributes for View Transitions (`post-${slug}`, `post-title-${slug}`)
 - `max-w-3xl` with `mx-auto px-6` as the standard content width pattern
 
@@ -66,7 +67,7 @@ src/
 - **Tags** are display-ready in frontmatter (e.g. `"Building in Public"`, `"MDX"`, `"AI"`). URL slugs are derived automatically via `toSlug()` in `src/lib/tags.ts`. An optional `tags` content collection (`src/content/tags/*.yaml`) can provide extra metadata (descriptions) for individual tags but is not required for basic tag usage.
 - Files prefixed with `_` are ignored by the content loader
 - Dates formatted `en-US`, long month (e.g., "January 15, 2025")
-- The `Prose` wrapper styles rendered MDX content; this pattern may be revisited during typography work
+- The `.prose` class in `global.css` styles rendered MDX content (headings, paragraphs, code blocks, links, etc.)
 
 ## Styling Rules
 
