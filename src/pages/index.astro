@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import { Icon } from 'astro-icon/components';
 import { SITE, SOCIAL } from '../consts';
 import Base from '../layouts/Base.astro';
-// import heroImage from '../assets/Freebie-GradientTextures-02.jpg';
 
 const posts = (await getCollection('posts', ({ data }) => {
     if (import.meta.env.PROD) return !data.draft;
@@ -16,55 +15,69 @@ const posts = (await getCollection('posts', ({ data }) => {
 <Base title="Home" description={SITE.description}>
   <section class="relative isolate overflow-hidden">
     <div class="mx-auto max-w-3xl px-6 min-h-[calc(100svh-4.5rem)] py-10">
-      <div class="min-h-[calc(100svh-4.5rem-5rem)] flex flex-col items-center justify-center w-full">
-        <div class="text-center flex flex-col items-center -mt-4">
-          <h3 class="font-(family-name:--font-ui) uppercase tracking-widest text-(--color-muted) mb-4">
-            Welcome—
-          </h3>
-          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-8">
-            I’m Graham Wright
+      <div class="min-h-[calc(100svh-4.5rem-5rem)] flex flex-col items-start justify-center w-full">
+        <div class="animate-fade-up">
+          <p class="font-(family-name:--font-ui) text-xs tracking-widest uppercase text-(--color-muted) mb-5">
+            Welcome
+          </p>
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
+            I'm Graham
           </h1>
-          <p class="font-(family-name:--font-body) text-lg text-(--color-muted) leading-relaxed max-w-l mb-8">
-            Sharing essays and experiments from building systems in mission-driven orgs.</p>
-        </div>
-
-        <div class="mt-[clamp(2.5rem,6vh,4.5rem)] w-full max-w-xl">
-          <div class="flex items-baseline justify-between gap-4 mb-4">
-            <h2 class="font-(family-name:--font-ui) text-xs uppercase tracking-widest text-(--color-muted)">
-              Recent posts
-            </h2>
-            <a href="/posts" class="font-(family-name:--font-ui) text-sm font-medium text-(--color-accent-interactive) no-underline hover:underline">
-              View all
+          <p class="font-(family-name:--font-body) text-xl text-(--color-muted) leading-relaxed max-w-xl mb-8">
+            Sharing essays and experiments from building systems in mission-driven orgs.
+          </p>
+          <div class="flex items-center gap-3">
+            <a href="/posts" class="link-organic font-(family-name:--font-ui) text-sm font-medium tracking-wide text-(--color-accent-interactive)">
+              Read the blog
+            </a>
+            <span class="text-(--color-border)">&middot;</span>
+            <a href="/about" class="link-organic font-(family-name:--font-ui) text-sm font-medium tracking-wide text-(--color-muted) hover:text-(--color-text)">
+              About me
             </a>
           </div>
-          <ul class="m-0 p-0 list-none divide-y divide-(--color-border) text-left">
-            {posts.map((post) => (
-              <li class="py-3 flex items-baseline justify-between gap-4">
-                <a
-                  href={`/posts/${post.id}`}
-                  class="min-w-0 font-(family-name:--font-headline) text-lg sm:text-xl font-medium leading-snug text-(--color-text) no-underline hover:text-(--color-accent-interactive) transition-colors line-clamp-1"
-                >
-                  {post.data.title}
-                </a>
-                <time
-                  datetime={post.data.date.toISOString()}
-                  class="shrink-0 font-(family-name:--font-ui) text-xs sm:text-sm text-(--color-muted)"
-                >
-                  {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                </time>
-              </li>
-            ))}
-          </ul>
         </div>
 
-        <nav aria-label="Social links" class="mt-8 flex items-center justify-center gap-5">
+        <div class="mt-[clamp(3rem,8vh,6rem)] w-full animate-fade-up" style="animation-delay: 0.15s;">
+          <div>
+            <div class="flex items-baseline justify-between gap-4 mb-6">
+              <h2 class="font-(family-name:--font-ui) text-xs uppercase tracking-widest text-(--color-muted)">
+                Recent posts
+              </h2>
+              <a href="/posts" class="link-organic font-(family-name:--font-ui) text-sm font-medium text-(--color-accent-interactive)">
+                View all
+              </a>
+            </div>
+            <ul class="m-0 p-0 list-none text-left">
+              {posts.map((post) => (
+                <li class="py-4 -mx-2 px-2 rounded group transition-colors duration-300 hover:bg-(--color-surface)">
+                  <a
+                    href={`/posts/${post.id}`}
+                    class="flex items-baseline justify-between gap-4 no-underline"
+                  >
+                    <span class="min-w-0 font-(family-name:--font-headline) text-lg sm:text-xl font-medium leading-snug text-(--color-text) group-hover:text-(--color-accent-interactive) transition-colors duration-300 line-clamp-1">
+                      {post.data.title}
+                    </span>
+                    <time
+                      datetime={post.data.date.toISOString()}
+                      class="shrink-0 font-(family-name:--font-ui) text-xs sm:text-sm text-(--color-muted) tracking-wide"
+                    >
+                      {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </time>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <nav aria-label="Social links" class="mt-10 flex items-center gap-5 animate-fade-up" style="animation-delay: 0.3s;">
           {SOCIAL.map((link) => (
             <a
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={link.name}
-              class="text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors"
+              class="text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors duration-300"
             >
               <Icon name={link.icon} class="size-5" />
             </a>

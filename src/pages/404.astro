@@ -4,16 +4,21 @@ import Base from '../layouts/Base.astro';
 
 <Base title="Page Not Found" description="The page you're looking for doesn't exist.">
   <article class="mx-auto max-w-2xl px-6 pt-16 pb-12">
-    <div class="prose">
-      <h1>Page Not Found</h1>
-
-      <p>
-        Sorry, the page you're looking for doesn't exist or has been moved.
+    <header class="mb-8">
+      <p class="font-(family-name:--font-ui) text-xs tracking-widest uppercase text-(--color-muted) mb-4">
+        404
       </p>
-
+      <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tight">
+        Page Not Found
+      </h1>
+    </header>
+    <div class="prose">
       <p>
-        You can head back to the <a href="/">home page</a> or browse the
-        <a href="/blog">blog</a>.
+        The page you're looking for doesn't exist or has been moved.
+      </p>
+      <p>
+        Head back to the <a href="/">home page</a> or browse the
+        <a href="/posts">blog</a>.
       </p>
     </div>
   </article>

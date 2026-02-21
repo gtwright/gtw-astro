@@ -25,7 +25,7 @@ const tags = [...tagMap.entries()]
     <header class="mb-12">
       <a
         href="/posts"
-        class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
+        class="link-organic inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) mb-6"
       >
         <span aria-hidden="true">&larr;</span>
         <span>All Posts</span>
@@ -37,7 +37,7 @@ const tags = [...tagMap.entries()]
         <p class="font-(family-name:--font-ui) text-sm text-(--color-muted) m-0">
           {tags.length} {tags.length === 1 ? 'tag' : 'tags'}
         </p>
-        <div class="flex gap-1 font-(family-name:--font-ui) text-xs uppercase tracking-wide" id="sort-toggle">
+        <div class="flex gap-1 font-(family-name:--font-ui) text-xs uppercase tracking-widest" id="sort-toggle">
           <button
             data-sort="count"
             class="px-2 py-1 rounded transition-colors text-(--color-text) cursor-pointer bg-transparent border-0"
@@ -54,14 +54,14 @@ const tags = [...tagMap.entries()]
       </div>
     </header>
 
-    <ul id="tag-list" class="list-none p-0 m-0 grid gap-2">
+    <ul id="tag-list" class="list-none p-0 m-0 grid gap-1">
       {tags.map(([tag, count]) => (
         <li data-tag={tag} data-count={count}>
           <a
             href={toTagUrl(tag)}
-            class="flex items-center justify-between py-3 px-4 rounded-lg no-underline hover:bg-(--color-surface) transition-colors group"
+            class="group flex items-center justify-between py-3 px-4 -mx-4 rounded-lg no-underline transition-colors duration-300 hover:bg-(--color-surface)"
           >
-            <span class="font-(family-name:--font-ui) text-base tracking-wide text-(--color-text) group-hover:text-(--color-accent-interactive) transition-colors">
+            <span class="font-(family-name:--font-ui) text-base tracking-wide text-(--color-text) group-hover:text-(--color-accent-interactive) transition-colors duration-300">
               {tag}
             </span>
             <span class="font-(family-name:--font-ui) text-sm text-(--color-muted)">

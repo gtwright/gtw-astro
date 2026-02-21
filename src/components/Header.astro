@@ -5,17 +5,21 @@ const navLinks = [
 ];
 ---
 
-<header class="sticky top-0 z-50 bg-(--color-bg)/75 backdrop-blur-sm">
-  <nav class="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-    <a href="/" class="font-(family-name:--font-headline) text-2xl font-semibold tracking-tight text-(--color-text) no-underline">
-      GW
+<header data-header class="sticky top-0 z-50 bg-(--color-bg)/80 backdrop-blur-md">
+  <nav class="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
+    <a
+      href="/"
+      class="flex items-baseline font-(family-name:--font-headline) text-lg sm:text-xl tracking-tight text-(--color-text) no-underline"
+      style="font-variation-settings: 'opsz' 72, 'wght' 680, 'SOFT' 50, 'WONK' 1;"
+    >
+      <span>G</span><span class="header-collapse">raham</span><span class="header-collapse">&nbsp;</span><span>W</span><span class="header-collapse">right</span>
     </a>
-    <ul class="flex gap-6 list-none m-0 p-0">
+    <ul class="flex gap-8 list-none m-0 p-0">
       {navLinks.map(({ href, label }) => (
         <li>
           <a
             href={href}
-            class="font-(family-name:--font-ui) text-sm font-medium text-(--color-muted) no-underline transition-colors hover:text-(--color-text)"
+            class="link-organic font-(family-name:--font-ui) text-sm font-medium tracking-wide text-(--color-muted) uppercase hover:text-(--color-text)"
           >
             {label}
           </a>
@@ -24,3 +28,12 @@ const navLinks = [
     </ul>
   </nav>
 </header>
+
+<script>
+  function update() {
+    document.querySelector('[data-header]')?.classList.toggle('is-scrolled', window.scrollY > 50);
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  document.addEventListener('astro:page-load', update);
+</script>

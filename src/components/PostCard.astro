@@ -15,25 +15,20 @@ const formattedDate = date.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
-}); 
+});
 ---
 
-<article class="py-8" transition:name={`post-${slug}`}>
-  <a href={`/posts/${slug}`} class="group no-underline block">
-    <h2
-      transition:name={`post-title-${slug}`}
-      class="text-2xl sm:text-3xl font-semibold leading-tight text-(--color-text) m-0 mb-2 group-hover:text-(--color-accent-interactive) transition-colors"
-    >
-      {title}
-    </h2>
-  </a>
+<article
+  class="group py-8 -mx-4 px-4 rounded-lg transition-colors duration-300 hover:bg-(--color-surface)"
+  transition:name={`post-${slug}`}
+>
   <div class="flex items-center gap-3 mb-3">
-    <time datetime={date.toISOString()} class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
+    <time datetime={date.toISOString()} class="font-(family-name:--font-ui) text-sm text-(--color-muted) tracking-wide">
       {formattedDate}
     </time>
     {tags.length > 0 && (
       <>
-        <span class="text-(--color-border)">·</span>
+        <span class="text-(--color-border)">&middot;</span>
         <div class="flex gap-2">
           {tags.map((tag) => (
             <a href={toTagUrl(tag)} class="font-(family-name:--font-ui) text-xs text-(--color-muted) tracking-wide no-underline hover:text-(--color-accent-interactive) transition-colors">
@@ -44,7 +39,15 @@ const formattedDate = date.toLocaleDateString('en-US', {
       </>
     )}
   </div>
-  <p class="font-(family-name:--font-body) text-base text-(--color-muted) leading-relaxed m-0">
+  <a href={`/posts/${slug}`} class="no-underline block">
+    <h2
+      transition:name={`post-title-${slug}`}
+      class="text-2xl sm:text-3xl font-semibold leading-tight text-(--color-text) m-0 mb-3 group-hover:text-(--color-accent-interactive) transition-colors duration-300"
+    >
+      {title}
+    </h2>
+  </a>
+  <p class="font-(family-name:--font-body) text-base text-(--color-muted) leading-relaxed m-0 max-w-xl">
     {description}
   </p>
 </article>

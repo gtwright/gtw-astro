@@ -46,28 +46,22 @@ const nextPost = allPosts[currentIndex - 1];
   updatedDate={post.data.updated}
 >
   <article class="mx-auto max-w-2xl px-6 pt-16 pb-12" transition:name={`post-${post.id}`}>
-    <header class="mb-10">
+    <header class="mb-12">
       <a
         id="post-back-link"
         href="/posts"
-        class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
+        class="link-organic inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) mb-8"
       >
-        <span aria-hidden="true">←</span>
-        <span>Back</span>
+        <span aria-hidden="true">&larr;</span>
+        <span>All Posts</span>
       </a>
-      <h1
-        transition:name={`post-title-${post.id}`}
-        class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight mb-4"
-      >
-        {post.data.title}
-      </h1>
-      <div class="flex items-center gap-3 font-(family-name:--font-ui) text-sm text-(--color-muted)">
-        <time datetime={post.data.date.toISOString()}>
+      <div class="flex items-center gap-3 font-(family-name:--font-ui) text-sm text-(--color-muted) mb-4">
+        <time datetime={post.data.date.toISOString()} class="tracking-wide">
           {formattedDate}
         </time>
         {post.data.tags.length > 0 && (
           <>
-            <span class="text-(--color-border)">·</span>
+            <span class="text-(--color-border)">&middot;</span>
             <div class="flex gap-2">
               {post.data.tags.map((tag) => (
                 <a href={toTagUrl(tag)} class="tracking-wide text-xs no-underline hover:text-(--color-accent-interactive) transition-colors">{tag}</a>
@@ -76,6 +70,12 @@ const nextPost = allPosts[currentIndex - 1];
           </>
         )}
       </div>
+      <h1
+        transition:name={`post-title-${post.id}`}
+        class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.08] tracking-tight"
+      >
+        {post.data.title}
+      </h1>
     </header>
 
     <div class="prose">
@@ -83,19 +83,19 @@ const nextPost = allPosts[currentIndex - 1];
     </div>
 
     {(prevPost || nextPost) && (
-      <nav class="mt-16 pt-8 border-t border-(--color-border) grid grid-cols-2 gap-8">
+      <nav class="mt-16 pt-8 grid grid-cols-2 gap-8">
         {prevPost ? (
           <a href={`/posts/${prevPost.id}`} class="group no-underline">
-            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Older</span>
-            <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
+            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-widest">Older</span>
+            <p class="font-(family-name:--font-headline) text-lg font-medium mt-2 group-hover:text-(--color-accent-interactive) transition-colors duration-300 m-0 leading-snug">
               {prevPost.data.title}
             </p>
           </a>
         ) : <div />}
         {nextPost ? (
           <a href={`/posts/${nextPost.id}`} class="group no-underline text-right">
-            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Newer</span>
-            <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
+            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-widest">Newer</span>
+            <p class="font-(family-name:--font-headline) text-lg font-medium mt-2 group-hover:text-(--color-accent-interactive) transition-colors duration-300 m-0 leading-snug">
               {nextPost.data.title}
             </p>
           </a>

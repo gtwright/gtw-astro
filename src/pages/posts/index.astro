@@ -14,6 +14,9 @@ const posts = (await getCollection('posts', ({ data }) => {
 <Base title="Blog" description={`All posts from ${SITE.title}.`}>
   <div class="mx-auto max-w-3xl px-6 pt-16 pb-12">
     <header class="mb-12">
+      <p class="font-(family-name:--font-ui) text-xs tracking-widest uppercase text-(--color-muted) mb-4">
+        Journal
+      </p>
       <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tight mb-4">
         All Posts
       </h1>
@@ -22,7 +25,7 @@ const posts = (await getCollection('posts', ({ data }) => {
       </p>
     </header>
 
-    <div class="divide-y divide-(--color-border)">
+    <div>
       {posts.map((post) => (
         <PostCard
           title={post.data.title}

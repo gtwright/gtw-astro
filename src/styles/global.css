@@ -9,20 +9,21 @@
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
   /* Surfaces */
-  --color-bg: #ffffff; /* header/footer + overall page chrome */
-  --color-main-bg: #f6f4ee; /* very light grey-cream for main content */
-  --color-surface: #ffffff; /* cards / panels (kept white for now) */
+  --color-bg: #faf8f3; /* warm paper white — header/footer/page chrome */
+  --color-main-bg: #f0ede4; /* warm parchment — main content area */
+  --color-surface: #ffffff; /* cards / panels */
 
   /* Typography */
-  --color-text: #161513;
-  --color-muted: color-mix(in oklab, var(--color-text) 55%, #6f6a63 45%);
+  --color-text: #1a1714;
+  --color-muted: color-mix(in oklab, var(--color-text) 48%, #7a7267 52%);
 
   /* Accents */
-  --color-accent-interactive: #c75a25; /* burnt orange (interactive) */
-  --color-accent-atmosphere: #2f3a52; /* dusty navy (non-interactive / future dark base) */
+  --color-accent-interactive: #b5512a; /* deep terracotta (interactive) */
+  --color-accent-atmosphere: #283044; /* ink navy (non-interactive / decorative) */
 
   /* Lines */
   --color-border: color-mix(in oklab, var(--color-text) 12%, transparent);
+  --color-rule: color-mix(in oklab, var(--color-text) 24%, transparent);
 }
 
 /* ── Base ── */
@@ -32,13 +33,14 @@ html {
   color: var(--color-text);
   background-color: var(--color-bg);
   line-height: 1.7;
+  letter-spacing: -0.003em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scrollbar-gutter: stable;
 }
 
 ::selection {
-  background-color: color-mix(in srgb, var(--color-accent-interactive) 20%, transparent);
+  background-color: color-mix(in srgb, var(--color-accent-interactive) 18%, transparent);
 }
 
 h1, h2 {
@@ -52,14 +54,70 @@ h3, h4 {
 }
 
 h1 {
-  font-variation-settings: "opsz" 104, "wght" 720, "SOFT" 50, "WONK" 1;
+  font-variation-settings: "opsz" 144, "wght" 760, "SOFT" 50, "WONK" 1;
+}
+
+/* ── Organic link underlines ── */
+
+.link-organic {
+  text-decoration: none;
+  background-image: linear-gradient(var(--color-accent-interactive), var(--color-accent-interactive));
+  background-size: 0% 2px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  transition: background-size 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+              color 0.3s ease;
+  padding-bottom: 1px;
+}
+
+.link-organic:hover,
+.link-organic:focus-visible {
+  background-size: 100% 2px;
+}
+
+.link-organic:focus-visible {
+  outline: 2px solid var(--color-accent-interactive);
+  outline-offset: 2px;
+}
+
+/* ── Header collapse (scroll) ── */
+
+.header-collapse {
+  min-width: 0;
+  max-width: 6ch;
+  overflow: hidden;
+  transition: max-width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.35s ease;
+  white-space: nowrap;
+}
+
+header.is-scrolled .header-collapse {
+  max-width: 0;
+  opacity: 0;
+}
+
+/* ── Entrance animation ── */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
 /* ── Prose ── */
 
 .prose {
-  font-size: 1.125rem;
-  line-height: 1.75;
+  font-size: 1.15rem;
+  line-height: 1.8;
   max-width: 65ch;
 }
 
@@ -97,18 +155,22 @@ h1 {
 
 .prose a {
   color: var(--color-accent-interactive);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: opacity 0.15s;
+  text-decoration: none;
+  background-image: linear-gradient(var(--color-accent-interactive), var(--color-accent-interactive));
+  background-size: 100% 1.5px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  padding-bottom: 1px;
 }
 
 .prose a:hover {
-  opacity: 0.8;
+  background-size: 100% 2.5px;
 }
 
 .prose blockquote {
-  border-left: 3px solid var(--color-accent-interactive);
-  padding-left: 1.25em;
+  border-left: 4px solid var(--color-accent-atmosphere);
+  padding-left: 1.5em;
   margin-left: 0;
   margin-right: 0;
   font-style: italic;
@@ -138,9 +200,9 @@ h1 {
 .prose code {
   font-family: var(--font-mono);
   font-size: 0.875em;
-  background-color: var(--color-surface);
-  padding: 0.15em 0.35em;
-  border-radius: 4px;
+  background-color: color-mix(in srgb, var(--color-text) 6%, transparent);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
 }
 
 .prose pre {
@@ -150,7 +212,7 @@ h1 {
   background-color: var(--color-text);
   color: var(--color-bg);
   padding: 1.25em 1.5em;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow-x: auto;
   margin-bottom: 1.5em;
 }
@@ -164,14 +226,13 @@ h1 {
 
 .prose hr {
   border: none;
-  border-top: 1px solid var(--color-border);
   margin: 3em 0;
 }
 
 .prose img {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 6px;
   margin: 2em 0;
 }
 
@@ -200,4 +261,17 @@ h1 {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-muted);
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
+  .link-organic,
+  .prose a,
+  .header-collapse {
+    transition: none;
+  }
 }
