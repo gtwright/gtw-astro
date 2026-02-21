@@ -11,6 +11,6 @@
 		"html_handling": "drop-trailing-slash"
 	},
 	"routes": [
-		{ "pattern": "www.graham-wright.com", "custom_domain": true }
+		{ "pattern": "graham-wright.com", "custom_domain": true }
 	  ]
 }
