@@ -35,7 +35,7 @@ These posts establish *why* the site exists and *how* decisions will be made. Th
 - Why build from scratch instead of using a platform (Substack, Medium, Ghost) — ownership and the build as part of the learning.
 - Committing to writing about technology, creative practice, and mission-driven leadership.
 
-### Post 0.2: Why I Chose Astro and Cloudflare Workers for My Blog (draft)
+### Post 0.2: Why I Chose Astro and Cloudflare Workers for My Blog ✓
 
 Consolidates the original 0.2 (Principles), 0.3 (Choosing Astro), and 0.4 (Deployment Philosophy) into a single post covering decisions made before writing any code.
 
@@ -49,38 +49,45 @@ Consolidates the original 0.2 (Principles), 0.3 (Choosing Astro), and 0.4 (Deplo
 
 Work in this section happened iteratively, not linearly. Posts are organized by theme, not by PR or commit sequence. Code references are illustrative, not exhaustive.
 
-### Part 1: First Boot — Scaffolding the Project
+### Part 1: First Boot — Scaffolding an Astro v6 Project ✓
 
-**Scope:**Project scaffolding, initial config, first successful build.
+**Scope:** Project scaffolding, initial config, first successful build and deploy.
 
-- `bun create astro`, TypeScript strict mode, initial `astro.config.mjs`.
-- Adding `@astrojs/cloudflare` early — connecting the deployment decision from Post 0.4 to actual config.
-- The first successful `astro dev` and what the default project looks like.
-- What we're deferring: domain, CI/CD, analytics, dark mode — everything that isn't "does it run."
+- `bun create astro`, TypeScript strict mode, empty project — understanding every file from the start.
+- Upgrading from stable v5 to v6 beta (`bun add astro@beta`) — the scaffolder doesn't have a beta channel.
+- Adding `@astrojs/cloudflare` early — wiring up the deployment target before building anything on top of it.
+- Minimal `wrangler.jsonc`: project name, build output, compatibility date, clean URLs.
+- First dev server, first production build, first deploy to `.workers.dev` — confirming the full pipeline works end to end.
+- Connecting GitHub for automatic deploys on merge to `main`.
+- What we're deferring: static output only (SSR path exists but unused), no real domain yet, no quality gates beyond `astro build`.
 
-### Part 2: Setting Up the Workshop — Project Documentation for AI-Assisted Development
+### Part 2: Setting Up the Workshop — Documenting for AI Collaborators ✓
 
-**Scope:**CLAUDE.md, .cursorrules, README, initial working documents.
+**Scope:** CLAUDE.md, .cursorrules, CONVENTIONS.md, STYLE_GUIDE.md, review agents, content planning documents.
 
 - Why project documentation comes before most building — these files shape every AI-assisted session that follows.
-- `CLAUDE.md`: giving Claude Code persistent context about the project's architecture, conventions, and constraints. What belongs here vs. what's noise.
-- `.cursorrules`: the Cursor equivalent — how the two files overlap and where they diverge.
-- `README.md`: the human-readable project overview. Not auto-generated boilerplate — a real description of what this is and how to work on it.
-- Initial working documents: this series outline as a living planning tool.
-- The philosophy: AI assistants are collaborators, and collaborators need onboarding materials.
-- What we're deferring: editorial workflow, publishing automation, detailed content planning docs — these need a more mature project to be useful.
+- Choosing tools in a moving landscape: depth over breadth, Claude Code as primary assistant, Cursor kept closely paired for ecosystem awareness.
+- "Thin entry points, shared substance": `CLAUDE.md` and `.cursorrules` are thin pointers to a single `CONVENTIONS.md` — one source of truth, portable across tools.
+- `CONVENTIONS.md` as the shared foundation: tech stack, project structure, design tokens, component conventions, content conventions, git conventions, accessibility targets.
+- A style guide for voice (`docs/STYLE_GUIDE.md`): defining editorial tone for human-authored, AI-assisted writing.
+- Specialized review agents (content, UI, QA) with scoped access — reviewing and editing stay separate.
+- Three-level content planning: backlog → series outline → draft. Each level adds structure as an idea matures.
+- What we're deferring: editorial workflow automation, publishing tooling — these need a more mature project to be useful.
 
-### Part 3: Content Collections and the Blog Loop
+### Part 3: Content Collections and the Blog Loop ✓
 
-**Scope:**Content schema, MDX setup, blog listing, dynamic post routes, PostCard component.
+**Scope:** Content schema, MDX setup, blog listing, dynamic post routes, PostCard component.
 
-- Why content comes before styling — you need something to look at before you can design how it looks.
-- Astro content collections: defining a schema in `content.config.ts` for type-safe frontmatter.
-- The schema choices: `title`, `description`, `date`, `draft`, `tags`, `image`, `updated`. Why each field exists and what `draft: true` buys you.
-- MDX over plain Markdown — future-proofing for embedded components without paying a cost today.
+- Why content comes before styling — there needs to be something to look at before there's any point deciding how it looks.
+- Astro content collections: defining a schema in `content.config.ts` for type-safe frontmatter with Zod.
+- The schema: `title`, `description`, `published`, `updated`, `draft`, `tags`, `image`. Why each field exists.
+- Glob loader with `_` prefix convention for excluding files from the collection.
+- Filtering at query time: `draft: true` and future `published` dates hidden in production, everything visible in dev.
+- Local datetime without timezone offset (America/New_York assumed). A timezone war story.
+- MDX over plain Markdown — future-proofing for embedded components at zero cost today.
 - File-based routing: `src/pages/posts/index.astro` for the listing, `[...slug].astro` for individual posts.
-- The `PostCard` component: a simple, scannable entry in a post list.
-- What we're deferring: tag pages, search, pagination, reading time estimates.
+- The `PostCard` component with explicit Props interface. Prev/next navigation by chronological position.
+- What we're deferring: additional collections (projects), richer post metadata (authors, reading time), media in posts.
 
 ### Part 4: Layout, Navigation, and the Bones of Every Page
 
@@ -227,14 +234,14 @@ Posts continue to be organized around ideas and decisions. PRs or commits may be
 - Automatic anchor links on headings for deep linking.
 - Other small UX improvements that accumulate into polish.
 
-### Part 16: Tags, Categories, and Content Discovery
+### Part 16: Content Discovery — Tags, Related Posts, and Navigation Patterns
 
-**Scope:**Tag pages, tag listing, category system.
+**Scope:** Tag system refinements, related content, navigation improvements.
 
-- Generating tag pages from the `tags` frontmatter field.
-- A tag listing or cloud component.
+- Tags already exist (tag listing page, per-tag filtered pages, tag metadata via YAML). This post covers what came after the basics.
+- Improving content discovery: related posts, "more like this" patterns, or intentionally choosing not to.
 - Whether categories and tags are different things for this site, or just tags.
-- What we're deferring: search, related posts, content recommendations.
+- What we're deferring: search, content recommendations, pagination.
 
 ### Part 17: Search
 
@@ -284,4 +291,4 @@ These are things I expect to write about but haven't sequenced yet:
 
 ---
 
-*Last updated: 2026-02-11*
+*Last updated: 2026-02-20*

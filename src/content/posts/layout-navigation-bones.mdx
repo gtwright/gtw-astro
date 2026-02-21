@@ -1,9 +1,238 @@
 ---
 title: "Layout, Navigation, and the Bones of Every Page"
-description: "Base layout, Header, Footer, site constants, semantic landmarks, and skip-to-content. Getting the skeleton right before making it look good."
+description: "Why heading hierarchy, landmarks, and keyboard flow get attention first. Building Astro's Base layout as a structural foundation."
 published: 2026-02-23T12:00:00
-draft: true
 tags: ["Site Build", "Astro", "Accessibility"]
 ---
 
-Part 4 of the Site Build series.
+*This is Part 4 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
+
+[Part 3](/posts/content-collections-blog-loop) built the content system — a schema, a blog listing, and routes that turn posts into pages. But every page rendered its content into a bare HTML document. No shared header, no footer, no navigation, no consistent structure.
+
+This post covers the structural skeleton: the `Base.astro` layout that wraps every page, the header and footer components, and the constants file that keeps site-wide values in one place. None of this is visually designed yet — styling comes in [Part 5](/posts/design-system). The goal here is getting the document structure and navigation landmarks right, because those decisions are harder to retrofit than visual design.
+
+## Why structure comes before styling
+
+Visual design on a weak structural foundation requires workarounds that accumulate into technical debt. A site's layout — its landmarks, heading hierarchy, navigation patterns, and keyboard flow — shapes what styling can do. Starting with the skeleton means every page has the right landmarks (`<header>`, `<nav>`, `<main>`, `<footer>`), the heading hierarchy makes sense, and keyboard navigation works before there's anything to look at. Styling wraps around that structure rather than compensating for its absence.
+
+One concrete example: it's tempting to use heading elements (`<h3>`, `<h4>`) for small decorative text like a page overline or kicker, because headings are easy to style. But heading levels create a document outline that screen readers expose to users. A decorative `<h3>` appearing before the page's `<h1>` is a broken hierarchy — confusing for assistive technology users and wrong semantically. A styled `<p>` does the same visual job without corrupting the outline.
+
+## Site constants
+
+Before building the layout, I needed a canonical place for values that appear across the site — the title, description, author name, and social links. These live in `src/consts.ts`:
+
+```typescript
+export const SITE = {
+  title: 'Graham Wright',
+  description: 'A non-profit leader committed to learning...',
+  language: 'en',
+  url: 'https://graham-wright.com',
+  author: {
+    name: 'Graham Wright',
+    url: 'https://graham-wright.com'
+  },
+} as const;
+
+export const SOCIAL = [
+  { name: 'GitHub', icon: 'simple-icons:github', url: 'https://github.com/gtwright' },
+  { name: 'LinkedIn', icon: 'simple-icons:linkedin', url: 'https://linkedin.com/in/grahamtwright' },
+  // ...
+] as const;
+```
+
+`as const` makes these objects immutable and gives TypeScript literal types for each value — useful when the same constants feed into structured data and meta tags across the site.
+
+The `SOCIAL` array keeps each social profile's name, URL, and icon reference together. Adding a new profile is a single entry in one file — no template changes needed.
+
+## The Base layout
+
+`Base.astro` is the single HTML shell that every page inherits. It handles everything that should be consistent across the site: the `<html>` and `<head>` elements, font imports, global styles, SEO metadata, and the shared header/footer chrome.
+
+Some Astro projects split this into layers — a bare `Shell` layout for the HTML document and `<head>`, a `SiteLayout` that adds navigation chrome, maybe a `PostLayout` for article-specific structure. The benefit is that pages can opt into different levels of structure: a landing page or print view could use the shell without the header and footer. That separation makes sense when different pages need different shells. Here, every page uses the same structure, so a single layout avoids indirection without losing flexibility. If a second content type (projects, for example) or a chrome-free page appears, splitting the layout becomes a clear next step.
+
+```astro
+---
+import '../styles/global.css';
+import { SITE } from '../consts';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  article?: boolean;
+  publishedDate?: Date;
+  updatedDate?: Date;
+}
+
+const { title, description, image, article, publishedDate, updatedDate } = Astro.props;
+---
+
+<!doctype html>
+<html lang={SITE.language}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+    <SEO
+      title={title}
+      description={description}
+      image={image}
+      article={article}
+      publishedDate={publishedDate}
+      updatedDate={updatedDate}
+    />
+  </head>
+  <body>
+    <a href="#main-content">Skip to main content</a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+```
+
+The Props interface declares what each page must provide. Every page needs a `title` and `description`. Article-specific pages (blog posts) pass additional metadata — `publishedDate`, `updatedDate`, and `image` — that flows through the SEO component into Open Graph and JSON-LD tags. The SEO component itself is covered in [Part 7](/posts/seo-rss-sitemap).
+
+The layout is currently a pass-through for metadata that only blog posts use. Four of the six props exist solely for the SEO component — the layout knowing too much about one content type. It works at this scale, but if the site grows to include projects or other content types with their own metadata, the Props interface would keep expanding. I expect to revisit this when building the SEO component — likely by giving pages more direct control over what goes in the `<head>` rather than threading everything through layout props.
+
+The `<html lang>` attribute comes from `SITE.language`. It tells browsers and screen readers what language the content is in — important for pronunciation, text-to-speech, and search engine indexing.
+
+The `<head>` includes discovery links: a sitemap for search engines, an RSS feed for syndication, and a favicon. These are wired up early so they're present from the first deploy, even before the SEO and feed implementations are fully fleshed out. The RSS feed and sitemap are covered in [Part 7](/posts/seo-rss-sitemap).
+
+Font imports also live at the top of the layout file — the site uses `@fontsource` packages for self-hosted variable fonts. The font choices and why self-hosting matters are covered in [Part 5](/posts/design-system).
+
+## The document structure
+
+The `<body>` follows a straightforward pattern: skip link, then `<Header />`, then `<main>` with a `<slot />` for page content, then `<Footer />`. This gives every page a consistent document outline with proper landmark regions.
+
+Screen readers and other assistive technologies use these landmarks to navigate. A user on a screen reader can jump directly to `<main>`, skip past the header entirely, or navigate between the `<header>`, `<nav>`, `<main>`, and `<footer>` landmarks. This only works if those landmarks exist and are used correctly — which means getting them in place early, before there's complex content that makes the structure harder to reason about.
+
+The `<slot />` is Astro's content projection — each page passes its unique content into the layout, and the layout wraps it with the shared shell. Pages don't need to think about the header, footer, or `<head>` contents. They declare their metadata as props and render their content inside the slot.
+
+## Skip-to-content link
+
+The skip link is the first focusable element in the document:
+
+```html
+<a href="#main-content">Skip to main content</a>
+```
+
+It's visually hidden by default using a screen-reader-only CSS pattern, then revealed on keyboard focus — a standard technique where the element is clipped out of view until it receives `:focus`, at which point it appears at the top of the page. This lets keyboard users bypass the header and navigation, jumping directly to the content. Without it, a keyboard user would have to tab through every navigation link before reaching the page content — annoying on a blog with a simple nav, prohibitive on a site with a complex one.
+
+The skip link targets `#main-content`, which is the `id` on the `<main>` element. This is a WCAG 2.2 success criterion (2.4.1 Bypass Blocks). The important thing is that it's the very first element inside `<body>` — before the header, before anything else that could receive focus.
+
+## The Header
+
+The header is deliberately minimal — a site mark and two navigation links:
+
+```astro
+---
+const navLinks = [
+  { href: '/posts', label: 'Posts' },
+  { href: '/about', label: 'About' }
+];
+---
+
+<header>
+  <nav>
+    <a href="/">GW</a>
+    <ul>
+      {navLinks.map(({ href, label }) => (
+        <li>
+          <a href={href}>{label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+```
+
+The nav links are defined as data rather than hardcoded HTML. This is a minor structural choice, but it means adding or reordering links is a single edit to an array — no template surgery.
+
+The site mark is "GW" in the headline font, linking to the home page. A full-name wordmark would compete with nav links on mobile viewports — two letters at the headline font weight is distinctive enough without crowding the bar.
+
+The header becomes sticky once styling is applied in [Part 5](/posts/design-system) — locking to the top of the viewport on scroll so the navigation is always reachable. That decision affects content spacing and scroll behavior, so it's worth noting here even though the CSS comes later.
+
+The `<nav>` element wraps everything inside the header. This creates a navigation landmark that assistive technologies can identify and jump to. The nav links live inside a `<ul>` — semantically correct for a list of links, and it gives screen readers a count of items ("list, 2 items") that helps orient the user.
+
+There's no mobile hamburger menu. With two navigation links plus the home link, the header fits comfortably on any viewport width. A hamburger menu would add JavaScript, animation logic, focus trapping, and ARIA attributes — all to hide two links behind a button. That complexity isn't justified until the nav outgrows the available space.
+
+## The Footer
+
+The footer is similarly spare — a copyright notice and an RSS link:
+
+```astro
+---
+import { SITE } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <p>&copy; {year} {SITE.title}. All rights reserved.</p>
+  <nav>
+    <a href="/rss.xml">RSS</a>
+  </nav>
+</footer>
+```
+
+The year is computed at build time with `new Date().getFullYear()`. On a static site this means the copyright updates with each build, not dynamically at runtime. Since the site deploys on every commit, the year stays current without client-side JavaScript.
+
+The RSS link lives in the footer rather than the header because it's a discovery mechanism, not a primary navigation path. Readers who want RSS know to look for it; it doesn't need to compete with the main nav.
+
+The footer's `<nav>` is a separate navigation landmark from the header's `<nav>`. A page can have multiple `<nav>` elements, but screen readers need a way to distinguish them — each one gets an `aria-label` (`"Primary"` for the header, `"Footer"` for the footer). Without labels, a screen reader just announces "navigation" for each one, leaving the user to guess which is which.
+
+## How pages consume the layout
+
+Every page follows the same pattern — import `Base`, pass props, render content:
+
+```astro
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page Not Found" description="The page you're looking for doesn't exist.">
+  <article>
+    <h1>Page Not Found</h1>
+    <p>Sorry, the page you're looking for doesn't exist or has been moved.</p>
+  </article>
+</Base>
+```
+
+The layout handles everything structural. The page handles everything unique to that page. This separation means adding a new page is lightweight — no need to think about the head, fonts, analytics, or navigation. Define a title, a description, and the content.
+
+Blog posts pass additional metadata that the layout forwards to the SEO component:
+
+```astro
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  image={post.data.image}
+  article={true}
+  publishedDate={post.data.published}
+  updatedDate={post.data.updated}
+>
+```
+
+The `article` flag tells the SEO component to generate `BlogPosting` structured data and `article:`-prefixed Open Graph tags. Regular pages get `WebSite` schema only. This distinction matters for search engines and social sharing — a blog post has a publish date, an author, and a headline that structured data can express.
+
+## What we're deferring
+
+- **Mobile hamburger menu** — with two nav links, a hamburger would add JavaScript, focus trapping, and ARIA complexity without solving a real space problem. If the nav outgrows the space, this becomes worth revisiting.
+- **Breadcrumbs** — not needed on a flat site structure. If the content grows to warrant nested sections, breadcrumbs become a useful navigation aid.
+
+## A few decisions to recap
+
+- **Structure before styling** — landmarks, heading hierarchy, and keyboard flow are in place before any visual design. Styling wraps around structure rather than compensating for its absence.
+- **A single layout** — every page inherits `Base.astro`. One place to change the head, the chrome, the shared behavior. Pages are lightweight consumers.
+- **Minimal navigation** — two links plus a home mark. No hamburger menu, no JavaScript for navigation. The complexity isn't justified until the nav outgrows the space.
+- **Skip link as a first-class element** — the first focusable element in every document. WCAG 2.4.1, and one of the simplest accessibility wins to get right early.
+- **Constants as a single source of truth** — site title, description, author, and social links defined once in `consts.ts` and consumed everywhere.
+
+The [next post](/posts/design-system) covers the design system — Tailwind v4, variable fonts, and the color token system that gives the skeleton its skin.

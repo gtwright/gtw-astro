@@ -37,15 +37,17 @@ const tags = [...tagMap.entries()]
         <p class="font-(family-name:--font-ui) text-sm text-(--color-muted) m-0">
           {tags.length} {tags.length === 1 ? 'tag' : 'tags'}
         </p>
-        <div class="flex gap-1 font-(family-name:--font-ui) text-xs uppercase tracking-wide" id="sort-toggle">
+        <div role="group" aria-label="Sort tags" class="flex gap-1 font-(family-name:--font-ui) text-xs uppercase tracking-wide" id="sort-toggle">
           <button
             data-sort="count"
+            aria-pressed="true"
             class="px-2 py-1 rounded transition-colors text-(--color-text) cursor-pointer bg-transparent border-0"
           >
             By count
           </button>
           <button
             data-sort="alpha"
+            aria-pressed="false"
             class="px-2 py-1 rounded transition-colors text-(--color-muted) hover:text-(--color-text) cursor-pointer bg-transparent border-0"
           >
             Alphabetical
@@ -86,9 +88,11 @@ const tags = [...tagMap.entries()]
 
         buttons.forEach((b) => {
           if (b === btn) {
+            b.setAttribute('aria-pressed', 'true');
             b.classList.remove('text-(--color-muted)', 'hover:text-(--color-text)');
             b.classList.add('text-(--color-text)');
           } else {
+            b.setAttribute('aria-pressed', 'false');
             b.classList.remove('text-(--color-text)');
             b.classList.add('text-(--color-muted)', 'hover:text-(--color-text)');
           }

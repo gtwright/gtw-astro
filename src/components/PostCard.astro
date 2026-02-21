@@ -30,7 +30,7 @@ const formattedDate = published.toLocaleDateString('en-US', {
       transition:name={`post-title-${slug}`}
       class="text-2xl sm:text-3xl font-semibold leading-tight text-(--color-text) m-0 mb-2 group-hover:text-(--color-accent-interactive) transition-colors"
     >
-      {title}
+      {draft && <span class="sr-only">[Draft] </span>}{title}
     </h2>
   </a>
   <div class="flex items-center gap-3 mb-3">
