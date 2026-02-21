@@ -23,7 +23,7 @@ bun run deploy       # astro build && wrangler deploy (manual)
 ```
 src/
 ├── assets/              # Static images
-├── components/          # .astro components (Header, Footer, PostCard, SEO, WaveBackground)
+├── components/          # .astro components (Header, Footer, PostCard, Prose, SEO, WaveBackground)
 ├── consts.ts            # Site metadata (SITE object)
 ├── lib/                 # Shared utilities (tags.ts)
 ├── content/posts/       # MDX blog posts (content collection)
@@ -31,7 +31,9 @@ src/
 ├── content.config.ts    # Collection schema (Zod)
 ├── layouts/Base.astro   # Single base layout
 ├── pages/               # File-based routing (index, about, blog/index, blog/[...slug], rss.xml, waves, test-transitions)
-└── styles/global.css    # Design tokens via @theme — source of truth for colors/fonts
+└── styles/
+    ├── global.css       # Design tokens via @theme + base element styles
+    └── prose.css        # Typography for rendered Markdown (loaded by Prose.astro)
 ```
 
 ## Design Tokens (defined in `src/styles/global.css` via `@theme`)
@@ -45,7 +47,7 @@ src/
 **Colors:**
 - `--color-bg`: `#ffffff` (page chrome) · `--color-main-bg`: `#f6f4ee` (content area) · `--color-surface`: `#ffffff` (cards)
 - `--color-text`: `#161513` · `--color-muted`: `color-mix()` blend of text + `#6f6a63`
-- `--color-accent-interactive`: `#c75a25` (burnt orange, links/buttons) · `--color-accent-atmosphere`: `#2f3a52` (dusty navy, decorative)
+- `--color-accent-interactive`: `#c75a25` (burnt orange, links/buttons) · `--color-accent-atmosphere`: `#2f3a52` (dusty navy, subheadings/blockquote borders/non-interactive)
 - `--color-border`: `color-mix()` of text at 12% opacity
 
 **Pattern:** Colors use `color-mix(in oklab, ...)` for derived values. Always reference CSS variables in components — never raw hex.
@@ -54,7 +56,7 @@ src/
 
 - `.astro` single-file components with typed `Props` interface
 - Heading fonts are set globally in `global.css`: `h1`–`h2` use `--font-headline` (Fraunces, expressive/display), `h3`–`h4` use `--font-ui` (Inter, structural/functional). Only add explicit font classes in Tailwind when overriding these defaults or applying heading fonts to non-heading elements.
-- `.prose` in `global.css` styles rendered MDX content — keeps only content-specific properties (sizing, spacing, element styles), inheriting font-family from global heading/body rules
+- `<Prose>` component (`src/components/Prose.astro`) wraps rendered MDX content and imports `src/styles/prose.css` — keeps only content-specific properties (sizing, spacing, element styles), inheriting font-family from global heading/body rules
 - `transition:name` attributes for View Transitions (`post-${slug}`, `post-title-${slug}`)
 - `max-w-3xl` with `mx-auto px-6` as the standard content width pattern
 
@@ -68,13 +70,13 @@ src/
 - **Tags** are display-ready in frontmatter (e.g. `"Site Build"`, `"MDX"`, `"AI"`). URL slugs are derived automatically via `toSlug()` in `src/lib/tags.ts`. An optional `tags` content collection (`src/content/tags/*.yaml`) can provide extra metadata (descriptions) for individual tags but is not required for basic tag usage.
 - Files prefixed with `_` are ignored by the content loader
 - Dates formatted `en-US`, long month (e.g., "January 15, 2025")
-- The `.prose` class in `global.css` styles rendered MDX content (headings, paragraphs, code blocks, links, etc.)
+- The `<Prose>` component (importing `prose.css`) styles rendered MDX content (headings, paragraphs, code blocks, links, etc.)
 
 ## Styling Rules
 
 1. Tailwind utility classes first
 2. Use CSS variables for colors/fonts (`var(--color-accent-interactive)`), never raw hex in components
-3. Scoped `<style>` with `:global()` when targeting slotted/rendered content
+3. For slotted/rendered content, import a plain CSS file (see `Prose.astro` + `prose.css` pattern) rather than using scoped `:global()`
 4. Check `global.css` `@theme` block before introducing new tokens — it may already exist
 
 ## Accessibility

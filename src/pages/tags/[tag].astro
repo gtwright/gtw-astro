@@ -37,38 +37,36 @@ const description = tagEntry?.data.description;
 ---
 
 <Base title={`Posts tagged "${displayName}"`} description={description ?? `All posts tagged "${displayName}" on ${SITE.title}.`}>
-  <div class="mx-auto max-w-3xl px-6 pt-16 pb-12">
-    <header class="mb-12">
-      <a
-        href="/tags"
-        class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
-      >
-        <span aria-hidden="true">&larr;</span>
-        <span>All Tags</span>
-      </a>
-      <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tight mb-4">
-        {displayName}
-      </h1>
-      {description && (
-        <p class="font-(family-name:--font-body) text-base text-(--color-muted) leading-relaxed mb-4">
-          {description}
-        </p>
-      )}
-      <p class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
-        {posts.length} {posts.length === 1 ? 'article' : 'articles'}
+  <header class="mb-12">
+    <a
+      href="/tags"
+      class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
+    >
+      <span aria-hidden="true">&larr;</span>
+      <span>All Tags</span>
+    </a>
+    <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tight mb-4">
+      {displayName}
+    </h1>
+    {description && (
+      <p class="font-(family-name:--font-body) text-base text-(--color-muted) leading-relaxed mb-4">
+        {description}
       </p>
-    </header>
+    )}
+    <p class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
+      {posts.length} {posts.length === 1 ? 'article' : 'articles'}
+    </p>
+  </header>
 
-    <div class="divide-y divide-(--color-border)">
-      {posts.map((post) => (
-        <PostCard
-          title={post.data.title}
-          description={post.data.description}
-          published={post.data.published}
-          slug={post.id}
-          tags={post.data.tags}
-        />
-      ))}
-    </div>
+  <div class="divide-y divide-(--color-border)">
+    {posts.map((post) => (
+      <PostCard
+        title={post.data.title}
+        description={post.data.description}
+        published={post.data.published}
+        slug={post.id}
+        tags={post.data.tags}
+      />
+    ))}
   </div>
 </Base>

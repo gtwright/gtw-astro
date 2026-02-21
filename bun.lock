@@ -12,6 +12,7 @@
         "@fontsource-variable/inter": "^5.2.8",
         "@fontsource-variable/source-serif-4": "^5.2.9",
         "@fontsource/jetbrains-mono": "^5.2.8",
+        "@iconify-json/lucide": "^1.2.92",
         "@iconify-json/simple-icons": "^1.2.70",
         "@tailwindcss/vite": "^4.1.18",
         "astro": "^6.0.0-beta.11",
@@ -161,6 +162,8 @@
     "@fontsource-variable/source-serif-4": ["@fontsource-variable/source-serif-4@5.2.9", "", {}, "sha512-PPcxjLFk/fS0WHg79pDM2YNvz61kC+oYZ5cWZZyCS0DHpJncmuYOuiZAsvj4tDxlWPBEvxxcRLQQNmSaRbPkqw=="],
 
     "@fontsource/jetbrains-mono": ["@fontsource/jetbrains-mono@5.2.8", "", {}, "sha512-6w8/SG4kqvIMu7xd7wt6x3idn1Qux3p9N62s6G3rfldOUYHpWcc2FKrqf+Vo44jRvqWj2oAtTHrZXEP23oSKwQ=="],
+
+    "@iconify-json/lucide": ["@iconify-json/lucide@1.2.92", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-+ghJelYoO/cfR6Kl/SKRJJZ+lONUUanC7w94Lh8gOZaSK92RBmLE+mojYrcVrLqjLnJO5KkryQxRcg3dLFPZww=="],
 
     "@iconify-json/simple-icons": ["@iconify-json/simple-icons@1.2.70", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-CYNRCgN6nBTjN4dNkrBCjHXNR2e4hQihdsZUs/afUNFOWLSYjfihca4EFN05rRvDk4Xoy2n8tym6IxBZmcn+Qg=="],
 

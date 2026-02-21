@@ -11,15 +11,15 @@ const year = new Date().getFullYear();
     </p>
     <nav aria-label="Footer" class="flex gap-4">
       {SOCIAL.map((link: { url: string; name: string; icon: string }) => (
-        <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.name} class="text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors">
+        <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.name} class="text-(--color-accent-atmosphere) hover:text-(--color-accent-interactive) transition-colors">
           <Icon name={link.icon} class="size-5" />
         </a>
       ))}
-      <a href="https://github.com/gtwright/gtw-astro" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors">
-        <Icon name="simple-icons:github" class="size-5" />
+      <a href="https://github.com/gtwright/gtw-astro" target="_blank" rel="noopener noreferrer" aria-label="Site source" class="text-(--color-accent-atmosphere) hover:text-(--color-accent-interactive) transition-colors">
+        <Icon name="lucide:code-xml" class="size-5" />
       </a>
-      <a href="/rss.xml" class="font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline transition-colors hover:text-(--color-accent-interactive)">
-        RSS
+      <a href="/rss.xml" aria-label="RSS feed" class="text-(--color-accent-atmosphere) hover:text-(--color-accent-interactive) transition-colors">
+        <Icon name="lucide:rss" class="size-5" />
       </a>
 
     </nav>

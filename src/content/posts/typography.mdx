@@ -1,9 +1,279 @@
 ---
-title: "Typography — Making Prose Look Right"
-description: "The Prose component, fine-tuned styles for every Markdown element, and using placeholder content as a stress test for typographic decisions."
+title: "Making Prose Look Right — Styling Markdown for Long-Form Content"
+description: "Making blog posts feel approachable rather than dense — line length, spacing, and the typographic hierarchy inside an Astro Prose component."
 published: 2026-03-01T12:00:00
-draft: true
 tags: ["Site Build", "Design", "Typography"]
 ---
 
-Part 6 of the Site Build series.
+*This is Part 6 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
+
+[Part 5](/posts/design-system) defined the design token system — fonts, colors, and the `@theme` block that gives components a shared vocabulary. But tokens don't style content. A blog post is rendered Markdown: headings, paragraphs, lists, blockquotes, code blocks, tables. Each of those elements needs intentional typographic treatment, and those styles need to live in one place so every post looks consistent without per-element classes.
+
+Good typography is invisible — the reader focuses on content, not on the mechanics of reading. That's the goal here: spacing, sizing, and hierarchy decisions that make a long article feel approachable rather than dense. For someone reading on a phone during a commute or on a laptop between meetings, the typography should reduce friction, not add to it.
+
+This post covers the `<Prose>` component and its underlying `prose.css` — the rules that turn raw Markdown output into readable long-form content.
+
+## The Prose component
+
+The prose styles need to target elements that Markdown renders — `h2`, `p`, `blockquote`, `pre` — inside a specific wrapper. In Astro, scoped styles don't apply to slotted content (the content projected into a `<slot />`). The scoping attributes that Astro adds during build only attach to elements in the component's own template, not to the HTML that fills its slot. So a `<Prose>` component with scoped styles targeting `.prose h2` wouldn't actually style the `<h2>` elements that Markdown produces.
+
+The solution is a thin component that imports a plain CSS file:
+
+```astro
+---
+// Prose.astro
+import '../styles/prose.css';
+---
+
+<div class="prose">
+  <slot />
+</div>
+```
+
+The styles live in `src/styles/prose.css` — a standalone file, separate from `global.css`. Because it's a regular CSS file (not scoped with Astro's `<style>` tag), the styles apply to any element with the matching selectors, including slotted content. The component handles the import and the wrapping `div`; the CSS file handles the typography.
+
+This keeps `global.css` focused on tokens and base element styles. The prose typography — which is only relevant where Markdown is rendered — loads through the component that actually uses it. Pages that don't render Markdown don't pay for those styles.
+
+```css
+/* prose.css */
+.prose {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  max-width: 65ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+```
+
+In the post template, I import and wrap the rendered content:
+
+```astro
+import Prose from '../../components/Prose.astro';
+
+<Prose>
+  <Content />
+</Prose>
+```
+
+With the component structure in place, the rest of this post walks through the typographic decisions inside `prose.css` — starting with the most fundamental one: how wide should a line of text be?
+
+## Line length: why 65 characters
+
+[Part 5](/posts/design-system) introduced the prose measure as a layout constraint — a `max-width: 65ch` that sits inside the `max-w-3xl` page container, centered with `margin-left: auto; margin-right: auto`. The container frames the full page; the prose centers and narrows the body text for reading — the same pattern you'll find on Medium or the New York Times. Here's why that specific value.
+
+Typographic convention puts the comfortable reading range at 45-75 characters per line. Shorter lines cause too many line breaks, making the eye jump constantly. Longer lines make it hard to track back to the start of the next line. 65 characters sits comfortably in the middle of that range.
+
+The `ch` unit is relative to the width of the "0" character in the current font. This means the measure adapts to the font — if the body font changes, the line length adjusts proportionally. It also means the measure is independent of the page's container width.
+
+## Font size and line height
+
+The base prose font size is `1.125rem` (18px at default browser settings). This is slightly larger than the typical browser default of 16px. For long-form reading on screens, 18px in Source Serif 4 hits the point where the text is large enough to read comfortably without feeling oversized. The rem unit means it respects the user's browser font size preference — someone who sets their default to 20px gets proportionally larger prose.
+
+Line height is `1.75` — generous by print standards, appropriate for screen reading. The extra vertical space between lines makes it easier to track across long lines and reduces the feeling of density that can make long articles feel like a wall of text. Combined with the 65ch measure, this gives the body text a relaxed, open feel.
+
+## Headings
+
+The base styles in `global.css` assign font families and colors to heading levels: Fraunces for h1/h2, Inter in dusty navy for h3/h4. The prose styles in `prose.css` build on that foundation with sizes, spacing, and variable font tuning.
+
+All prose headings share a tight line height (`1.15`) and a consistent spacing pattern — generous above, tight below:
+
+```css
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  line-height: 1.15;
+  margin-top: 2.5em;
+  margin-bottom: 0.5em;
+}
+```
+
+The large top margin creates a clear visual break before each new section — the reader sees white space and knows a new topic is starting. The small bottom margin keeps the heading connected to the content it introduces. This asymmetric spacing is more effective than centering the heading between equal margins, which would make it feel detached from both the preceding and following content.
+
+The `h1` inside prose resets its top margin to zero — it's always the first element, so top spacing would just be dead space above the article.
+
+### h1: the page title in Fraunces
+
+On blog posts, the page `h1` lives outside the `<Prose>` component (it's part of the post header). Its typographic character comes from a base style in `global.css` that fine-tunes Fraunces's variable axes:
+
+```css
+h1 {
+  font-variation-settings: "opsz" 104, "wght" 720, "SOFT" 50, "WONK" 1;
+}
+```
+
+This takes full advantage of what a variable font can do. `opsz: 104` sets the optical size for large display text — the letterforms are optimized for headlines, with sharper contrast and tighter fitting than at body sizes. `wght: 720` is heavier than bold but not black. `SOFT: 50` rounds the serif details slightly. `WONK: 1` activates Fraunces's distinctive asymmetric terminals — the subtle irregularity that keeps it from feeling stiff. These settings give the `h1` a specific typographic personality that comes from the font's design range, not from CSS tricks.
+
+### h2: section breaks
+
+```css
+.prose h2 {
+  font-size: 1.75rem;
+  font-variation-settings: "opsz" 48, "wght" 600, "SOFT" 50;
+}
+```
+
+The `h2` is the primary section divider in a blog post. It inherits Fraunces from the base heading styles and gets its own `font-variation-settings` — a smaller optical size than the `h1` (48 vs. 104), a lighter weight (600 vs. 720), and the same softness. This creates a clear hierarchy: the `h1` is bold and display-sized, the `h2` is present but doesn't compete with it.
+
+### h3 and h4: structural subheadings
+
+The `h3` and `h4` inherit Inter and the dusty navy accent (`--color-accent-atmosphere`) from the base styles. Inside prose, they get explicit sizes — `1.375rem` for `h3`, `1.125rem` for `h4` — but keep the sans-serif family and the navy color.
+
+The shift from serif (h1, h2) to sans-serif (h3, h4) is a deliberate hierarchy signal, reinforced by color: near-black for display headings, dusty navy for structural subheadings, warm grey for meta text. The reader doesn't need to compare font sizes to know that an `h3` is subordinate to an `h2` — the change in typeface and color communicates it immediately. It also keeps deeper heading levels from feeling like smaller versions of the same thing, which can flatten the visual hierarchy.
+
+## Paragraphs and vertical rhythm
+
+```css
+.prose p {
+  margin-top: 0;
+  margin-bottom: 1.5em;
+}
+```
+
+Paragraphs use bottom-margin-only spacing. This is a common pattern for maintaining consistent vertical rhythm — every block-level element pushes the next element down by a predictable amount, and no element adds space above itself. The `1.5em` bottom margin provides enough separation between paragraphs to signal a new thought without creating gaps that break the reading flow.
+
+The `em` unit ties the spacing to the prose font size. If the font size changes, the spacing scales with it. This keeps the proportional relationship between text and space consistent across different contexts.
+
+## Links
+
+```css
+.prose a {
+  color: var(--color-accent-interactive);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.15s;
+}
+
+.prose a:hover {
+  opacity: 0.8;
+}
+```
+
+Links use the burnt orange accent (`--color-accent-interactive`) and are underlined by default. I experimented with color-only links (no underline) early on — they looked cleaner, but links became invisible to anyone scanning quickly or unable to perceive color differences. The underline is the most reliable affordance, worth the visual weight. The `text-underline-offset: 2px` drops the underline slightly below the text baseline, preventing it from cutting through descenders (the tails of letters like g, p, y).
+
+The hover effect reduces opacity rather than changing the underline or color. This is a subtle interaction — the link dims slightly, acknowledging the hover without creating a jarring visual shift. The `0.15s` transition keeps it smooth.
+
+## Blockquotes
+
+```css
+.prose blockquote {
+  border-left: 3px solid var(--color-accent-atmosphere);
+  padding-left: 1.25em;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: var(--color-muted);
+}
+```
+
+Blockquotes use the dusty navy accent for the left border — the same non-interactive accent that colors subheadings. An earlier version used the burnt orange here, but that created confusion: readers expected the colored border to be clickable. Switching to the dusty navy keeps the burnt orange reserved for interactive elements while giving blockquotes an editorial feel. The text shifts to italic and the warm grey muted color, creating two layers of visual distinction from body text: the border signals "this is a quote," and the style change signals "this is someone else's words."
+
+The margins are zeroed so the blockquote aligns with the left edge of the prose column. The `padding-left` creates the inset from the border. This keeps quoted text within the same visual column as body text rather than indenting it further, which would narrow an already-constrained reading width.
+
+## Lists
+
+```css
+.prose ul, .prose ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.prose li {
+  margin-bottom: 0.5em;
+}
+
+.prose li > ul, .prose li > ol {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+}
+```
+
+Lists get `1.5em` of left padding — enough for the bullet or number to be visible without pushing the text too far from the left edge. Each list item gets `0.5em` of bottom margin, which spaces items enough to read as distinct points without feeling like separate paragraphs.
+
+Nested lists have their own rules: `0.5em` top margin to separate them from the parent item's text, and zero bottom margin to prevent double-spacing when the parent `li` already has bottom margin. Without these overrides, nested lists tend to accumulate excessive whitespace.
+
+## Code
+
+Code styling splits into two contexts: inline code within prose, and fenced code blocks.
+
+### Inline code
+
+```css
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background-color: var(--color-surface);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+}
+```
+
+Inline code uses JetBrains Mono at `0.875em` — slightly smaller than the surrounding text to account for monospace fonts appearing larger at the same nominal size (their fixed-width characters take up more horizontal space). The white surface background (`--color-surface`) creates a subtle pill that distinguishes code from the cream page background without interrupting the reading flow.
+
+### Code blocks
+
+```css
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  background-color: var(--color-text);
+  color: var(--color-bg);
+  padding: 1.25em 1.5em;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1.5em;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+```
+
+Code blocks invert the color scheme — near-black (`--color-text`) becomes the background, white (`--color-bg`) becomes the text. Light-on-dark against the cream page. This creates a strong visual break from prose that immediately signals "this is code" without needing a labeled header.
+
+The `pre code` reset is important: a `<pre>` element wraps a `<code>` element in Markdown's HTML output, and without this reset, the inline code styles (background, padding, border-radius) would apply inside the code block, creating double-styled text.
+
+The `overflow-x: auto` allows horizontal scrolling for long lines. Code blocks shouldn't wrap — the line structure of code is meaningful, and wrapping can obscure that structure. Horizontal scrolling preserves the original formatting.
+
+Line height drops to `1.6` — tighter than the `1.75` body text. Code benefits from slightly denser vertical spacing because the reader is scanning structure (indentation, brackets, keywords) rather than reading linearly.
+
+## Horizontal rules, images, and tables
+
+The remaining elements follow the same principles: consistent spacing, token-based colors, and styles that serve the content's purpose.
+
+**Horizontal rules** use a single `1px` top border in the border color — the text color at 12% opacity, barely visible but enough to mark a line — at `3em` vertical margin. They mark major thematic breaks. The extra spacing makes them feel like a pause in the narrative rather than a decorative line.
+
+**Images** are fluid (`max-width: 100%`, `height: auto`) with an `8px` border radius to match the code blocks and `2em` vertical margin to give them breathing room within the text flow.
+
+**Tables** are full-width with collapsed borders. Table headers use the UI font (Inter) in uppercase with wide letter spacing and the warm grey muted color — a visual treatment that distinguishes the header row from data rows without needing a background color. Cell borders are bottom-only in the same faint line as horizontal rules (`--color-border`), keeping the visual language consistent.
+
+```css
+.prose th {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+```
+
+## The style specimen
+
+The site includes a [Markdown & MDX Style Examples](/posts/style-examples) post that exercises every Markdown element: headings at all levels, paragraphs, emphasis, links, blockquotes, ordered and unordered lists with nesting, fenced code blocks in multiple languages, tables, images, horizontal rules, footnotes, and disclosure elements. It's a living typography specimen — any change to the `.prose` styles is immediately visible in this post.
+
+This isn't a hidden test page. It's a published post that serves a dual purpose: it's a reference for the design system (useful during development), and it demonstrates the full range of typographic treatments to anyone reading the site. If the prose styles handle this page well, they'll handle any blog post.
+
+The placeholder posts created during early development served a similar function at a different scale. Drafting a range of content — technical tutorials, personal essays, link roundups — exposed gaps in the prose styles that a single test post wouldn't have caught. Nested lists inside blockquotes, code blocks following headings, tables with long cell content — these edge cases only surface when you stress-test with varied content.
+
+## What we're deferring
+
+- **Copy-to-clipboard on code blocks** — a useful interaction for a technical blog, but it requires client-side JavaScript and a UI element (the copy button) that needs its own styling and positioning. That's a progressive enhancement, not a typography foundation.
+- **Syntax highlighting** — the current code blocks use inverted colors without language-specific highlighting. Adding a syntax theme is a visual enhancement that depends on choosing an integration (Shiki, Expressive Code, or similar) and configuring it for the site's color palette.
+- **Dark mode typography adjustments** — the inverted code blocks and muted colors will need different treatments in dark mode. That's a future pass.
+- **Print styles** — a print stylesheet would adjust font sizes, hide navigation, and ensure links are usable on paper. That's a future refinement.
+
+That covers the full `prose.css` file — every rule that governs how rendered Markdown looks on this site. The [style examples page](/posts/style-examples) exercises all of these elements in one place, serving as both a development reference and a living typography specimen.
+
+The [next post](/posts/seo-rss-sitemap) covers the invisible infrastructure — SEO metadata, the RSS feed, the sitemap, and robots.txt.

@@ -1,27 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
+import Prose from '../components/Prose.astro';
 ---
 
 <Base title="About" description="About the author and this site.">
-  <article class="mx-auto max-w-2xl px-6 pt-16 pb-12">
-    <div class="prose">
-      <p class="font-(family-name:--font-ui) uppercase tracking-widest text-(--color-muted) text-xs">About</p>
-      <h1>Graham Wright</h1>
-      <p>
-        I work in nonprofit and cultural orgs, helping teams use technology, creative, 
-        and communications systems in ways that support growth, deepen relationships with audiences, 
-        and strengthen mission impact. I’m interested in what actually helps institutions grow 
-        and serve people better.
-      </p>
-      <p>
-        I'm currently the Director of Content and Digital Services at the Boston Symphony Orchestra, 
-        an organization which also includes the Boston Pops, Tanglewood Music Festival, and Symphony Hall. 
-        I often describe my team as the BSO's internal creative and digital agency. 
-        Marketing is our largest focus, but we support every part of the institution—from artistic 
-        and education to fundraising and operations. Our work spans digital platforms and data, storytelling 
-        and brand identity, and operational systems and processes.
-
-      </p>
-    </div>
-  </article>
+  <Prose>
+    <p class="font-(family-name:--font-ui) uppercase tracking-widest text-(--color-muted) text-xs">About</p>
+    <h1>Graham Wright</h1>
+    <p>
+      I work in nonprofit and cultural orgs, helping teams use technology, creative,
+      and communications systems in ways that support growth, deepen relationships with audiences,
+      and strengthen mission impact. I'm interested in what actually helps institutions grow
+      and serve people better.
+    </p>
+    <p>
+      I'm currently the Director of Content and Digital Services at the Boston Symphony Orchestra,
+      an organization which also includes the Boston Pops, Tanglewood Music Festival, and Symphony Hall.
+      I often describe my team as the BSO's internal creative and digital agency.
+      Marketing is our largest focus, but we support every part of the institution—from artistic
+      and education to fundraising and operations. Our work spans digital platforms and data, storytelling
+      and brand identity, and operational systems and processes.
+    </p>
+  </Prose>
 </Base>

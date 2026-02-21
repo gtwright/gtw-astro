@@ -13,7 +13,7 @@ const posts = (await getCollection('posts', ({ data }) => {
   .slice(0, 3);
 ---
 
-<Base title="Home" description={SITE.description}>
+<Base title="Home" description={SITE.description} flush>
   <div class="relative isolate overflow-hidden">
     <div class="mx-auto max-w-3xl px-6 min-h-[calc(100svh-4.5rem)] py-10">
       <div class="min-h-[calc(100svh-4.5rem-5rem)] flex flex-col items-center justify-center w-full">
@@ -64,7 +64,7 @@ const posts = (await getCollection('posts', ({ data }) => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={link.name}
-              class="text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors"
+              class="text-(--color-accent-atmosphere) hover:text-(--color-accent-interactive) transition-colors"
             >
               <Icon name={link.icon} class="size-5" />
             </a>

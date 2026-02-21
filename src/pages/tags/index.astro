@@ -21,59 +21,57 @@ const tags = [...tagMap.entries()]
 ---
 
 <Base title="Tags" description={`All tags on ${SITE.title}.`}>
-  <div class="mx-auto max-w-3xl px-6 pt-16 pb-12">
-    <header class="mb-12">
-      <a
-        href="/posts"
-        class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
-      >
-        <span aria-hidden="true">&larr;</span>
-        <span>All Posts</span>
-      </a>
-      <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tight mb-4">
-        Tags
-      </h1>
-      <div class="flex items-center justify-between">
-        <p class="font-(family-name:--font-ui) text-sm text-(--color-muted) m-0">
-          {tags.length} {tags.length === 1 ? 'tag' : 'tags'}
-        </p>
-        <div role="group" aria-label="Sort tags" class="flex gap-1 font-(family-name:--font-ui) text-xs uppercase tracking-wide" id="sort-toggle">
-          <button
-            data-sort="count"
-            aria-pressed="true"
-            class="px-2 py-1 rounded transition-colors text-(--color-text) cursor-pointer bg-transparent border-0"
-          >
-            By count
-          </button>
-          <button
-            data-sort="alpha"
-            aria-pressed="false"
-            class="px-2 py-1 rounded transition-colors text-(--color-muted) hover:text-(--color-text) cursor-pointer bg-transparent border-0"
-          >
-            Alphabetical
-          </button>
-        </div>
+  <header class="mb-12">
+    <a
+      href="/posts"
+      class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
+    >
+      <span aria-hidden="true">&larr;</span>
+      <span>All Posts</span>
+    </a>
+    <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tight mb-4">
+      Tags
+    </h1>
+    <div class="flex items-center justify-between">
+      <p class="font-(family-name:--font-ui) text-sm text-(--color-muted) m-0">
+        {tags.length} {tags.length === 1 ? 'tag' : 'tags'}
+      </p>
+      <div role="group" aria-label="Sort tags" class="flex gap-1 font-(family-name:--font-ui) text-xs uppercase tracking-wide" id="sort-toggle">
+        <button
+          data-sort="count"
+          aria-pressed="true"
+          class="px-2 py-1 rounded transition-colors text-(--color-text) cursor-pointer bg-transparent border-0"
+        >
+          By count
+        </button>
+        <button
+          data-sort="alpha"
+          aria-pressed="false"
+          class="px-2 py-1 rounded transition-colors text-(--color-muted) hover:text-(--color-text) cursor-pointer bg-transparent border-0"
+        >
+          Alphabetical
+        </button>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <ul id="tag-list" class="list-none p-0 m-0 grid gap-2">
-      {tags.map(([tag, count]) => (
-        <li data-tag={tag} data-count={count}>
-          <a
-            href={toTagUrl(tag)}
-            class="flex items-center justify-between py-3 px-4 rounded-lg no-underline hover:bg-(--color-surface) transition-colors group"
-          >
-            <span class="font-(family-name:--font-ui) text-base tracking-wide text-(--color-text) group-hover:text-(--color-accent-interactive) transition-colors">
-              {tag}
-            </span>
-            <span class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
-              {count}
-            </span>
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
+  <ul id="tag-list" class="list-none p-0 m-0 grid gap-2">
+    {tags.map(([tag, count]) => (
+      <li data-tag={tag} data-count={count}>
+        <a
+          href={toTagUrl(tag)}
+          class="flex items-center justify-between py-3 px-4 rounded-lg no-underline hover:bg-(--color-surface) transition-colors group"
+        >
+          <span class="font-(family-name:--font-ui) text-base tracking-wide text-(--color-text) group-hover:text-(--color-accent-interactive) transition-colors">
+            {tag}
+          </span>
+          <span class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
+            {count}
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
 </Base>
 
 <script>

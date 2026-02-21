@@ -1,9 +1,251 @@
 ---
 title: "A Design System Before Any Design"
-description: "Tailwind v4's @theme directive, variable fonts, and color-mix() in oklab — building a design token system from a small set of base values."
+description: "Fonts, colors, layout, and icons — the visual foundation for a personal site, built with Tailwind v4 design tokens and variable fonts."
 published: 2026-02-26T12:00:00
-draft: true
 tags: ["Site Build", "Design", "Tailwind"]
 ---
 
-Part 5 of the Site Build series.
+*This is Part 5 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
+
+[Part 4](/posts/layout-navigation-bones) built the structural skeleton — a Base layout, header, footer, and semantic landmarks. Every page had the right document structure, but no visual identity. This post adds the design token system that gives the skeleton its skin: fonts, colors, and the rules that govern how they're used.
+
+The phrase "design system" might be overloaded for what's here. There's no component library, no Figma file, no Storybook. What there is: a single CSS file that defines every font family, color value, and derived variant the site uses, expressed as Tailwind v4 theme tokens. Components never reach for raw values — they reference tokens, and the tokens live in one place.
+
+## Why Tailwind CSS v4
+
+Tailwind v4 changed how configuration works. Previous versions used a JavaScript config file (`tailwind.config.js`) to define the theme. v4 moves configuration into CSS itself using the `@theme` directive — design tokens are CSS custom properties, defined where CSS lives, using CSS syntax.
+
+This matters for a few reasons. The tokens are standard CSS custom properties, so they're accessible to anything that reads CSS — not locked inside a JavaScript build tool. They compose naturally with CSS functions like `color-mix()` and `calc()`. And there's no separate config file to keep in sync with the stylesheet.
+
+The integration with Astro is a Vite plugin rather than a PostCSS plugin:
+
+```javascript
+// astro.config.mjs
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
+```
+
+One import in `global.css` activates the framework:
+
+```css
+@import "tailwindcss";
+```
+
+From there, everything is CSS-native. The `@theme` block defines the token vocabulary, and Tailwind generates utility classes from those tokens automatically.
+
+## Choosing fonts
+
+The site uses four font families, each with a distinct job:
+
+- **Fraunces** — headlines and the site mark. A variable serif with optical sizing, weight, softness, and "wonk" axes. It has personality without being decorative — the kind of face that signals editorial intent.
+- **Source Serif 4** — body text. A variable serif designed for long-form reading. Generous x-height, open counters, comfortable at small sizes. The goal was a body font that disappears — readable enough that the reader focuses on content, not typography.
+- **Inter** — UI elements, meta text, navigation. A variable sans-serif designed for screens. It handles small sizes, tight spacing, and functional text (dates, tag labels, button text) better than a serif would.
+- **JetBrains Mono** — code blocks and inline code. A monospace font with ligatures and clear character differentiation (1/l/I, 0/O). On a technical blog, code readability matters.
+
+Each of these families solves a problem the others can't. A single font covering headlines, body, UI, and code would mean compromises in at least two of those contexts. The risk with multiple families is visual incoherence — that's managed through the token system, where each font is assigned to specific contexts and never used outside them.
+
+### Self-hosting with Fontsource
+
+All four fonts are self-hosted via `@fontsource` packages rather than loaded from Google Fonts:
+
+```javascript
+// Base.astro frontmatter
+import '@fontsource-variable/fraunces/full.css';
+import '@fontsource-variable/source-serif-4';
+import '@fontsource-variable/inter';
+import '@fontsource/jetbrains-mono';
+```
+
+Self-hosting eliminates the external dependency on Google's CDN — no third-party requests, no privacy concerns about font loading analytics, no risk of a CDN outage affecting the site's appearance. The fonts ship as part of the build artifact. The tradeoff is a larger initial bundle, but for a static site served from Cloudflare's edge, that cost is negligible.
+
+The `-variable` packages include the full variable font file rather than individual static weights. This means a single file per family covers all weights and optical sizes, which is smaller than loading multiple static weight files and gives access to the full range of variation axes.
+
+Fraunces uses the `/full.css` import specifically because it needs access to the `SOFT` and `WONK` variation axes, which are only included in the full variable font file.
+
+## The @theme block
+
+The `@theme` directive in `global.css` defines every design token:
+
+```css
+@theme {
+  --font-headline: "Fraunces Variable", "Georgia", serif;
+  --font-body: "Source Serif 4 Variable", "Georgia", serif;
+  --font-ui: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* Surfaces */
+  --color-bg: #ffffff;
+  --color-main-bg: #f6f4ee;
+  --color-surface: #ffffff;
+
+  /* Typography */
+  --color-text: #161513;
+  --color-muted: color-mix(in oklab, var(--color-text) 55%, #6f6a63 45%);
+
+  /* Accents */
+  --color-accent-interactive: #c75a25;
+  --color-accent-atmosphere: #2f3a52;
+
+  /* Lines */
+  --color-border: color-mix(in oklab, var(--color-text) 12%, transparent);
+}
+```
+
+Because these are standard CSS custom properties, Tailwind generates utility classes from them automatically — `--font-headline` becomes `font-(family-name:--font-headline)`, `--color-accent-interactive` becomes `text-(--color-accent-interactive)`, and so on. The practical benefit: a new team member (or a future version of me) only needs to look at one `@theme` block to understand every visual value the site uses. Components never reach for raw hex — they reference tokens, and the tokens are the single source of truth.
+
+### Font stacks
+
+Each font family includes fallbacks that approximate the web font's metrics. Fraunces and Source Serif 4 fall back to Georgia (a system serif with similar proportions). Inter falls back to `system-ui` (the system's default sans-serif). JetBrains Mono falls back to Fira Code (another programming font likely to be installed on developers' machines). These aren't perfect matches, but they prevent jarring layout shifts if the web fonts fail to load.
+
+## The color palette
+
+The palette is deliberately small — five base colors that cover every use case. In organizations with limited design resources (most nonprofits I've worked with), a constrained palette is more valuable than a rich one. Fewer choices means fewer ways to drift off-brand, and anyone editing the site can stay consistent without consulting a style guide.
+
+**Surfaces:** Three values handle backgrounds. `--color-bg` is white for the header, footer, and page frame. `--color-main-bg` is a warm grey-cream (`#f6f4ee`) for the main content area — the slight warmth prevents the clinical feel of pure white. `--color-surface` is white for cards and panels, creating subtle contrast against the cream background.
+
+**Text:** `--color-text` is near-black (`#161513`) with a warm undertone. `--color-muted` is derived from the text color using `color-mix()` in the oklab color space — blending the text color with a warm grey to create a softer variant for secondary text, dates, and meta information.
+
+**Accents:** `--color-accent-interactive` is a burnt orange (`#c75a25`) used for links, hover states, and any interactive element. `--color-accent-atmosphere` is a dusty navy (`#2f3a52`) used for structural subheadings (h3, h4), blockquote borders, and the resting state of icon links (footer social icons, for example). It's the non-interactive accent — editorial weight that doesn't compete with the burnt orange's interactive signal. Icons transition from dusty navy at rest to burnt orange on hover, reinforcing the same two-accent vocabulary across text and UI.
+
+**Lines:** `--color-border` is the text color mixed to 12% opacity — visible enough to create structure, transparent enough to not compete with content.
+
+Here's the full palette:
+
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2em 0; font-family: var(--font-ui); font-size: 0.8rem;">
+  <div>
+    <div style="height: 4rem; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px;"></div>
+    <p style="margin: 0.5em 0 0; line-height: 1.4;"><strong>bg</strong><br/><span style="color: var(--color-muted);">#ffffff</span></p>
+  </div>
+  <div>
+    <div style="height: 4rem; background: var(--color-main-bg); border: 1px solid var(--color-border); border-radius: 6px;"></div>
+    <p style="margin: 0.5em 0 0; line-height: 1.4;"><strong>main-bg</strong><br/><span style="color: var(--color-muted);">#f6f4ee</span></p>
+  </div>
+  <div>
+    <div style="height: 4rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 6px;"></div>
+    <p style="margin: 0.5em 0 0; line-height: 1.4;"><strong>surface</strong><br/><span style="color: var(--color-muted);">#ffffff</span></p>
+  </div>
+  <div>
+    <div style="height: 4rem; background: var(--color-text); border-radius: 6px;"></div>
+    <p style="margin: 0.5em 0 0; line-height: 1.4;"><strong>text</strong><br/><span style="color: var(--color-muted);">#161513</span></p>
+  </div>
+  <div>
+    <div style="height: 4rem; background: var(--color-muted); border-radius: 6px;"></div>
+    <p style="margin: 0.5em 0 0; line-height: 1.4;"><strong>muted</strong><br/><span style="color: var(--color-muted);">derived</span></p>
+  </div>
+  <div>
+    <div style="height: 4rem; background: var(--color-accent-interactive); border-radius: 6px;"></div>
+    <p style="margin: 0.5em 0 0; line-height: 1.4;"><strong>accent-interactive</strong><br/><span style="color: var(--color-muted);">#c75a25</span></p>
+  </div>
+  <div>
+    <div style="height: 4rem; background: var(--color-accent-atmosphere); border-radius: 6px;"></div>
+    <p style="margin: 0.5em 0 0; line-height: 1.4;"><strong>accent-atmosphere</strong><br/><span style="color: var(--color-muted);">#2f3a52</span></p>
+  </div>
+  <div>
+    <div style="height: 4rem; background: var(--color-main-bg); border-radius: 6px; display: flex; align-items: center; padding: 0 0.75rem;"><div style="width: 100%; height: 1px; background: var(--color-border);"></div></div>
+    <p style="margin: 0.5em 0 0; line-height: 1.4;"><strong>border</strong><br/><span style="color: var(--color-muted);">derived</span></p>
+  </div>
+</div>
+
+### color-mix() in oklab
+
+Two of the derived colors use `color-mix()` in the oklab color space rather than defining additional hex values:
+
+```css
+--color-muted: color-mix(in oklab, var(--color-text) 55%, #6f6a63 45%);
+--color-border: color-mix(in oklab, var(--color-text) 12%, transparent);
+```
+
+The advantage of this approach: derived colors stay perceptually connected to their base values. If `--color-text` changes, `--color-muted` and `--color-border` shift proportionally. The oklab color space handles this blending more accurately than sRGB — it's perceptually uniform, meaning a 50% mix in oklab looks like a 50% mix to the human eye, which isn't true in sRGB.
+
+The practical benefit is a smaller palette to maintain. Instead of defining every shade as a separate hex value and hoping they look harmonious together, the palette defines a few anchor colors and derives the rest. When it's time for dark mode, the same `color-mix()` expressions can work with different base values.
+
+### Contrast verification
+
+Color choices weren't purely aesthetic — they were verified against WCAG 2.2 contrast requirements. The `--color-text` on `--color-main-bg` (near-black on cream) exceeds AAA contrast ratio. The `--color-muted` on `--color-main-bg` meets AA. The `--color-accent-interactive` on both white and cream backgrounds meets AA for normal text.
+
+Accessibility targets shaped the palette rather than constraining it after the fact. The burnt orange accent, for example, is darker than what a purely aesthetic choice might have produced — the lighter, brighter oranges that look striking in isolation fail contrast checks against light backgrounds.
+
+## Base styles
+
+Below the `@theme` block, `global.css` sets base styles that apply to every page:
+
+```css
+html {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  scrollbar-gutter: stable;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-accent-interactive) 20%, transparent);
+}
+```
+
+The body font is Source Serif 4 at the `html` level — everything inherits it unless overridden. The line height of 1.7 is generous enough for comfortable reading without feeling loose. `scrollbar-gutter: stable` reserves space for the scrollbar so content doesn't shift horizontally when navigating between pages that do and don't scroll.
+
+Text selection uses the burnt orange accent at 20% opacity — a subtle brand touch on an interaction most people don't notice but that feels considered when they do.
+
+The base styles also assign font families and colors to heading levels — Fraunces for h1/h2, Inter in dusty navy for h3/h4 — creating a typographic hierarchy before any page-specific styles. This is all that `global.css` handles: tokens and base element styles. The typography for rendered Markdown content lives in a separate `prose.css` file, loaded by a `<Prose>` component. [Part 6](/posts/typography) covers that system in detail.
+
+## Page layout
+
+The site uses two widths, each with a distinct purpose.
+
+The page container is `max-w-3xl` (48rem / 768px), centered with `mx-auto` and padded with `px-6`. The header, footer, blog listing, tag pages, post pages, and about page all share this frame. One width means every element on the site aligns to the same edges — the header nav, a post title, a tag list, and a pagination link all start and end at the same horizontal boundaries.
+
+The reading width is narrower. The `.prose` class sets `max-width: 65ch` — a typographic constraint, not a layout one. 65 characters sits in the middle of the 45-75 character range that typographers consider comfortable for sustained reading. On a blog post, the back link and pagination sit in the full `max-w-3xl` frame. The article content — header through body text — centers within `65ch`. This creates an editorial effect: the surrounding navigation is wider than the reading column, and the narrowing signals "now you're reading." [Part 6](/posts/typography) covers the full typographic reasoning.
+
+### The container lives in Base.astro
+
+Rather than repeating `mx-auto max-w-3xl px-6` on every page, the container is defined once in the `Base` layout:
+
+```astro
+<main id="main-content" class="flex-1 bg-main-bg">
+  <div class:list={[!flush && "mx-auto max-w-3xl px-6 pt-10 pb-12"]}>
+    <slot />
+  </div>
+</main>
+```
+
+The `flush` prop lets pages opt out of the default container when they need full-bleed control — the homepage hero and the waves experiment page use it. Every other page gets the standard container without thinking about it. The `bg-main-bg` stays on `<main>` so the warm cream background always spans the full viewport width, regardless of whether the content inside is constrained.
+
+### Vertical spacing
+
+Content pages use asymmetric vertical padding: `pt-10` (2.5rem) at the top, `pb-12` (3rem) at the bottom. The top padding creates enough breathing room between the header and the page content without pushing the first heading too far down the viewport. The smaller bottom padding feels natural because the footer provides its own visual boundary — the page doesn't need as much space to signal "this is the end."
+
+The header uses `py-4` (compact, functional) and the footer uses `py-8` (more generous, signaling a resting point). These values create a rhythm where the header and footer feel lighter than the content they frame.
+
+## Icons
+
+The site uses SVG icons from two Iconify sets via the `astro-icon` integration: Simple Icons for brand logos (GitHub, LinkedIn, Bluesky, Instagram) and Lucide for UI icons (RSS feed, source code). The `astro-icon` component renders SVGs inline — no icon font, no external sprite sheet, no client-side JavaScript.
+
+The social links are defined in `consts.ts` as an array of `{ name, icon, url }` objects, which the footer and homepage both map over. Adding a new social link means adding one object to the array — no template changes needed.
+
+```astro
+{SOCIAL.map((link) => (
+  <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.name}
+     class="text-(--color-accent-atmosphere) hover:text-(--color-accent-interactive) transition-colors">
+    <Icon name={link.icon} class="size-5" />
+  </a>
+))}
+```
+
+Icons follow the same two-accent color system as the rest of the site. At rest, they use the dusty navy atmosphere accent — present but not demanding attention. On hover, they shift to burnt orange, the interactive accent. This is the same pattern used for text links in navigation: the color change signals interactivity without relying on underlines or other affordances that would feel heavy at icon scale.
+
+The `size-5` class (1.25rem / 20px) keeps icons at a comfortable touch target without overwhelming the surrounding text. All icon links include `aria-label` for screen reader accessibility since the icons themselves carry no text content.
+
+## What we're deferring
+
+- **Dark mode** — the token structure is ready for it. `color-mix()` expressions will adapt to different base values, and `--color-accent-atmosphere` could potentially serve as a dark mode background. But dark mode needs its own contrast verification pass and visual testing.
+- **Responsive breakpoint tuning** — the current design works at all viewport widths without breakpoint-specific token adjustments. If font sizes or spacing need to shift at specific breakpoints, that's a refinement, not a foundation.
+- **Component-level design tokens** — tokens are currently global. If components need their own scoped tokens (a card's internal spacing, for example), those can be added without changing the global system.
+
+The whole system fits in two small CSS files: `global.css` for tokens and base element styles, `prose.css` for the typography rules that make rendered Markdown readable. The [next post](/posts/typography) covers that second file — the `<Prose>` component, the spacing and sizing decisions behind headings, lists, code blocks, and blockquotes. The [style examples page](/posts/style-examples) shows every element in action.

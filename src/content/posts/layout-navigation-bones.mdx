@@ -46,9 +46,9 @@ The `SOCIAL` array keeps each social profile's name, URL, and icon reference tog
 
 ## The Base layout
 
-`Base.astro` is the single HTML shell that every page inherits. It handles everything that should be consistent across the site: the `<html>` and `<head>` elements, font imports, global styles, SEO metadata, and the shared header/footer chrome.
+`Base.astro` is the single HTML shell that every page inherits. It handles everything that should be consistent across the site: the `<html>` and `<head>` elements, font imports, global styles, SEO metadata, and the shared header and footer.
 
-Some Astro projects split this into layers — a bare `Shell` layout for the HTML document and `<head>`, a `SiteLayout` that adds navigation chrome, maybe a `PostLayout` for article-specific structure. The benefit is that pages can opt into different levels of structure: a landing page or print view could use the shell without the header and footer. That separation makes sense when different pages need different shells. Here, every page uses the same structure, so a single layout avoids indirection without losing flexibility. If a second content type (projects, for example) or a chrome-free page appears, splitting the layout becomes a clear next step.
+Some Astro projects split this into layers — a bare `Shell` layout for the HTML document and `<head>`, a `SiteLayout` that adds navigation and shared UI, maybe a `PostLayout` for article-specific structure. The benefit is that pages can opt into different levels of structure: a landing page or print view could use the shell without the header and footer. That separation makes sense when different pages need different shells. Here, every page uses the same structure, so a single layout avoids indirection without losing flexibility. If a second content type (projects, for example) or a header-free page appears, splitting the layout becomes a clear next step.
 
 ```astro
 ---
@@ -230,7 +230,7 @@ The `article` flag tells the SEO component to generate `BlogPosting` structured 
 ## A few decisions to recap
 
 - **Structure before styling** — landmarks, heading hierarchy, and keyboard flow are in place before any visual design. Styling wraps around structure rather than compensating for its absence.
-- **A single layout** — every page inherits `Base.astro`. One place to change the head, the chrome, the shared behavior. Pages are lightweight consumers.
+- **A single layout** — every page inherits `Base.astro`. One place to change the head, the shared structure, the site-wide behavior. Pages are lightweight consumers.
 - **Minimal navigation** — two links plus a home mark. No hamburger menu, no JavaScript for navigation. The complexity isn't justified until the nav outgrows the space.
 - **Skip link as a first-class element** — the first focusable element in every document. WCAG 2.4.1, and one of the simplest accessibility wins to get right early.
 - **Constants as a single source of truth** — site title, description, author, and social links defined once in `consts.ts` and consumed everywhere.

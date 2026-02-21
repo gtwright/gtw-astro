@@ -18,9 +18,10 @@ interface Props {
   article?: boolean;
   publishedDate?: Date;
   updatedDate?: Date;
+  flush?: boolean;
 }
 
-const { title, description, image, article, publishedDate, updatedDate } = Astro.props;
+const { title, description, image, article, publishedDate, updatedDate, flush = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -51,7 +52,9 @@ const { title, description, image, article, publishedDate, updatedDate } = Astro
     </a>
     <Header />
     <main id="main-content" class="flex-1 bg-main-bg">
-      <slot />
+      <div class:list={[!flush && "mx-auto max-w-3xl px-6 pt-10 pb-12"]}>
+        <slot />
+      </div>
     </main>
     <Footer />
   </body>
