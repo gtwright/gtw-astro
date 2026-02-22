@@ -1,0 +1,21 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  credit?: string;
+  size?: 'standard' | 'wide' | 'full' | 'small';
+}
+
+const { src, alt, caption, credit, size = 'standard' } = Astro.props;
+---
+
+<figure class:list={[size !== 'standard' && size]}>
+  <img src={src} alt={alt} loading="lazy" decoding="async" />
+  {(caption || credit) && (
+    <figcaption>
+      {caption && <Fragment set:html={caption} />}
+      {credit && <span class="figure-credit"><Fragment set:html={credit} /></span>}
+    </figcaption>
+  )}
+</figure>
