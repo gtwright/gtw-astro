@@ -1,9 +1,282 @@
 ---
-title: "SEO, RSS, Sitemap, and robots.txt — The Invisible Features"
-description: "Meta tags, Open Graph, JSON-LD structured data, RSS feed, sitemap, and robots.txt. The features nobody sees that make the site a good citizen of the web."
-published: 2026-03-04T12:00:00
-draft: true
-tags: ["Site Build", "SEO", "RSS"]
+title: "The Invisible Features"
+description: "The parts of a site no visitor sees but search engines, feed readers, and social platforms depend on — structured data, syndication, and discoverability."
+published: 2026-03-05T12:00:00
+tags: ["Site Build", "SEO"]
 ---
 
-Part 7 of the Site Build series.
+*This is Part 7 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
+
+[Part 6](/posts/typography) covered the typographic details that make prose readable — spacing, sizing, and visual hierarchy inside the `<Prose>` component. That work is for human readers. This post is about the features that serve a different audience: search engines, feed readers, social platforms, and web crawlers.
+
+None of this is visible to someone reading a post. But when someone shares a link on Bluesky, the card that appears — title, description, image — is assembled from Open Graph tags. When Google indexes a blog post, the structured data tells it this is an article with a specific author and publication date. When someone subscribes to an RSS feed, they're relying on a machine-readable version of the content. These invisible features shape how the site participates in the broader web.
+
+For a personal site with no ad budget, I needed content to earn its own traffic through search visibility, social sharing, and syndication. Getting the metadata right early means every post published from now on benefits automatically.
+
+## The SEO component
+
+All of the site's meta tags, Open Graph properties, Twitter Card tags, and JSON-LD structured data live in a single component: `SEO.astro`. The Base layout renders it inside `<head>`, and every page passes its title and description through. Blog post pages additionally pass a `post` object carrying dates, image, and tags — one prop instead of threading each field individually.
+
+### The Props interface
+
+```typescript
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  post?: {
+    published: Date;
+    updated?: Date;
+    image?: string;
+    tags?: string[];
+  };
+}
+```
+
+Every page provides `title` and `description`. Only blog post pages provide `post`. The `image` prop at the top level is for non-post pages that want a specific OG image — the component resolves it with a fallback chain: explicit `image` prop, then `post.image`, then `/og-default.png`.
+
+```typescript
+const resolvedImage = image ?? post?.image ?? '/og-default.png';
+const imageURL = new URL(resolvedImage, Astro.site);
+const isArticle = !!post;
+```
+
+### Page titles and canonical URLs
+
+```typescript
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const pageTitle = title === 'Home'
+  ? `${SITE.title} | Home`
+  : `${title} | ${SITE.title}`;
+```
+
+The canonical URL strips query parameters and fragments — it's the pathname resolved against the site's base URL. The page title follows the `Page Title | Site Name` convention, with a special case for the home page. This is what appears in browser tabs and search results.
+
+### Meta tags and Open Graph
+
+The template section renders standard meta tags, Open Graph properties, and Twitter Card tags:
+
+```astro
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<meta name="author" content={SITE.author.name} />
+<link rel="canonical" href={canonicalURL.href} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={isArticle ? 'article' : 'website'} />
+<meta property="og:url" content={canonicalURL.href} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageURL.href} />
+<meta property="og:site_name" content={SITE.title} />
+<meta property="og:locale" content={SITE.language} />
+{post?.published && <meta property="article:published_time" content={post.published.toISOString()} />}
+{post?.updated && <meta property="article:modified_time" content={post.updated.toISOString()} />}
+{post && <meta property="article:author" content={SITE.author.url} />}
+{post?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL.href} />
+```
+
+A few things to note. The `og:type` switches between `article` and `website` based on whether a post was provided — this tells social platforms how to interpret the page. The `article:published_time` and `article:modified_time` tags only render on post pages, giving search engines the publication timeline. The `article:author` tag links to the author's URL, and `article:tag` emits one meta tag per post tag — both come naturally from the `post` object without additional props.
+
+The Twitter Card tags largely duplicate Open Graph. Twitter's crawler falls back to OG tags when its own aren't present, so strictly speaking the Twitter-specific tags are redundant. I keep them explicit because it costs nothing, and some validators and debugging tools check for them specifically.
+
+### Why one component
+
+Centralizing all meta in a single component means there's one place to audit, one place to update when standards change, and zero chance of pages accidentally omitting tags. If I later add `og:audio` or a new Schema.org type, it's one file. The alternative — scattering meta tags across individual page templates — creates drift: the home page has one set of tags, the blog listing has a slightly different set, and post pages have yet another. A single component makes consistency the default.
+
+## JSON-LD structured data
+
+Below the meta tags, the component renders JSON-LD structured data — machine-readable descriptions of the page content that search engines use for rich results.
+
+Every page gets a `WebSite` schema:
+
+```typescript
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.title,
+  url: Astro.site?.href,
+  description: SITE.description,
+  inLanguage: SITE.language,
+};
+```
+
+Blog posts additionally get a `BlogPosting` schema:
+
+```typescript
+const articleSchema = post ? {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  url: canonicalURL.href,
+  image: imageURL.href,
+  datePublished: post.published.toISOString(),
+  ...(post.updated ? { dateModified: post.updated.toISOString() } : {}),
+  author: {
+    '@type': 'Person',
+    name: SITE.author.name,
+    url: SITE.author.url,
+  },
+  publisher: {
+    '@type': 'Person',
+    name: SITE.author.name,
+    url: SITE.author.url,
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': canonicalURL.href,
+  },
+} : null;
+```
+
+The `author` and `publisher` are both typed as `Person` — accurate for a single-author personal blog. A multi-author publication would use `Organization` for the publisher. The `mainEntityOfPage` tells search engines that this blog post is the primary content of its URL, not a sidebar widget or embedded snippet.
+
+The schemas render as `<script>` tags with `is:inline` and `set:html`:
+
+```astro
+<script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+{articleSchema && (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+)}
+```
+
+The `is:inline` directive tells Astro to leave this script tag alone — don't bundle it, don't transform it, just emit it as-is. The `set:html` directive injects the stringified JSON as the script's content. Without `set:html`, Astro would try to escape the JSON, turning `"` into `&quot;` and breaking the structured data.
+
+## The RSS feed
+
+RSS is syndication — it lets people subscribe to the site in a feed reader without visiting directly. The feed is generated at build time by `rss.xml.ts`:
+
+```typescript
+import rss from '@astrojs/rss';
+import { getCollection } from 'astro:content';
+import type { APIContext } from 'astro';
+import { SITE } from '../consts';
+
+export async function GET(context: APIContext) {
+  if (!context.site) {
+    throw new Error('site is required in astro.config.mjs for RSS feed generation');
+  }
+
+  const posts = (await getCollection('posts'))
+    .filter((post) => !post.data.draft && post.data.published <= new Date())
+    .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+
+  return rss({
+    title: SITE.title,
+    description: SITE.description,
+    site: context.site,
+    items: posts.map((post) => ({
+      title: post.data.title,
+      description: post.data.description,
+      pubDate: post.data.published,
+      link: `/posts/${post.id}`,
+    })),
+  });
+}
+```
+
+The filtering logic mirrors the blog listing page — drafts and future-dated posts are excluded. The sort is reverse-chronological, newest first.
+
+I deliberately use `description` for each item rather than `content` (which would include the full rendered HTML). Description-only feeds are a deliberate choice: the feed entry tells you what the post is about and links you to it, rather than reproducing the full content in the reader. This keeps the feed lightweight and means the reading experience — typography, code blocks, layout — is what I intended, not whatever the feed reader interprets from raw HTML.
+
+The `@astrojs/rss` package handles the XML envelope, proper date formatting, and RSS 2.0 compliance. The site URL comes from `context.site`, which Astro populates from the `site` property in `astro.config.mjs`.
+
+For feed autodiscovery, Base.astro includes a `<link>` tag in the `<head>`:
+
+```astro
+<link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+```
+
+This tells feed readers and browser extensions that an RSS feed exists at `/rss.xml`. Without this tag, someone would need to guess the feed URL or find it linked somewhere on the page.
+
+## The sitemap
+
+The sitemap tells search engines which pages exist and are worth crawling. This site uses `@astrojs/sitemap`, which requires no configuration beyond adding it to the integrations array in `astro.config.mjs`:
+
+```javascript
+integrations: [mdx(), sitemap(), icon()],
+```
+
+At build time, the integration crawls the generated routes and produces a `sitemap-index.xml` and one or more `sitemap-*.xml` files. Every public page appears automatically — static pages, blog posts, tag pages. There's no manifest to maintain, no risk of forgetting to add a new page.
+
+Base.astro references the sitemap in `<head>`:
+
+```html
+<link rel="sitemap" href="/sitemap-index.xml" />
+```
+
+And the robots.txt file points crawlers to it (more on that next). This three-way connection — robots.txt references the sitemap, the sitemap lists the pages, the pages contain their own metadata — is how search engines discover and understand a site.
+
+## robots.txt
+
+The `robots.txt` file tells web crawlers what they're allowed to access. This site generates it dynamically from `robots.txt.ts`:
+
+```typescript
+import type { APIContext } from 'astro';
+import { SITE } from '../consts';
+
+export function GET(_context: APIContext) {
+  const sitemapURL = new URL('/sitemap-index.xml', SITE.url);
+
+  return new Response(
+    [
+      'User-agent: *',
+      'Allow: /',
+      '',
+      `Sitemap: ${sitemapURL.href}`,
+    ].join('\n'),
+    {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+      },
+    },
+  );
+}
+```
+
+Permissive by default: all user agents, allow everything. The sitemap URL is constructed from `SITE.url` rather than hardcoded, so if the domain changes, robots.txt updates automatically.
+
+Generating robots.txt dynamically instead of using a static file is a minor choice, but it means the sitemap URL stays in sync with the site configuration without manual coordination. One source of truth for the domain — `consts.ts` — and everything downstream references it.
+
+## How it all connects
+
+These features form a chain. A search engine visits `/robots.txt` first, finds the sitemap URL, crawls every page listed in the sitemap, and on each page finds meta tags, Open Graph properties, and JSON-LD structured data describing the content. A feed reader finds `/rss.xml` through the `<link rel="alternate">` tag and subscribes. A social platform fetches OG tags when someone shares a link.
+
+All of these systems pull their identity from the same place: `consts.ts`. The site title, description, author name, author URL, language, and base URL are defined once and flow through every component and endpoint. Changing the site's name means editing one line, and the RSS feed, structured data, OG tags, and robots.txt all update on the next build.
+
+```typescript
+export const SITE = {
+  title: 'Graham Wright',
+  description: 'A non-profit leader committed to learning, building, and sharing in public. ...',
+  language: 'en',
+  url: 'https://graham-wright.com',
+  author: {
+    name: 'Graham Wright',
+    url: 'https://graham-wright.com'
+  },
+} as const;
+```
+
+This isn't clever architecture — it's the kind of centralization that prevents the errors that come from maintaining the same string in six different files. The `as const` assertion makes every value a literal type, so TypeScript catches any reference to a property that doesn't exist.
+
+## The OG image question
+
+The site currently falls back to `/og-default.png` for every page. Per-post OG images — generated at build time with something like Satori, or designed manually — would make social shares more visually distinctive. Right now, every shared link produces the same card image.
+
+I'm deferring this intentionally. The infrastructure is in place: the SEO component's fallback chain already resolves `post.image` when it exists. The schema supports an `image` field in frontmatter. When per-post images are ready, they'll work without touching the SEO component. The plumbing is there; the content isn't yet.
+
+## What we're deferring
+
+- **Per-post OG images** — generated or manually designed social images for individual posts.
+- **Schema.org expansion** — `BreadcrumbList` for navigation trails, `FAQPage` for structured Q&A content. The current `WebSite` and `BlogPosting` schemas cover the essentials; additional types can be added as the content types warrant them.
+- **Analytics** — understanding which content performs well. That's its own post.
+
+The [next post](/posts/images) covers images — responsive sizing, modern formats, and the state of image handling in Astro 6 beta.

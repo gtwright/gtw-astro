@@ -5,22 +5,20 @@ interface Props {
   title: string;
   description: string;
   image?: string;
-  article?: boolean;
-  publishedDate?: Date;
-  updatedDate?: Date;
+  post?: {
+    published: Date;
+    updated?: Date;
+    image?: string;
+    tags?: string[];
+  };
 }
 
-const {
-  title,
-  description,
-  image = '/og-default.png',
-  article = false,
-  publishedDate,
-  updatedDate,
-} = Astro.props;
+const { title, description, image, post } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const imageURL = new URL(image, Astro.site);
+const resolvedImage = image ?? post?.image ?? '/og-default.png';
+const imageURL = new URL(resolvedImage, Astro.site);
+const isArticle = !!post;
 
 const pageTitle = title === 'Home'
   ? `${SITE.title} | Home`
@@ -37,15 +35,15 @@ const websiteSchema = {
 };
 
 // JSON-LD: BlogPosting (article pages)
-const articleSchema = article && publishedDate ? {
+const articleSchema = post ? {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: title,
   description,
   url: canonicalURL.href,
   image: imageURL.href,
-  datePublished: publishedDate.toISOString(),
-  ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
+  datePublished: post.published.toISOString(),
+  ...(post.updated ? { dateModified: post.updated.toISOString() } : {}),
   author: {
     '@type': 'Person',
     name: SITE.author.name,
@@ -69,15 +67,17 @@ const articleSchema = article && publishedDate ? {
 <link rel="canonical" href={canonicalURL.href} />
 
 <!-- Open Graph -->
-<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:type" content={isArticle ? 'article' : 'website'} />
 <meta property="og:url" content={canonicalURL.href} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={imageURL.href} />
 <meta property="og:site_name" content={SITE.title} />
 <meta property="og:locale" content={SITE.language} />
-{publishedDate && <meta property="article:published_time" content={publishedDate.toISOString()} />}
-{updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
+{post?.published && <meta property="article:published_time" content={post.published.toISOString()} />}
+{post?.updated && <meta property="article:modified_time" content={post.updated.toISOString()} />}
+{post && <meta property="article:author" content={SITE.author.url} />}
+{post?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
