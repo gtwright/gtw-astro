@@ -1,5 +1,6 @@
 ---
 import { SITE } from '../consts';
+import { AUTHOR } from '../lib/author';
 
 interface Props {
   title: string;
@@ -11,9 +12,10 @@ interface Props {
     image?: string;
     tags?: string[];
   };
+  person?: boolean;
 }
 
-const { title, description, image, post } = Astro.props;
+const { title, description, image, post, person = false } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const resolvedImage = image ?? post?.image ?? '/og-default.png';
@@ -24,6 +26,39 @@ const pageTitle = title === 'Home'
   ? `${SITE.title} | Home`
   : `${title} | ${SITE.title}`;
 
+const personId = `${SITE.url}/#person`;
+
+// JSON-LD: Person (about page only)
+const personSchema = !person ? null : {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': personId,
+  name: AUTHOR.name,
+  alternateName: AUTHOR.alternateName,
+  url: AUTHOR.url,
+  jobTitle: AUTHOR.jobTitle,
+  worksFor: {
+    '@type': 'Organization',
+    name: AUTHOR.worksFor.name,
+    url: AUTHOR.worksFor.url,
+  },
+  homeLocation: {
+    '@type': 'Place',
+    name: AUTHOR.location,
+  },
+  alumniOf: AUTHOR.alumniOf.map((school) => ({
+    '@type': 'EducationalOrganization',
+    name: school.name,
+    url: school.url,
+  })),
+  affiliation: AUTHOR.affiliations.map((org) => ({
+    '@type': 'Organization',
+    name: org.name,
+    url: org.url,
+  })),
+  sameAs: AUTHOR.sameAs,
+};
+
 // JSON-LD: WebSite (all pages)
 const websiteSchema = {
   '@context': 'https://schema.org',
@@ -32,6 +67,7 @@ const websiteSchema = {
   url: Astro.site?.href,
   description: SITE.description,
   inLanguage: SITE.language,
+  author: { '@id': personId },
 };
 
 // JSON-LD: BlogPosting (article pages)
@@ -44,16 +80,8 @@ const articleSchema = post ? {
   image: imageURL.href,
   datePublished: post.published.toISOString(),
   ...(post.updated ? { dateModified: post.updated.toISOString() } : {}),
-  author: {
-    '@type': 'Person',
-    name: SITE.author.name,
-    url: SITE.author.url,
-  },
-  publisher: {
-    '@type': 'Person',
-    name: SITE.author.name,
-    url: SITE.author.url,
-  },
+  author: { '@id': personId },
+  publisher: { '@id': personId },
   mainEntityOfPage: {
     '@type': 'WebPage',
     '@id': canonicalURL.href,
@@ -86,6 +114,9 @@ const articleSchema = post ? {
 <meta name="twitter:image" content={imageURL.href} />
 
 <!-- JSON-LD -->
+{personSchema && (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+)}
 <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
 {articleSchema && (
   <script is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />

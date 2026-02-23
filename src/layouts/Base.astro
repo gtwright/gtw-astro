@@ -17,9 +17,10 @@ interface Props {
   image?: string;
   post?: { published: Date; updated?: Date; image?: string; tags?: string[] };
   flush?: boolean;
+  person?: boolean;
 }
 
-const { title, description, image, post, flush = false } = Astro.props;
+const { title, description, image, post, flush = false, person = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -35,6 +36,7 @@ const { title, description, image, post, flush = false } = Astro.props;
       description={description}
       image={image}
       post={post}
+      person={person}
     />
     <PostHog />
     <ClientRouter fallback="animate"/>
