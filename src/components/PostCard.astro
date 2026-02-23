@@ -7,7 +7,7 @@ interface Props {
   published: Date;
   slug: string;
   tags?: string[];
-  draft?: boolean | "placeholder";
+  draft?: boolean;
 }
 
 const { title, description, published, slug, tags = [], draft } = Astro.props;
@@ -23,7 +23,7 @@ const formattedDate = published.toLocaleDateString('en-US', {
   <a href={`/posts/${slug}`} class="relative group no-underline block">
     {draft && (
       <span transition:name={`post-${slug}-draft`} class="absolute -left-20 top-[0.5lh] font-(family-name:--font-ui) text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-amber-400 text-amber-950 hidden lg:block">
-        {draft === "placeholder" ? "Placeholder" : "Draft"}
+        Draft
       </span>
     )}
     <h2
