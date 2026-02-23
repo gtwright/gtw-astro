@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 import type { InferGetStaticPropsType } from 'astro';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
@@ -42,73 +43,91 @@ const nextPost = allPosts[currentIndex - 1];
   title={post.data.title}
   description={post.data.description}
   post={post.data}
+  flush={true}
 >
-  <a
-    id="post-back-link"
-    href="/posts"
-    aria-label="Back to all posts"
-    class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
-  >
-    <span aria-hidden="true">←</span>
-    <span>Back</span>
-  </a>
+  <div class="pt-10 pb-12">
+    <div class="mx-auto max-w-3xl px-6 mb-6">
+      <a
+        id="post-back-link"
+        href="/posts"
+        aria-label="Back to all posts"
+        class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors"
+      >
+        <span aria-hidden="true">←</span>
+        <span>Back</span>
+      </a>
+    </div>
 
-  <article class="mx-auto max-w-[65ch]" transition:name={`post-${post.id}`}>
-    <header class="mb-10">
-      <div class="relative">
+    <div class="post-grid">
+      <article transition:name={`post-${post.id}`}>
+        <header class="col-[content] mb-10">
+          <div class="relative">
+            <h1
+              transition:name={`post-title-${post.id}`}
+              class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight mb-4"
+            >
+              {post.data.title}
+            </h1>
+            {post.data.draft && (
+              <span transition:name={`post-${post.id}-draft`} class="font-(family-name:--font-ui) text-xs font-bold uppercase tracking-widest px-2.5 mb-2 py-1 max-w-max rounded bg-amber-400 text-amber-950 hidden lg:block">
+                Draft
+              </span>
+            )}
+          </div>
+          <div class="flex items-center gap-3 font-(family-name:--font-ui) text-sm text-(--color-muted)">
+            <time datetime={post.data.published.toISOString()}>
+              {formattedDate}
+            </time>
+            {post.data.tags.length > 0 && (
+              <>
+                <span class="text-(--color-border)">·</span>
+                <div class="flex gap-2">
+                  {post.data.tags.map((tag) => (
+                    <a href={toTagUrl(tag)} class="tracking-wide text-xs no-underline hover:text-(--color-accent-interactive) transition-colors">{tag}</a>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </header>
 
-        <h1
-          transition:name={`post-title-${post.id}`}
-          class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight mb-4"
-        >
-          {post.data.title}
-        </h1>
-        {post.data.draft && (
-          <span transition:name={`post-${post.id}-draft`} class="font-(family-name:--font-ui) text-xs font-bold uppercase tracking-widest px-2.5 mb-2 py-1 max-w-max rounded bg-amber-400 text-amber-950 hidden lg:block">
-            {post.data.draft === "placeholder" ? "Placeholder" : "Draft"}
-          </span>
+        {post.data.image && (
+          <figure class="col-[wide] mb-10">
+            <img
+              src={post.data.image}
+              alt=""
+              loading="eager"
+              decoding="async"
+              class="w-full h-auto rounded-lg"
+            />
+          </figure>
         )}
-      </div>
-      <div class="flex items-center gap-3 font-(family-name:--font-ui) text-sm text-(--color-muted)">
-        <time datetime={post.data.published.toISOString()}>
-          {formattedDate}
-        </time>
-        {post.data.tags.length > 0 && (
-          <>
-            <span class="text-(--color-border)">·</span>
-            <div class="flex gap-2">
-              {post.data.tags.map((tag) => (
-                <a href={toTagUrl(tag)} class="tracking-wide text-xs no-underline hover:text-(--color-accent-interactive) transition-colors">{tag}</a>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    </header>
 
-    <Prose>
-      <Content />
-    </Prose>
-  </article>
+        <Prose>
+          <Content />
+        </Prose>
+      </article>
+    </div>
 
-  {(prevPost || nextPost) && (
-    <nav aria-label="Post pagination" class="mt-16 pt-8 border-t border-(--color-border) grid grid-cols-2 gap-8">
-      {prevPost ? (
-        <a href={`/posts/${prevPost.id}`} class="group no-underline">
-          <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Older</span>
-          <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
-            {prevPost.data.title}
-          </p>
-        </a>
-      ) : <div />}
-      {nextPost ? (
-        <a href={`/posts/${nextPost.id}`} class="group no-underline text-right">
-          <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Newer</span>
-          <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
-            {nextPost.data.title}
-          </p>
-        </a>
-      ) : <div />}
-    </nav>
-  )}
+    {(prevPost || nextPost) && (
+      <nav aria-label="Post pagination" class="mx-auto max-w-3xl px-6 mt-16 pt-8 border-t border-(--color-border) grid grid-cols-2 gap-8">
+        {prevPost ? (
+          <a href={`/posts/${prevPost.id}`} class="group no-underline">
+            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Older</span>
+            <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
+              {prevPost.data.title}
+            </p>
+          </a>
+        ) : <div />}
+        {nextPost ? (
+          <a href={`/posts/${nextPost.id}`} class="group no-underline text-right">
+            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Newer</span>
+            <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
+              {nextPost.data.title}
+            </p>
+          </a>
+        ) : <div />}
+      </nav>
+    )}
+  </div>
 </Base>
