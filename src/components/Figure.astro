@@ -1,17 +1,21 @@
 ---
+import { Image } from 'astro:assets';
+
 interface Props {
   src: string;
   alt: string;
   caption?: string;
   credit?: string;
   size?: 'standard' | 'wide' | 'full' | 'small';
+  width?: number;
+  height?: number;
 }
 
-const { src, alt, caption, credit, size = 'standard' } = Astro.props;
+const { src, alt, caption, credit, size = 'standard', width = 1200, height = 675 } = Astro.props;
 ---
 
 <figure class:list={[size !== 'standard' && size]}>
-  <img src={src} alt={alt} loading="lazy" decoding="async" />
+  <Image src={src} alt={alt} width={width} height={height} widths={[400, 800, 1200]} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px" loading="lazy" decoding="async" />
   {(caption || credit) && (
     <figcaption>
       {caption && <Fragment set:html={caption} />}

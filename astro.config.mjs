@@ -14,6 +14,9 @@ export default defineConfig({
   site: SITE.url,
   output: 'server',
   adapter: cloudflare(),
+  image: {
+    domains: ['picsum.photos'],
+  },
   integrations: [
     mdx(),
     sitemap({
