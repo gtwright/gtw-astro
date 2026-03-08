@@ -6,6 +6,9 @@ Raw ideas, observations, and topics that might become posts or series. No commit
 
 ## Series Candidates
 
+### AI in Practice
+How generative AI is actually being used at a performing arts nonprofit — portfolio management, operational workflows, vendor validation, and pipeline development. Two Tier 1 beats ready to draft: "Claude as Primary Work Surface" (AI as strategic coordination infrastructure) and "The Tedious Work That Matters Most" (AI removing operational drudgery). Outline: [`docs/series/ai-in-practice.md`](series/ai-in-practice.md)
+
 ### AWS AI Practitioner
 Preparing for the AWS AI Practitioner certification. Posts built around self-designed exercises that cement the curriculum — not just study notes, but applied practice that produces shareable artifacts.
 
@@ -27,7 +30,7 @@ Updating archives.bso.org. Modernizing the site, re-platforming the source data,
 - Per-post OG images — generated at build time
 - Comments/responses — webmentions, guestbook, or intentionally choosing none
 - Redirects and URL management on Cloudflare
-- AI-assisted development workflows — how Claude Code, Cursor, etc. change the way you build
+- AI-assisted development workflows — see AI in Practice series for the fuller version
 - Accessibility as ongoing practice, not a checklist
 - Analytics without surveillance — privacy-respecting measurement
 

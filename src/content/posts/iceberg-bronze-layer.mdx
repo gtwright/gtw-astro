@@ -1,0 +1,159 @@
+---
+published: 2026-02-26T12:00:00
+title: "Building an Iceberg Bronze Layer with DLT, Dagster, and AWS Glue"
+description: "Replacing a tightly coupled ingestion pipeline with Apache Iceberg on S3 — what worked, what broke, and the monkey-patch that saved the merge strategy."
+tags: ["Data Engineering", "Iceberg"]
+draft: true
+---
+
+*This is Part 1 of [Iceberg](/tags/iceberg), a series documenting a prototype migration from Snowflake-native ingestion to an open table format.*
+
+## The problem with the current pipeline
+
+<!--
+Context: BSO's production Dagster pipeline conflates three concerns into a single
+"partitioned asset": extraction window (how much data to pull from the API),
+storage partitioning (how data is organized on disk for query performance),
+and schedule (how often the job runs). These are fundamentally independent knobs
+that got welded together.
+
+Cover:
+- Brief intro to BSO's data stack (Dagster + DLT + dbt + Snowflake)
+- The partitioned asset pattern: one monthly partition = one API call = one schedule tick
+- Why this breaks down: can't independently tune API page sizes, query-optimized partitioning, and refresh frequency
+- No built-in monitoring: no freshness policies, no asset checks, no coverage tracking
+- The goal: decouple these concerns and move to an open table format
+-->
+
+## Why Iceberg
+
+<!--
+Cover:
+- Open table format vs. Snowflake-native stages: vendor independence, time travel, schema evolution
+- The specific appeal: Snowflake can read Iceberg tables via catalog integration — zero ETL into Snowflake
+- S3 as durable storage, Glue as catalog, Snowflake as compute — each layer replaceable
+- DLT already has Iceberg support via the filesystem destination
+- This is a prototype, not a rewrite — validate the architecture before committing
+-->
+
+## The architecture
+
+<!--
+Diagram or description of:
+  Tessitura API → DLT (filesystem destination) → S3 Parquet/Iceberg
+    → pyiceberg GlueCatalog.register_table() → AWS Glue
+    → Snowflake ICEBERG_REST catalog-linked database
+    → dbt reads from Iceberg external tables
+
+Key design decisions to explain:
+- Per-source Glue databases (tessitura, diese, craft) → Snowflake schemas
+- Catalog-linked database: one CREATE DATABASE auto-discovers all tables, 30s sync
+- Why not individual CREATE ICEBERG TABLE per table (40+ tables, doesn't scale)
+- DLT uses SQLite catalog internally; we register in Glue after each load
+-->
+
+## Decoupling the three concerns
+
+<!--
+The core design improvement. Show the TableConfig dataclass:
+- ExtractionConfig: strategy (FULL vs INCREMENTAL), rows_per_page, default_window
+- PartitionConfig: scheme (NONE vs MONTH), column
+- ScheduleConfig: cron, timezone, freshness_fail, freshness_warn
+
+Each is independently tunable. A table can:
+- Extract with 100k-row pages but store with monthly partitions
+- Run on a daily schedule but pull a 3-day rolling window
+- Have tight freshness SLAs (26h fail) or relaxed ones
+
+The asset factory: one function generates Dagster assets for any source,
+with the right extraction strategy, partitioning, schedule, freshness policy,
+and automation condition — all from config.
+-->
+
+## The merge problem nobody warns you about
+
+<!--
+This is the heart of the post. Tell the story chronologically:
+
+1. The setup: incremental tables need merge (upsert) to deduplicate by primary key
+2. DLT supports write_disposition="merge" with Iceberg — should Just Work
+3. First test: t_eaddress loads incrementally, looks good
+4. Second test: run the same table again — ValueError: "Target schema's field names
+   are not matching"
+5. The investigation: Tessitura stored procedures sometimes return different columns
+   between runs (hypothesis: omits all-NULL columns, not fully confirmed)
+6. Schema evolution should handle this — Iceberg's union_by_name is designed for it
+7. But pyiceberg's table.upsert() has a bug: after union_by_name() evolves the schema,
+   the DataScan inside the Transaction still resolves the OLD schema from snapshot metadata
+8. This is pyiceberg issues #2467 and #3105 — confirmed, unfixed as of 0.11.0
+9. It affects ALL catalogs (Glue, REST, SQLite) — not a Glue-specific problem
+-->
+
+## The fix: delete-insert via monkey-patch
+
+<!--
+Walk through the solution:
+
+1. Research phase: DLT OSS only supports upsert. DLT+ (paid) implements custom
+   delete-insert that avoids the bug. dagster-iceberg IO manager also hits the
+   same bug. Sling uses DuckDB's Iceberg extension (Glue writes still buggy).
+
+2. The approach: monkey-patch DLT's merge_iceberg_table() at module load time
+   - Schema evolution via union_by_name() still happens (this part works fine)
+   - Replace table.upsert() with table.overwrite(df, overwrite_filter=create_match_filter(...))
+   - Atomically deletes matching rows by primary key, then appends new data
+   - Avoids the broken DataScan code path entirely
+
+3. Show the code (simplified):
+   ```python
+   def _merge_via_delete_insert(table, data, schema, load_table_name):
+       with table.update_schema() as update:
+           update.union_by_name(data.schema)
+
+       join_cols = get_columns_names_with_prop(schema, "primary_key")
+       delete_filter = create_match_filter(data, join_cols)
+       table.overwrite(data, overwrite_filter=delete_filter)
+   ```
+
+4. Results:
+   - Incremental loads on Dagster Cloud: success
+   - Full backfill (1.3M rows merged into incrementally-created table): success
+   - Schema drift between runs: handled correctly
+-->
+
+## Monitoring without partitions
+
+<!--
+Brief section on what replaces the partition completeness view:
+- FreshnessPolicy.time_window() on every asset — Dagster daemon evaluates automatically
+- Asset checks: row_count > 0 after each materialization
+- Coverage checks: weekly scan of Iceberg table metadata for date range gaps
+- Iceberg metadata sensor: snapshot_count, data_file_count as observations
+-->
+
+## What's next
+
+<!--
+- Expanding beyond Tessitura: Diese (REST), Craft (CDC) — same factory, different sources
+- Compaction: small files accumulate with daily merges, need rewrite_data_files()
+- Performance tuning: Tessitura API concurrency, large table isolation
+- dbt integration: predicate pushdown, partition pruning validation
+- Production cutover: parallel deployment, table-by-table migration
+-->
+
+## The takeaway
+
+<!--
+Iceberg on S3 with DLT and Dagster works — but the tooling is young.
+pyiceberg's upsert is broken for any table with schema evolution, and that's
+a common real-world scenario. The workaround is straightforward once you
+understand the bug, but you won't find it in any tutorial.
+
+The architecture itself is sound: S3 for storage, Glue for catalog,
+Snowflake for compute. Each layer is independently replaceable. The config-driven
+factory makes adding tables trivial. And the open format means we're not locked
+into any single compute engine.
+
+For a small team, the prototype validates that this is worth pursuing —
+with eyes open about where the rough edges are.
+-->
