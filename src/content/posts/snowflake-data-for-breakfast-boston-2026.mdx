@@ -1,0 +1,319 @@
+---
+title: "Snowflake Data for Breakfast Boston 2026: Notes and Takeaways"
+description: "A practitioner's recap of Snowflake's half-day event in Boston — the three-pillar framework, a healthcare AI story built on 'just SQL,' Iceberg validation, and what it all means for a small data team."
+published: 2026-03-10T12:00:00
+draft: true
+tags: ["Modern Data Stack", "AI in Practice", "Conferences"]
+---
+
+<!--
+OUTLINE — ready to draft
+
+Angle: conference recap filtered through what resonated with me. Commentary is
+"here's why this landed" — a sentence or two per section, not a thesis. The event
+does the talking.
+
+Full session notes and source material: cos/conferences/snowflake/2026-data-for-breakfast-boston.md
+-->
+
+## What this was
+
+<!--
+- Snowflake Data for Breakfast, Westin Copley Place, Boston, March 10, 2026
+- Half-day event, theme "Making AI Real for Business"
+- Free, seminar-style — keynote, customer story, two breakouts, partner session
+- My context in one sentence: I run the data stack at a performing arts nonprofit on Snowflake
+-->
+
+## Keynote: the three-pillar framework
+
+<!--
+Speakers: Nick Pereira (Senior District Manager, Strategic Health & Life Sciences),
+Brendan Farley (Solutions Engineering, Enterprise)
+
+OPENING — AI urgency framing:
+- Pereira opened with a framing about our moment in time: "our little sliver of existence
+  aligns with one of the most disruptive technological advances the world may ever see"
+  (PULL QUOTE — may use)
+- Argued there will be no catching up if you fall behind — unlike previous technology waves,
+  the generational drop-off will be permanent
+- This resonates. We're making sure we have a strong position on AI at our organization.
+  Not because it's trendy, but because the cost of waiting is higher than the cost of learning.
+
+THREE PILLARS:
+1. Unified data foundation — structured, semi-structured, unstructured in one governed environment.
+   Iceberg/Delta interoperability means not all data needs to live in Snowflake natively.
+2. Business logic and context — semantic layer of rules, KPIs, business definitions. The "brain"
+   that turns generic AI into enterprise-specific AI. Without it, 95% of AI pilots fail (MIT).
+3. AI embedded in workflows — agents deployed where people already work (Slack, Teams, Streamlit,
+   CLI). ROI comes from embedding, not from standalone tools.
+
+STATS:
+- AI at maturity could generate $4.4T in added business value/year (McKinsey) — equivalent to
+  Japan's GDP
+- 88% of organizations struggling to scale AI (IDC)
+- 13,000+ Snowflake customers, approaching 70% using weekly
+- 2025: more features released than in Snowflake's first 13 years combined
+
+DEMOS:
+- Snowflake Intelligence: natural language querying across structured and unstructured data,
+  cross-domain (sales, marketing, HR, finance queryable from one agent), RBAC flowing through,
+  SQL visible and inspectable, charts configurable, conversation sharing (new). Available at
+  ai.snowflake.com — no need to log into Snowflake directly. Orchestration model selectable:
+  Claude, Gemini, others, or Auto mode.
+- Iceberg interoperability: connected to AWS Glue catalog, created external Iceberg tables.
+  Previous 4x performance penalty for external tables now eliminated — near-parity with native.
+  Governance (masking policies, tagging) works identically on Iceberg tables.
+  Dynamic tables on Iceberg with refresh as frequent as 60 seconds.
+- Cortex Code: Snowflake's native coding agent (comparable to Claude Code, Cursor). Available in
+  UI and CLI. Can build dbt projects, create Streamlit apps, do governance/data quality work,
+  explain existing queries.
+- Semantic views: native semantic object in Snowflake. Auto-generated from table metadata in
+  ~5-10 seconds. Can import from Tableau, Power BI, dbt semantic layers (interoperable).
+  Supports verified queries (pre-defined SQL for known question patterns). Monitoring for cost,
+  performance, accuracy.
+
+KEY DEMO FLOW: connect Iceberg data → build dynamic pipeline → create semantic view → add to
+agent → serve in Snowflake Intelligence. Claimed ~4-5 minutes end-to-end.
+
+SEMANTIC LAYER ACCURACY: showed a bar chart — dramatic accuracy improvement when AI queries run
+against a semantic layer vs. raw database. Green bars (raw) vs. blue bars (with semantic layer).
+This is the visual evidence for why Pillar 2 matters.
+
+My take (brief): the three-pillar framing resonated. Most orgs (mine included) have Pillar 1
+largely built. Pillar 2 — the semantic layer — is the actual gap. Pillar 3 gets all the
+attention but only works if Pillar 2 is solid.
+-->
+
+## Customer story: Agelon Health
+
+<!--
+Speaker: Alex (data/engineering lead at Agelon Health)
+
+The standout session of the morning.
+
+COMPANY CONTEXT:
+- Agelon works with primary care groups taking financial risk for Medicare patients
+- Revenue is per-capita (~$1,000/month/patient), risk-adjusted by CMS based on disease profile
+- If a patient has an undocumented condition, the provider isn't compensated for actual cost of care
+  AND the patient may not be receiving guideline-directed therapy
+- Total member base: 500,000-600,000
+
+USE CASE — undocumented diagnosis identification:
+- Heart failure example: stage B heart failure (asymptomatic) — patients don't have obvious symptoms
+  but structural abnormalities are visible on echocardiogram. If caught early and patient gets on
+  guideline-directed medical therapy, can extend life 7-10 years. Often missed because no single
+  specialist thinks to look for it.
+- Metastatic cancer example: oncologist codes "lung cancer" and "liver cancer" separately but
+  doesn't code the metastasis itself — no clinical reason to, but CMS needs it for risk adjustment.
+  A PET scan confirming spread is the diagnostic evidence.
+
+SCALE:
+- Pilot: 17,000 patients (Nov-Dec 2025), focused on metastatic cancer
+- Current: 120,000 patients/week in production
+- Target: all 500K-600K members across all covered diseases (heart failure, kidney disease,
+  diabetes, cancer)
+- Previously: offshore physician team reviewing charts at $5-10/chart
+
+ARCHITECTURE — all in Snowflake:
+- Data layer: claims, labs, electronic health records, tens of millions of clinical notes
+- Charter/summary AI: document processing, patient chart summarization
+- Clinical gate: 5-6 step prompt chain — one agent reads/summarizes, another validates
+  (grounding, accuracy, guideline compliance)
+- Output: structured "suspects" with evidence citations, presented to PCPs for review
+- Orchestration: Snowflake Tasks + dbt projects, deployed via Jenkins from Bitbucket
+- No vector database, no external infrastructure
+- "Just SQL all the way down" (PULL QUOTE — use)
+- "Our DevOps guy wants to get involved in this project, and I just keep telling him it's not
+  as sexy as you think." (PULL QUOTE — use)
+- "I'm just excited to work on something that just works." (on choosing Snowflake over AWS infra)
+
+WHY SNOWFLAKE FIRST:
+- They started experimenting in the AWS world — standing up RAG-based servers, vector databases.
+  Too many moving pieces, too much data movement.
+- Snowflake PS provided one engineer for 4-5 months to help get started. Data was already there.
+  They just needed to write prompts.
+- The advantage: no data movement, no infrastructure management, existing governance applies
+
+WHAT'S STILL OUTSIDE SNOWFLAKE:
+- OCR for scanned documents (7%+ of their documents aren't converted to text)
+- CI/CD: Jenkins deploying from Bitbucket
+- dbt projects in Snowflake are relatively new feature — they historically ran on Airflow
+
+MODEL SELECTION:
+- Abandoned fine-tuning after initial experiments — too much engineering overhead, models moving
+  too fast, couldn't keep up with frontier model improvements
+- Claude preferred over OpenAI for coherence and physician-facing output quality
+- Stepped down to Sonnet 4 for some steps, Llama 4 Maverick for largest summarization step
+  (1/10th the cost)
+- Snowflake's input/output token pricing split was significant for cost optimization
+- Key takeaway: "The models are moving too fast for fine-tuning." (USE — captures a decision
+  many teams are grappling with right now)
+
+COST TRAJECTORY:
+- Started at ~$10/patient chart
+- Current: under $1/patient
+- Three levers: (1) filtering irrelevant documents before processing, (2) model selection per
+  step, (3) Snowflake's differentiated token pricing
+
+EVALUATION:
+- LLM-as-judge for automated evaluation
+- Head-to-head comparison of outputs from different models
+- Human physician feedback loop — providers rating memo quality
+- Disease-specific criteria (echocardiogram evidence for heart failure, PET scan for metastasis)
+- Incoming provider feedback says these memos are better than both offshore physician reviews
+  and previous automated approaches
+
+BUSINESS IMPACT:
+- Pilot: ~$1M in revenue recovery from cancer patients alone
+- Single metastatic cancer patient = ~$1,000+/month in additional risk-adjusted revenue
+- Clinical impact: patients get guideline-directed therapy earlier
+- Replacing $5-10/chart offshore review with AI at <$1/chart
+
+My take (brief): this mirrors our own experience. We jumped into Snowflake because everything
+just worked — DLT loads, dbt transforms, the warehouse runs. Now as the system matures, we're
+thinking about where AWS capabilities complement Snowflake. Snowflake and AWS play nicely
+together, and that's a genuine advantage. We're not picking a lane — we're benefiting from two
+industry-leading partners. The discipline is in not also spreading into Azure, Google Cloud, and
+Databricks. Narrowing focus without narrowing to one.
+-->
+
+## Breakout: Modernize Your Data Estate
+
+<!--
+Speaker: Snowflake SE
+
+SILVER AI — migration solution:
+- Free, AI-powered, available through Professional Services
+- CEO goal: make migrations "a completely solved problem"
+- CarMax: 450 data pipelines, 80TB, 1,200 BI reports migrated in 18 months
+- AI handles code conversion, schema mapping, testing
+
+INTERACTIVE WAREHOUSES (new):
+- Always-on, optimized for high concurrency
+- Benchmark: 9x more queries/second vs. standard warehouses
+- P95 query time: ~0.15s (interactive) vs. ~1.5s (standard) under load testing
+- Tables explicitly added to interactive warehouse architecture
+- Use cases: real-time dashboards, supply chain, behavioral analytics, API backends, chatbots
+
+SEMANTIC VIEW AUTOPILOT:
+- Auto-generates semantic views from existing table metadata
+- Can import from Tableau, Looker, Power BI (Power BI coming soon)
+- Analyzes incoming queries and suggests semantic layer improvements
+- Average setup time: ~6 days → ~2 hours (96% reduction)
+
+HORIZON CATALOG:
+- Fully interoperable with Iceberg and Delta tables
+- Auto-discovery of data assets
+- Cortex Code can search through catalog via natural language
+
+My take (brief): interactive warehouses are for orgs with hundreds of concurrent dashboard
+users — not us today. The semantic view tooling is more immediately relevant. Anything that
+lowers the barrier to building and maintaining a semantic layer matters.
+-->
+
+## Breakout: Building Enterprise-Ready Data Agents
+
+<!--
+Speaker: Al Uber (Snowflake)
+
+CORE PROBLEM: data silos create a gap between business users asking questions and data teams
+preparing answers. Agents bridge that gap.
+
+SNOWFLAKE INTELLIGENCE — deeper dive:
+- Enterprise agent platform, not a chatbot
+- Each agent scoped to specific data, specific roles, specific instructions
+- Powered by: Cortex Analyst (structured) + Cortex Search (unstructured) + Cortex Agents
+- All major LLMs via single AI Gateway — no multi-vendor API management
+- RBAC, masking policies, role-level security all flow through
+- Custom branding: your logo, your instructions, your domain
+- Can consume Snowflake Marketplace data (zero-copy sharing)
+
+VERIFIED ANSWERS:
+- Semantic views enable "verified queries" — pre-defined SQL for known patterns
+- Highest-confidence answer type
+
+HALLUCINATION PREVENTION:
+- Demo: asked about product "lavender field" that doesn't exist in data
+- Agent ran SQL, got no results, said "I cannot find customer data for lavender field"
+- Did not fabricate — grounded in actual query results
+
+CORTEX CODE FOR DATA TEAMS:
+- CLI and UI access
+- Skills system: pre-built + custom instructions
+- Can create semantic views, apply governance tags, optimize queries, identify Dynamic Table
+  opportunities
+- Data discovery: natural language search across catalog
+- PII detection: point at table, identify and tag sensitive columns, generate masking policies
+- Changes via Cortex Code immediately reflect in Intelligence agents (same platform)
+
+DEEP RESEARCH MODE:
+- Extended analysis across multiple sources
+- Can connect tables without common keys by reasoning about relationships
+- Programmatic trend identification and chart generation
+
+EVALUATION/OBSERVABILITY:
+- Track all interactions, SQL generated, tools called
+- Benchmark accuracy across versions
+- Thumbs up/down feedback feeds improvement
+- Can set deployment criteria before promoting agent versions
+
+FANATICS (revisited): 2B daily signals, 175M fans, hundreds of attributes. Built agent on
+Snowflake Intelligence in ~2 months.
+
+My take (brief): the governance story is underappreciated. Security and access controls flowing
+through to agent responses is what makes this enterprise-grade. The Cortex Code demo for data
+governance was particularly practical.
+-->
+
+## Partner session: Blue Cloud (partial)
+
+<!--
+Speakers: Abhi, Rami Karthik (Director of AI/ML), Brent Lavier, Keith Randall
+
+- Consulting partner moving from staff augmentation to outcome-based delivery
+- Pre-built accelerators to shorten engagements (months → weeks)
+- Advisory services for AI governance
+- Customer examples: global law firm (40+ reports → 12 dashboards), HVAC manufacturer
+  (multi-year supply chain transformation, phased approach)
+- Left mid-session — did not see Workforce Intelligence app demo
+-->
+
+## What I'm taking away
+
+<!--
+Keep this tight — bullets, not paragraphs.
+
+- The AI urgency framing is real. This isn't hype cycle — the cost of waiting is compounding.
+  We're making sure we have a strong position, not because it's trendy but because the
+  alternative is falling behind permanently.
+- The three-pillar framework is a useful lens. Pillar 1 is built. Pillar 2 is the work.
+  Pillar 3 is where the organizational value lives, but it depends on Pillar 2.
+- The semantic layer is the unsexy, essential work. No one demos it at a conference. But
+  every impressive demo today was powered by one.
+- The Iceberg interoperability demo validates the open-format architecture we've been building.
+  Near-parity performance, full governance support. We're on the right path.
+- Model selection matters more than model loyalty — Agelon's 10x cost reduction came from
+  matching the right model to each step, not optimizing one model.
+- Snowflake and AWS are complementary partners. We benefit from two industry-leading platforms
+  that play well together. The discipline is narrowing focus without narrowing to one.
+- Snowflake is moving fast — more features in 2025 than in their first 13 years.
+
+SCALE RELATIVITY / ROI THEME (weave in, possibly in intro or closing):
+- At a performing arts conference, we're one of the largest orgs in the room. At a Snowflake
+  or AWS event, we're dwarfed. WHOOP is processing millions of data points per second from
+  wearables. Fanatics has 2B daily signals. We have very few tables with more than a million
+  rows, and only a handful pushing into eight or nine figures (behavioral analytics). The
+  entirety of our data estate might be what some of the orgs in the room are generating in
+  minutes or hours.
+- But the questions are the same regardless of scale: where does the ROI justify the engineering
+  investment? How much do you build yourself vs. use something that just works? Where are you
+  willing to make trade-offs for simplicity, and where do you need full control?
+- It's not as simple as "Snowflake = trade-off, AWS = full power." For many of our workloads,
+  Snowflake delivers everything we need and more — it's not a compromise. But the question of
+  ROI vs. total cost of ownership is universal. There's no org size where it suddenly makes sense
+  to build everything yourself with raw infrastructure. Every org is making that calculation,
+  just at different scales.
+- Snowflake's messaging ("no organization too big or too small, no use case too big or too small")
+  lands differently when you're actually living it as a smaller player in the room.
+-->
