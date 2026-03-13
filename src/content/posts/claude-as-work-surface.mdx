@@ -1,0 +1,140 @@
+---
+title: "Claude as Primary Work Surface"
+description: "How Claude Code became the primary interface for managing a portfolio of projects at the Boston Symphony — not because of coding, but because of strategic coordination."
+published: 2026-03-07T12:00:00
+draft: true
+tags: ["AI in Practice"]
+---
+
+*This is part of [AI in Practice](/tags/ai-in-practice), a series about how generative AI is actually being used at a performing arts nonprofit.*
+
+<!--
+NOTE: This is likely 2-3 posts once drafted. The outline below covers the full scope.
+Natural split points are marked. The first post should probably cover "the portfolio problem"
+and "why files + git + AI" — establishing the context and the core idea. Subsequent posts
+can go deeper on the scheduled rituals and the operational details.
+-->
+
+## The portfolio problem
+
+<!--
+Set the scene without disclosing sensitive budget or project details:
+- One person responsible for a large portfolio of technology projects spanning
+  data infrastructure, CRM, analytics, content platforms, vendor relationships
+- The traditional tools (Jira, Asana, spreadsheets, Notion) don't match how the work actually flows
+- The problem isn't task management — it's synthesis across interdependent projects
+  with different timelines, stakeholders, and technical domains
+- What breaks: context switching between tools, losing the thread between meetings,
+  institutional knowledge trapped in someone's head or scattered across systems
+- This isn't a startup flex — it's a resource-constrained nonprofit where one person
+  covers ground that larger orgs spread across a team
+
+Keep this relatable. Many readers manage complex portfolios with inadequate tools.
+The BSO context makes it specific; the frustration is universal.
+-->
+
+## Why "files + git + AI" works better than a dashboard
+
+<!--
+The core thesis:
+- Project state lives in structured files (YAML frontmatter + markdown) in git repos
+- Projects linked to strategic pillars, domains, contracts, vendors through references
+- Version control gives you history, diffability, and accountability for free
+- AI (Claude Code) can read, synthesize, and reason across the full project landscape
+  in a way that no dashboard or Kanban board supports
+- The tradeoffs are honest: you lose notifications, dashboards, and team collaboration features.
+  You gain total ownership, AI-native access, and a system that works the way you think.
+
+Don't enumerate every file or schema. Show the pattern, not the inventory.
+A brief code sample of what a project file looks like (YAML frontmatter + status/notes)
+would ground the concept.
+
+The key insight: this approach works because AI can synthesize across dozens of files
+instantly — something that's impractical for a human scanning a file system but trivial
+for an LLM with filesystem access.
+-->
+
+## The three surfaces
+
+<!--
+How the work actually flows across different Claude interfaces:
+- Claude Code: deep work sessions — analysis, writing, code, file management.
+  This is the primary surface. Long context, filesystem access, tool use.
+- Claude Desktop / Cowork: scheduled rituals — morning brief, end-of-day log.
+  Structured prompts that run on a schedule and produce consistent output.
+- Claude Mobile: capture — quick notes, voice memos, ideas that need to land
+  somewhere before they're lost.
+
+Each surface has a distinct role. The system works because they're complementary,
+not because any single one is sufficient.
+
+Don't go deep on the scheduled rituals here if this becomes a multi-post split —
+that's the natural topic for post 2.
+-->
+
+--- POTENTIAL SPLIT POINT: Posts 2-3 below ---
+
+## The scheduled rituals
+
+<!--
+The operational rhythm built on top of the file system:
+- Morning brief: runs early, pulls from multiple data sources, produces a structured
+  summary of what changed overnight and what needs attention today
+- End-of-day log: scans project repos, synthesizes the day's work, captures decisions
+  and open questions
+- SoT baseline: change tracking across source systems (connects to the "Tedious Work" post)
+
+What the prompts look like (simplified). What the output actually contains.
+What broke during iteration — be honest about the rough edges.
+Whether this changes how you work — does having a structured daily brief
+actually improve decision-making, or is it just comforting?
+
+This section is rich enough for its own post. Keep it to a preview here if
+this outline becomes the first post only.
+-->
+
+## Git as the planning system
+
+<!--
+Deeper dive on the mechanics:
+- Hub-spoke architecture: a central coordination repo + domain-specific repos
+- Project files with structured frontmatter: status, priority, domain, dependencies
+- Budgets and roadmaps as derived views, not separate artifacts
+- The daily synthesis: AI scans across repos and produces a coherent picture
+  of the portfolio — something a human can't practically do across 7+ repos every day
+- Version history as institutional memory: every decision, status change, and
+  priority shift is in the git log
+
+Show enough structure to be credible without exposing sensitive organizational details.
+A sanitized example of the frontmatter schema would help.
+-->
+
+## What this doesn't solve
+
+<!--
+Honest limitations:
+- Single-player system — this doesn't scale to a team without significant adaptation
+- No real-time collaboration — git is async by nature
+- Requires comfort with the command line and a mental model of how files and repos work
+- The AI is a synthesizer, not a decision-maker — it surfaces patterns and connections,
+  but judgment is still entirely human
+- Bus factor of one: if the person maintaining this system leaves, the system leaves too
+  (mitigated somewhat by everything being in version-controlled text files, but still real)
+
+This section is important. The approach is genuinely useful but genuinely limited.
+Don't undersell the limitations to make the concept sound more impressive.
+-->
+
+## What I'm watching
+
+<!--
+Brief forward look:
+- How this approach evolves as Claude's capabilities change (longer context, better tool use,
+  multi-modal inputs)
+- Whether any of this transfers to team contexts — or whether it's fundamentally a solo practice
+- The tension between a bespoke system and the convenience of purpose-built tools
+- Other posts in this series will go deeper on specific aspects: the scheduled rituals,
+  the SoT system, the vendor validation workflow
+
+Keep short. End with what's real, not what's speculative.
+-->
