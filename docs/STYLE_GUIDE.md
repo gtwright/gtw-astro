@@ -36,13 +36,13 @@ Assume detailed execution follow-up will come from delivery teams.  Personal exp
 
 ## Target Audience
 
-Three overlapping audiences, all grounded in nonprofit cultural organizations (especially performing arts) with potential relevance to mission-driven orgs more broadly:
+Three overlapping audiences centered on the **CTO / CDO / CIO peer**. The register should name the tools and approaches (so builders have waypoints) while framing in terms of value extraction (so adjacent executives see the point). Not tutorials. But if you describe a project without mentioning the tools, you've gone too high.
 
-1. **Closest peers** — CTOs, CIOs, Chief Digital Officers, and similar executives in nonprofit cultural orgs. The relationship is mutual: can they learn from what I've done, and can I learn from them? These readers engage with both strategy and implementation.
+1. **Center: Closest peers** — CTOs, CIOs, Chief Digital Officers, and similar executives in nonprofit cultural orgs. The relationship is mutual: can they learn from what I've done, and can I learn from them? These readers engage with both strategy and implementation. They are the primary audience for every post.
 
-2. **Adjacent executives** — CEOs, CFOs, CMOs, COOs in nonprofit cultural orgs who are interested in the impact of digital, data, and technology work in their domains. They may also be recruiting for roles like mine. These readers care about outcomes, tradeoffs, and organizational implications more than implementation details.
+2. **Inner ring: Adjacent executives** — CEOs, CFOs, CMOs, COOs in nonprofit cultural orgs who are interested in the impact of digital, data, and technology work in their domains. They may also be recruiting for roles like mine. These readers care about outcomes, tradeoffs, and organizational implications more than implementation details. They should see the value even if they skip the technical specifics.
 
-3. **Hands-on builders** — Technical practitioners in nonprofit and cultural orgs working with data warehouses, ecommerce platforms, digital products, and similar projects. These readers want to see how decisions were made and how things were built in real operating conditions.
+3. **Outer ring: Hands-on builders** — Technical practitioners in nonprofit and cultural orgs working with data warehouses, ecommerce platforms, digital products, and similar projects. These readers want to see how decisions were made and how things were built in real operating conditions. Provide enough specificity that they can follow the thread.
 
 All three audiences share a context: resource constraints, mission accountability, and the tension between ambition and capacity that defines work in mission-driven organizations.
 
