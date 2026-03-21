@@ -1,10 +1,11 @@
 ---
 export const prerender = true;
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import { SITE } from '../../consts';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import { toSlug } from '../../lib/tags';
+import { resolveAuthor } from '../../lib/authors';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => {
@@ -35,6 +36,14 @@ export async function getStaticPaths() {
 const { displayName, slug, posts } = Astro.props;
 const tagEntry = await getEntry('tags', slug);
 const description = tagEntry?.data.description;
+
+const postsWithMeta = await Promise.all(
+  posts.map(async (post: any) => {
+    const { remarkPluginFrontmatter } = await render(post);
+    const author = await resolveAuthor(post.data.author);
+    return { post, readingTime: remarkPluginFrontmatter.readingTime as string, author };
+  })
+);
 ---
 
 <Base title={`Posts tagged "${displayName}"`} description={description ?? `All posts tagged "${displayName}" on ${SITE.title}.`}>
@@ -60,13 +69,16 @@ const description = tagEntry?.data.description;
   </header>
 
   <div class="divide-y divide-(--color-border)">
-    {posts.map((post) => (
+    {postsWithMeta.map(({ post, readingTime, author }) => (
       <PostCard
         title={post.data.title}
         description={post.data.description}
         published={post.data.published}
         slug={post.id}
         tags={post.data.tags}
+        readingTime={readingTime}
+        updated={post.data.updated}
+        author={author}
       />
     ))}
   </div>

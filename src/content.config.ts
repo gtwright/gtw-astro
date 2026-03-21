@@ -10,6 +10,7 @@ const posts = defineCollection({
     published: z.coerce.date(),
     updated: z.coerce.date().optional(),
     draft: z.boolean().default(false),
+    author: z.string().default('Graham Wright'),
     tags: z.array(z.string()).default([]),
     image: z.string().optional(),
   }),
@@ -22,4 +23,13 @@ const tags = defineCollection({
   }),
 });
 
-export const collections = { posts, tags };
+const authors = defineCollection({
+  loader: glob({ pattern: '*.yaml', base: './src/content/authors' }),
+  schema: z.object({
+    name: z.string(),
+    url: z.string().default(''),
+    bio: z.string().optional(),
+  }),
+});
+
+export const collections = { posts, tags, authors };

@@ -1,6 +1,7 @@
 ---
 import { SITE } from '../consts';
 import { AUTHOR } from '../lib/author';
+import type { PostAuthor } from '../lib/authors';
 
 interface Props {
   title: string;
@@ -11,6 +12,9 @@ interface Props {
     updated?: Date;
     image?: string;
     tags?: string[];
+    readingTimeMinutes?: number;
+    wordCount?: number;
+    author?: PostAuthor;
   };
   person?: boolean;
 }
@@ -71,6 +75,11 @@ const websiteSchema = {
 };
 
 // JSON-LD: BlogPosting (article pages)
+const postAuthor = post?.author;
+const articleAuthorSchema = postAuthor?.isSiteAuthor !== false
+  ? { '@id': personId }
+  : { '@type': 'Person' as const, name: postAuthor.name, ...(postAuthor.url ? { url: postAuthor.url } : {}) };
+
 const articleSchema = post ? {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -80,12 +89,26 @@ const articleSchema = post ? {
   image: imageURL.href,
   datePublished: post.published.toISOString(),
   ...(post.updated ? { dateModified: post.updated.toISOString() } : {}),
-  author: { '@id': personId },
+  ...(post.wordCount ? { wordCount: post.wordCount } : {}),
+  ...(post.readingTimeMinutes ? { timeRequired: `PT${post.readingTimeMinutes}M` } : {}),
+  ...(post.tags?.length ? { keywords: post.tags.join(', ') } : {}),
+  author: articleAuthorSchema,
   publisher: { '@id': personId },
   mainEntityOfPage: {
     '@type': 'WebPage',
     '@id': canonicalURL.href,
   },
+} : null;
+
+// JSON-LD: BreadcrumbList (article pages)
+const breadcrumbSchema = post ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Posts', item: `${SITE.url}/posts` },
+    { '@type': 'ListItem', position: 3, name: title },
+  ],
 } : null;
 ---
 
@@ -106,6 +129,7 @@ const articleSchema = post ? {
 {post?.updated && <meta property="article:modified_time" content={post.updated.toISOString()} />}
 {post && <meta property="article:author" content={SITE.author.url} />}
 {post?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+{post?.tags?.[0] && <meta property="article:section" content={post.tags[0]} />}
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -120,4 +144,7 @@ const articleSchema = post ? {
 <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
 {articleSchema && (
   <script is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+)}
+{breadcrumbSchema && (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 )}

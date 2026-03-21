@@ -1,0 +1,62 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  type?: 'info' | 'tip' | 'warning' | 'note';
+  title?: string;
+}
+
+const { type = 'note', title } = Astro.props;
+
+const config = {
+  info: { icon: 'lucide:info', label: 'Info' },
+  tip: { icon: 'lucide:lightbulb', label: 'Tip' },
+  warning: { icon: 'lucide:triangle-alert', label: 'Warning' },
+  note: { icon: 'lucide:pencil', label: 'Note' },
+} as const;
+
+const { icon, label } = config[type];
+const displayTitle = title ?? label;
+---
+
+<aside class={`callout callout-${type}`} role="note">
+  <p class="callout-title">
+    <Icon name={icon} size={18} aria-hidden="true" />
+    <strong>{displayTitle}</strong>
+  </p>
+  <div class="callout-body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .callout {
+    border-left: 3px solid var(--callout-color);
+    background: color-mix(in oklab, var(--callout-color) 8%, var(--color-surface));
+    padding: 1rem 1.25rem;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 1.5em;
+  }
+
+  .callout-info { --callout-color: var(--color-accent-atmosphere); }
+  .callout-tip { --callout-color: #2d8a56; }
+  .callout-warning { --callout-color: #c7861f; }
+  .callout-note { --callout-color: var(--color-muted); }
+
+  .callout-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--callout-color);
+    margin: 0 0 0.5rem;
+  }
+
+  .callout-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

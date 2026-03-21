@@ -1,15 +1,24 @@
 ---
 export const prerender = true;
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import { SITE } from '../../consts';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
+import { resolveAuthor } from '../../lib/authors';
 
 const posts = (await getCollection('posts', ({ data }) => {
     if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
     return true;
   }))
   .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+
+const postsWithMeta = await Promise.all(
+  posts.map(async (post) => {
+    const { remarkPluginFrontmatter } = await render(post);
+    const author = await resolveAuthor(post.data.author);
+    return { post, readingTime: remarkPluginFrontmatter.readingTime as string, author };
+  })
+);
 ---
 
 <Base title="Blog" description={`All posts from ${SITE.title}.`}>
@@ -23,7 +32,7 @@ const posts = (await getCollection('posts', ({ data }) => {
   </header>
 
   <div class="divide-y divide-(--color-border)">
-    {posts.map((post) => (
+    {postsWithMeta.map(({ post, readingTime, author }) => (
       <PostCard
         title={post.data.title}
         description={post.data.description}
@@ -31,6 +40,9 @@ const posts = (await getCollection('posts', ({ data }) => {
         slug={post.id}
         tags={post.data.tags}
         draft={post.data.draft}
+        readingTime={readingTime}
+        updated={post.data.updated}
+        author={author}
       />
     ))}
   </div>

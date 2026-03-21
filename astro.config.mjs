@@ -7,6 +7,7 @@ import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
 import { SITE } from './src/consts';
 import { buildLastmodMap } from './src/lib/sitemap';
+import { remarkReadingTime } from './src/lib/reading-time';
 
 const lastmodDates = buildLastmodMap(SITE.url);
 
@@ -16,6 +17,9 @@ export default defineConfig({
   adapter: cloudflare(),
   image: {
     domains: ['picsum.photos'],
+  },
+  markdown: {
+    remarkPlugins: [remarkReadingTime],
   },
   integrations: [
     mdx(),
