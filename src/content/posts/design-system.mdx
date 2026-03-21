@@ -2,12 +2,10 @@
 title: "A Design System Before Any Design"
 description: "Fonts, colors, layout, and icons — the visual foundation for a personal site, built with Tailwind v4 design tokens and variable fonts."
 published: 2026-02-21T12:00:00
-tags: ["Site Build", "Design", "Tailwind"]
+tags: ["Web Development", "Design", "Tailwind"]
 ---
 
-*This is Part 5 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
-
-[Part 4](/posts/layout-navigation-bones) built the structural skeleton — a Base layout, header, footer, and semantic landmarks. Every page had the right document structure, but no visual identity. This post adds the design token system that gives the skeleton its skin: fonts, colors, and the rules that govern how they're used.
+The [layout and navigation post](/posts/layout-navigation-bones) built the structural skeleton — a Base layout, header, footer, and semantic landmarks. Every page had the right document structure, but no visual identity. This post adds the design token system that gives the skeleton its skin: fonts, colors, and the rules that govern how they're used.
 
 The phrase "design system" might be overloaded for what's here. There's no component library, no Figma file, no Storybook. What there is: a single CSS file that defines every font family, color value, and derived variant the site uses, expressed as Tailwind v4 theme tokens. Components never reach for raw values — they reference tokens, and the tokens live in one place.
 
@@ -193,7 +191,7 @@ The body font is Source Serif 4 at the `html` level — everything inherits it u
 
 Text selection uses the burnt orange accent at 20% opacity — a subtle brand touch on an interaction most people don't notice but that feels considered when they do.
 
-The base styles also assign font families and colors to heading levels — Fraunces for h1/h2, Inter in dusty navy for h3/h4 — creating a typographic hierarchy before any page-specific styles. This is all that `global.css` handles: tokens and base element styles. The typography for rendered Markdown content lives in a separate `prose.css` file, loaded by a `<Prose>` component. [Part 6](/posts/typography) covers that system in detail.
+The base styles also assign font families and colors to heading levels — Fraunces for h1/h2, Inter in dusty navy for h3/h4 — creating a typographic hierarchy before any page-specific styles. This is all that `global.css` handles: tokens and base element styles. The typography for rendered Markdown content lives in a separate `prose.css` file, loaded by a `<Prose>` component. the [typography post](/posts/typography) covers that system in detail.
 
 ## Page layout
 
@@ -201,7 +199,7 @@ The site uses two widths, each with a distinct purpose.
 
 The page container is `max-w-3xl` (48rem / 768px), centered with `mx-auto` and padded with `px-6`. The header, footer, blog listing, tag pages, post pages, and about page all share this frame. One width means every element on the site aligns to the same edges — the header nav, a post title, a tag list, and a pagination link all start and end at the same horizontal boundaries.
 
-The reading width is narrower. The `.prose` class sets `max-width: 65ch` — a typographic constraint, not a layout one. 65 characters sits in the middle of the 45-75 character range that typographers consider comfortable for sustained reading. On a blog post, the back link and pagination sit in the full `max-w-3xl` frame. The article content — header through body text — centers within `65ch`. This creates an editorial effect: the surrounding navigation is wider than the reading column, and the narrowing signals "now you're reading." [Part 6](/posts/typography) covers the full typographic reasoning.
+The reading width is narrower. The `.prose` class sets `max-width: 65ch` — a typographic constraint, not a layout one. 65 characters sits in the middle of the 45-75 character range that typographers consider comfortable for sustained reading. On a blog post, the back link and pagination sit in the full `max-w-3xl` frame. The article content — header through body text — centers within `65ch`. This creates an editorial effect: the surrounding navigation is wider than the reading column, and the narrowing signals "now you're reading." the [typography post](/posts/typography) covers the full typographic reasoning.
 
 ### The container lives in Base.astro
 

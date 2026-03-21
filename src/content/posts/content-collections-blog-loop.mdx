@@ -2,15 +2,13 @@
 description: Defining a content schema, setting up MDX, building the blog listing and dynamic post routes. Why content comes before styling.
 published: 2026-02-20T12:00:00
 tags:
-- Site Build
+- Web Development
 - Astro
 - MDX
 title: Content Collections and the Blog Loop
 ---
 
-*This is Part 3 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
-
-[Part 2](/posts/setting-up-the-workshop) set up the documentation that shapes every AI-assisted session. Now it's time to build something that actually produces pages — the content system and the routes that display it.
+With [project documentation](/posts/setting-up-the-workshop) in place, it was time to build something that actually produces pages — the content system and the routes that display it.
 
 I deliberately built this before touching layout, navigation, or styling. A blog needs something to look at before there's any point deciding how it looks. The content schema defines what information each post carries. The routes define how that content becomes pages. Everything visual comes after.
 
@@ -46,7 +44,7 @@ Here's the reasoning behind the intial schema:
 - **`title`** and **`description`** — required. The description serves double duty as the meta description for SEO and the excerpt on listing pages. I might differentiate between the preview description on listing pages and SEO/social description at a later date. This is good enough for now.
 - **`published`** — required. Drives sort order and display. Using `z.coerce.date()` rather than `z.date()` because frontmatter dates are strings, not native Date objects.
 - **`updated`** — optional. Signals when a post has been revised. Feeds into the SEO component's `article:modified_time` meta tag.
-- **`tags`** — defaults to an empty array. Display-ready strings in frontmatter (e.g., `"Site Build"`, `"Astro"`), with URL slugs derived at render time. This avoids storing duplicate representations.
+- **`tags`** — defaults to an empty array. Display-ready strings in frontmatter (e.g., `"Web Development"`, `"Astro"`), with URL slugs derived at render time. This avoids storing duplicate representations.
 - **`image`** — optional. For a future Open Graph image per post. The field exists in the schema now so I don't have to migrate frontmatter later.
 - **`draft`** — a boolean, defaulting to `false`. Worth its own section.
 
@@ -152,7 +150,7 @@ const { Content } = await render(post);
 <Content />
 ```
 
-`getStaticPaths` tells Astro which pages to generate at build time — one per post, with the post data passed as props. The `render` function turns the MDX content into a component that can be placed directly in the template. Styling the rendered output comes later — [Part 6](/posts/typography) covers the typographic details.
+`getStaticPaths` tells Astro which pages to generate at build time — one per post, with the post data passed as props. The `render` function turns the MDX content into a component that can be placed directly in the template. Styling the rendered output comes later — the [typography post](/posts/typography) covers the typographic details.
 
 The route also builds prev/next navigation by finding the current post's position in the sorted list:
 

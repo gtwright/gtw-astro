@@ -3,14 +3,12 @@ title: "Images — Responsive, Modern, and Good Enough for Now"
 description: "CSS Grid breakout layout for Medium-style image sizing, a Figure component for captions and lazy loading, and the decision to defer optimization until the content demands it."
 published: 2026-03-07T12:00:00
 draft: true
-tags: ["Site Build", "Astro", "Images"]
+tags: ["Web Development", "Astro", "Images"]
 ---
 
 import Figure from '../../components/Figure.astro';
 
-*This is Part 8 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
-
-[Part 7](/posts/seo-rss-sitemap) covered the invisible features — SEO metadata, RSS, the sitemap, and `robots.txt`. That work serves machines: crawlers, feed readers, social platforms. Images are the opposite — they're the most immediately visible element on a page, and the easiest to get wrong.
+The [SEO and syndication post](/posts/seo-rss-sitemap) covered the invisible features — SEO metadata, RSS, the sitemap, and `robots.txt`. That work serves machines: crawlers, feed readers, social platforms. Images are the opposite — they're the most immediately visible element on a page, and the easiest to get wrong.
 
 But this is a text-first blog. Most posts are long-form writing with code samples. Images are occasional illustrations, not the primary content. That shapes the decision: get the layout right, keep optimization simple, and revisit when the content demands it.
 
@@ -250,7 +248,7 @@ const resolvedImage = image ?? post?.image ?? '/og-default.png';
 const imageURL = new URL(resolvedImage, Astro.site);
 ```
 
-An explicit image prop takes priority, then the post's frontmatter image, then a site-wide default. This is documented in [Part 7](/posts/seo-rss-sitemap).
+An explicit image prop takes priority, then the post's frontmatter image, then a site-wide default. This is documented in the [SEO post](/posts/seo-rss-sitemap).
 
 ## Alt text as a requirement
 

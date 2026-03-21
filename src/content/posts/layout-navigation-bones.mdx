@@ -2,14 +2,12 @@
 title: "Layout, Navigation, and the Bones of Every Page"
 description: "Why heading hierarchy, landmarks, and keyboard flow get attention first. Building Astro's Base layout as a structural foundation."
 published: 2026-02-23T12:00:00
-tags: ["Site Build", "Astro", "Accessibility"]
+tags: ["Web Development", "Astro", "Accessibility"]
 ---
 
-*This is Part 4 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
+The [content collections post](/posts/content-collections-blog-loop) built the content system — a schema, a blog listing, and routes that turn posts into pages. But every page rendered its content into a bare HTML document. No shared header, no footer, no navigation, no consistent structure.
 
-[Part 3](/posts/content-collections-blog-loop) built the content system — a schema, a blog listing, and routes that turn posts into pages. But every page rendered its content into a bare HTML document. No shared header, no footer, no navigation, no consistent structure.
-
-This post covers the structural skeleton: the `Base.astro` layout that wraps every page, the header and footer components, and the constants file that keeps site-wide values in one place. None of this is visually designed yet — styling comes in [Part 5](/posts/design-system). The goal here is getting the document structure and navigation landmarks right, because those decisions are harder to retrofit than visual design.
+This post covers the structural skeleton: the `Base.astro` layout that wraps every page, the header and footer components, and the constants file that keeps site-wide values in one place. None of this is visually designed yet — styling comes in the [design system post](/posts/design-system). The goal here is getting the document structure and navigation landmarks right, because those decisions are harder to retrofit than visual design.
 
 ## Why structure comes before styling
 
@@ -98,15 +96,15 @@ const { title, description, image, article, publishedDate, updatedDate } = Astro
 </html>
 ```
 
-The Props interface declares what each page must provide. Every page needs a `title` and `description`. Article-specific pages (blog posts) pass additional metadata — `publishedDate`, `updatedDate`, and `image` — that flows through the SEO component into Open Graph and JSON-LD tags. The SEO component itself is covered in [Part 7](/posts/seo-rss-sitemap).
+The Props interface declares what each page must provide. Every page needs a `title` and `description`. Article-specific pages (blog posts) pass additional metadata — `publishedDate`, `updatedDate`, and `image` — that flows through the SEO component into Open Graph and JSON-LD tags. The SEO component itself is covered in the [SEO post](/posts/seo-rss-sitemap).
 
 The layout is currently a pass-through for metadata that only blog posts use. Four of the six props exist solely for the SEO component — the layout knowing too much about one content type. It works at this scale, but if the site grows to include projects or other content types with their own metadata, the Props interface would keep expanding. I expect to revisit this when building the SEO component — likely by giving pages more direct control over what goes in the `<head>` rather than threading everything through layout props.
 
 The `<html lang>` attribute comes from `SITE.language`. It tells browsers and screen readers what language the content is in — important for pronunciation, text-to-speech, and search engine indexing.
 
-The `<head>` includes discovery links: a sitemap for search engines, an RSS feed for syndication, and a favicon. These are wired up early so they're present from the first deploy, even before the SEO and feed implementations are fully fleshed out. The RSS feed and sitemap are covered in [Part 7](/posts/seo-rss-sitemap).
+The `<head>` includes discovery links: a sitemap for search engines, an RSS feed for syndication, and a favicon. These are wired up early so they're present from the first deploy, even before the SEO and feed implementations are fully fleshed out. The RSS feed and sitemap are covered in the [SEO post](/posts/seo-rss-sitemap).
 
-Font imports also live at the top of the layout file — the site uses `@fontsource` packages for self-hosted variable fonts. The font choices and why self-hosting matters are covered in [Part 5](/posts/design-system).
+Font imports also live at the top of the layout file — the site uses `@fontsource` packages for self-hosted variable fonts. The font choices and why self-hosting matters are covered in the [design system post](/posts/design-system).
 
 ## The document structure
 
@@ -158,7 +156,7 @@ The nav links are defined as data rather than hardcoded HTML. This is a minor st
 
 The site mark is "GW" in the headline font, linking to the home page. A full-name wordmark would compete with nav links on mobile viewports — two letters at the headline font weight is distinctive enough without crowding the bar.
 
-The header becomes sticky once styling is applied in [Part 5](/posts/design-system) — locking to the top of the viewport on scroll so the navigation is always reachable. That decision affects content spacing and scroll behavior, so it's worth noting here even though the CSS comes later.
+The header becomes sticky once styling is applied in the [design system post](/posts/design-system) — locking to the top of the viewport on scroll so the navigation is always reachable. That decision affects content spacing and scroll behavior, so it's worth noting here even though the CSS comes later.
 
 The `<nav>` element wraps everything inside the header. This creates a navigation landmark that assistive technologies can identify and jump to. The nav links live inside a `<ul>` — semantically correct for a list of links, and it gives screen readers a count of items ("list, 2 items") that helps orient the user.
 

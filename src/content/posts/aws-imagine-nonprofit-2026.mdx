@@ -1,0 +1,41 @@
+---
+title: "AWS Imagine Nonprofit 2026: Notes and Takeaways"
+description: "A recap of AWS Imagine for Nonprofits 2026 — performing arts peer connections, the Jane Goodall Institute's archive processing work, AI governance for mission-driven organizations, and what it means for a small tech team in the arts."
+published: 2026-03-20T12:00:00
+draft: true
+tags: ["AI in Practice", "Conferences"]
+---
+
+## What this was
+
+AWS Imagine for Nonprofits, MGM National Harbor, Oxon Hill, MD, March 19, 2026. Full-day event, theme: how AI and intentional innovation are transforming the nonprofit sector.
+
+{/* TODO: Opening framing — contrast with Snowflake event (vendor-specific vs. sector-specific), what it means to be in a room full of mission-driven technologists */}
+
+## Keynote
+
+{/* TODO: Dave Levy, Lauren Stovall, Rick Buettner opening. Three focus areas: Activate on Inspiration, Build with Purpose, Connect and Collaborate. John Legend fireside chat — what landed, what didn't. Felipe Arango (Fair Trade USA), Dr. Lilian Pintea (Jane Goodall Institute). */}
+
+## Jane Goodall Institute: intelligent document processing
+
+The standout session of the day for me, and the one most directly relevant to work we're doing at the BSO. Dr. Lilian Pintea had appeared in the morning keynote at a high level, but this afternoon build session with Sri Elaprolu from the AWS Generative AI Innovation Center went deep on the technical implementation.
+
+Sri walked through how the Jane Goodall Institute is using intelligent document processing to unlock decades of field research notes from Gombe. The challenges were immediately familiar: handwriting that varies across researchers (some nearly illegible even to humans), domain-specific shorthands, ambiguous timestamps with no AM/PM notation, and — the biggest of all — translation from Swahili and the Gombe dialect into English, with no large language model specifically trained on Swahili.
+
+Their approach leaned on three prompting techniques rather than retraining models: in-context learning to teach the model new tasks through examples and instructions, visual language models (Qwen V7 on Amazon Bedrock) that process images paired with text for handwriting recognition, and few-shot prompting to handle domain logic like timestamp interpretation. The architecture is straightforward — scanned documents in, structured JSON out (date, team observed, timestamps, extracted notes, translation), stored in DynamoDB. Processing time ranges from ten seconds to about a minute per document.
+
+What made this more than a technical demo was the human-in-the-loop design. The UI shows the original field notes on the left and extracted data on the right, with confidence scores for each translation. Reviewers can edit, confirm, or deny before anything enters the database. Field researchers who previously waited weeks or months for translated data from Gombe now get it in minutes.
+
+{/* TODO: Draw the BSO parallel more explicitly — program book extraction pipeline, archive-mcp, the shared pattern of large archival corpora + structured metadata extraction. What's transferable: VLM approach for handwritten/degraded text, confidence scoring + human review loop, JSON intermediate format. What's different: our challenge is historical typography and formatting rather than language translation, but the pipeline shape is remarkably similar. */}
+
+## Executive roundtable: from AI experimentation to mission impact
+
+{/* TODO: Invite-only session, Bellagio Section 1. Peer-to-peer on AI measurement frameworks, building AI capabilities in resource-constrained teams, responsible AI governance. What resonated, what challenged my assumptions. Sarah Seba's feedback on BSO's AI governance direction. */}
+
+## Performing arts peer network
+
+{/* TODO: This was the standout value of the conference. Lincoln Center (Michael Amoroso, CTDO), Metropolitan Opera (Ralph, CTO), Kimmel Center (VP of Technology). Shared challenges: composable commerce, Tessitura limitations, AWS as common platform. Why this peer group matters more than any single session. */}
+
+## What I'm sitting with
+
+{/* TODO: Themes to develop: sector-specific vs. vendor-specific conferences, AI governance validation, the archive processing thread (JGI / BSO), composable commerce as shared pain, building peer relationships as a technology leader in a small sector */}

@@ -2,11 +2,9 @@
 published: 2026-02-14T12:00:00
 updated: 2026-02-20T12:00:00
 description: Turning the Astro and Cloudflare decisions into a running project — from bun create astro to first deploy, and knowing when to stop.
-tags: ["Site Build", "Astro", "Cloudflare"]
+tags: ["Web Development", "Astro", "Cloudflare"]
 title: First Boot — Scaffolding an Astro v6 Project
 ---
-
-*This is Part 1 of [Site Build](/tags/site-build), a series documenting the construction of this site.*
 
 The [previous post](/posts/why-astro-cloudflare) covered the reasoning behind choosing Astro and Cloudflare Workers. This one covers what happened next: turning those decisions into a running project.
 
@@ -153,4 +151,4 @@ A few decisions to recap:
 - **No real domain yet** — the site initially lives at a `.workers.dev` URL. The deployment pipeline works end to end, which is what mattered at this stage. Domain, DNS, and production routing are a separate set of decisions.
 - **No quality gates** — commits to `main` auto-deploy with no checks beyond `astro build`. Fast feedback loops now, guardrails when there's something worth guarding.
 
-The [next post](/posts/setting-up-the-workshop) covers what I did before writing any components or content: setting up the project documentation that shapes every AI-assisted session that follows.
+The [next post](/posts/setting-up-the-workshop) covers what I did before writing any components or content: setting up the project documentation that shapes every AI-assisted building session.
