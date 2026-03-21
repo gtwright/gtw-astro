@@ -176,21 +176,21 @@ Usage in MDX:
 ```mdx
 import Figure from '../../components/Figure.astro';
 
-<!-- Standard Markdown still works -->
+{/* Standard Markdown still works */}
 ![Description](image-url.jpg)
 
-<!-- Standard with caption and lazy loading -->
+{/* Standard with caption and lazy loading */}
 <Figure src="image-url.jpg" alt="Description" caption="Optional caption." />
 
-<!-- Wide with credit -->
+{/* Wide with credit */}
 <Figure src="image-url.jpg" alt="Description" size="wide"
   caption="Extends into margins."
   credit='Photo: <a href="https://unsplash.com">Unsplash</a>' />
 
-<!-- Full bleed -->
+{/* Full bleed */}
 <Figure src="image-url.jpg" alt="Description" size="full" />
 
-<!-- Small -->
+{/* Small */}
 <Figure src="image-url.jpg" alt="Description" size="small" caption="A smaller image." />
 ```
 

@@ -10,7 +10,7 @@ draft: true
 
 ## The problem with the current pipeline
 
-<!--
+{/*
 Context: BSO's production Dagster pipeline conflates three concerns into a single
 "partitioned asset": extraction window (how much data to pull from the API),
 storage partitioning (how data is organized on disk for query performance),
@@ -23,22 +23,22 @@ Cover:
 - Why this breaks down: can't independently tune API page sizes, query-optimized partitioning, and refresh frequency
 - No built-in monitoring: no freshness policies, no asset checks, no coverage tracking
 - The goal: decouple these concerns and move to an open table format
--->
+*/}
 
 ## Why Iceberg
 
-<!--
+{/*
 Cover:
 - Open table format vs. Snowflake-native stages: vendor independence, time travel, schema evolution
 - The specific appeal: Snowflake can read Iceberg tables via catalog integration — zero ETL into Snowflake
 - S3 as durable storage, Glue as catalog, Snowflake as compute — each layer replaceable
 - DLT already has Iceberg support via the filesystem destination
 - This is a prototype, not a rewrite — validate the architecture before committing
--->
+*/}
 
 ## The architecture
 
-<!--
+{/*
 Diagram or description of:
   Tessitura API → DLT (filesystem destination) → S3 Parquet/Iceberg
     → pyiceberg GlueCatalog.register_table() → AWS Glue
@@ -50,11 +50,11 @@ Key design decisions to explain:
 - Catalog-linked database: one CREATE DATABASE auto-discovers all tables, 30s sync
 - Why not individual CREATE ICEBERG TABLE per table (40+ tables, doesn't scale)
 - DLT uses SQLite catalog internally; we register in Glue after each load
--->
+*/}
 
 ## Decoupling the three concerns
 
-<!--
+{/*
 The core design improvement. Show the TableConfig dataclass:
 - ExtractionConfig: strategy (FULL vs INCREMENTAL), rows_per_page, default_window
 - PartitionConfig: scheme (NONE vs MONTH), column
@@ -68,11 +68,11 @@ Each is independently tunable. A table can:
 The asset factory: one function generates Dagster assets for any source,
 with the right extraction strategy, partitioning, schedule, freshness policy,
 and automation condition — all from config.
--->
+*/}
 
 ## The merge problem nobody warns you about
 
-<!--
+{/*
 This is the heart of the post. Tell the story chronologically:
 
 1. The setup: incremental tables need merge (upsert) to deduplicate by primary key
@@ -87,11 +87,11 @@ This is the heart of the post. Tell the story chronologically:
    the DataScan inside the Transaction still resolves the OLD schema from snapshot metadata
 8. This is pyiceberg issues #2467 and #3105 — confirmed, unfixed as of 0.11.0
 9. It affects ALL catalogs (Glue, REST, SQLite) — not a Glue-specific problem
--->
+*/}
 
 ## The fix: delete-insert via monkey-patch
 
-<!--
+{/*
 Walk through the solution:
 
 1. Research phase: DLT OSS only supports upsert. DLT+ (paid) implements custom
@@ -119,31 +119,31 @@ Walk through the solution:
    - Incremental loads on Dagster Cloud: success
    - Full backfill (1.3M rows merged into incrementally-created table): success
    - Schema drift between runs: handled correctly
--->
+*/}
 
 ## Monitoring without partitions
 
-<!--
+{/*
 Brief section on what replaces the partition completeness view:
 - FreshnessPolicy.time_window() on every asset — Dagster daemon evaluates automatically
 - Asset checks: row_count > 0 after each materialization
 - Coverage checks: weekly scan of Iceberg table metadata for date range gaps
 - Iceberg metadata sensor: snapshot_count, data_file_count as observations
--->
+*/}
 
 ## What's next
 
-<!--
+{/*
 - Expanding beyond Tessitura: Diese (REST), Craft (CDC) — same factory, different sources
 - Compaction: small files accumulate with daily merges, need rewrite_data_files()
 - Performance tuning: Tessitura API concurrency, large table isolation
 - dbt integration: predicate pushdown, partition pruning validation
 - Production cutover: parallel deployment, table-by-table migration
--->
+*/}
 
 ## The takeaway
 
-<!--
+{/*
 Iceberg on S3 with DLT and Dagster works — but the tooling is young.
 pyiceberg's upsert is broken for any table with schema evolution, and that's
 a common real-world scenario. The workaround is straightforward once you
@@ -156,4 +156,4 @@ into any single compute engine.
 
 For a small team, the prototype validates that this is worth pursuing —
 with eyes open about where the rough edges are.
--->
+*/}

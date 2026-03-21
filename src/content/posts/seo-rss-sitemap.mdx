@@ -63,7 +63,7 @@ The template section renders standard meta tags, Open Graph properties, and Twit
 <meta name="author" content={SITE.author.name} />
 <link rel="canonical" href={canonicalURL.href} />
 
-<!-- Open Graph -->
+{/* Open Graph */}
 <meta property="og:type" content={isArticle ? 'article' : 'website'} />
 <meta property="og:url" content={canonicalURL.href} />
 <meta property="og:title" content={title} />
@@ -76,7 +76,7 @@ The template section renders standard meta tags, Open Graph properties, and Twit
 {post && <meta property="article:author" content={SITE.author.url} />}
 {post?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
 
-<!-- Twitter -->
+{/* Twitter */}
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
