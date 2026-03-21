@@ -53,19 +53,14 @@ For a static blog, Workers is arguably overkill. Pages would be fine. But starti
 
 ## What I'm counting on
 
-Every technology choice is a bet.
+Every technology choice is a set of assumptions about the future. Here are mine.
 
-- **Astro's direction is sound.** The static-first, content-oriented approach feels right for the long term, even as the framework adds more dynamic capabilities.
-- **Astro v6 will stabilize.** The beta will become stable, and the patterns I learn now will carry forward.
-- **Cloudflare Workers is where Cloudflare is heading.** The convergence of Pages and Workers will continue, and Workers will be the right default for new projects on the platform.
-- **Markdown in Git is durable.** Even if I change frameworks or hosting someday, my content is plain text files in a repository. That's about as portable as it gets.
+Astro's static-first, content-oriented approach feels right for the long term, and the Cloudflare acquisition gives me confidence that the framework will continue to be invested in. Workers is where Cloudflare is heading as a full-stack runtime, and starting there means I won't need to re-platform when I want to add dynamic capabilities.
 
-These bets could be wrong. If they are, I'll write about that too.
+Most importantly, my content is Markdown files in a Git repository. Even if I change frameworks or hosting someday, the writing is portable. And increasingly, AI agents are how I interact with this content: reading, drafting, editing, publishing.
 
-## What I'm deferring
+I started this project planning to use a CMS. I wouldn't have expected to be saying this, but I'm seriously considering a world where I don't assume any new web project needs one. A personal blog is a safe place to explore that mindset.
 
-This post covers the decisions made before writing any code. It doesn't cover the implementation — how the project was scaffolded, how the design system works, how content collections are configured. Those are separate posts in this series.
-
-It also doesn't cover things I've deliberately chosen not to do yet: dark mode, CI/CD, analytics, search, tag pages, comments. Every post in this series ends with a "what we're deferring" section, because the scope decisions matter as much as the technical ones.
+If any of these assumptions turn out to be wrong, I'll write about that too.
 
 *Update: [Astro v6 is out of beta now](https://astro.build/blog/astro-6/). Smooth sailing so far.*
