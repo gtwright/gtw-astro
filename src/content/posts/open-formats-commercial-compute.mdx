@@ -28,7 +28,7 @@ The bet is that the compute and workflow layer is where the value is, not the da
 
 Apache Iceberg has become the open table format with the most momentum. Snowflake, AWS, Databricks, and others have converged on supporting it, or in Databricks' case merging their own Delta Lake format closer to Iceberg's capabilities. If that holds, the storage layer becomes standardized and open, and the interesting choices move to compute.
 
-[DuckDB](https://duckdb.org/) and [MotherDuck](https://motherduck.com/) are another part of this picture. Lightweight, embeddable analytical compute that reads open formats directly. I haven't gone deep in that world, but I've dabbled enough to see why it's compelling, particularly for smaller organizations or individual practitioners who want analytical power without a platform commitment.
+[DuckDB](https://duckdb.org/) and [MotherDuck](https://motherduck.com/) are another part of this picture. Lightweight, embeddable analytical compute that reads open formats directly. I haven't gone deep in that world, but I've explored enough to see why it's compelling, particularly for smaller organizations or individual practitioners who want analytical power without a platform commitment.
 
 ## What I'm testing
 
@@ -40,7 +40,7 @@ I'm still developing a clear point of view on when to reach for which. The early
 
 ## What's still unresolved
 
-The key question is whether this hybrid approach adds complexity that a small team can sustain. I'm still largely the only person hands-on with these systems. Optionality is valuable in theory, but if it means maintaining two sets of tooling, two mental models, and two sets of operational knowledge, the cost could outweigh the benefit.
+The key question is whether this hybrid approach adds complexity that a small team can sustain. I'm still largely the only person hands-on with these systems while we build the business case for a larger investment in scaling. Optionality is valuable in theory, but if it means maintaining two sets of tooling, two mental models, and two sets of operational knowledge, the cost could outweigh the benefit.
 
 "Right tool for the job" is a useful principle, but without a clear decision framework it can become an excuse for sprawl — a little AWS here, a little Snowflake there, with no coherent architecture underneath.
 
