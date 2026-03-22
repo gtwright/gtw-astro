@@ -1,9 +1,9 @@
 ---
 title: "Markdown & MDX Style Examples"
-description: "A comprehensive playground of common post elements including headings, lists, quotes, code, tables, and callouts."
+description: "A living specimen of every text, image, and component treatment available in posts — Markdown primitives and MDX components side by side."
 published: 2026-02-09T07:30:00
 draft: false
-tags: ["Style", "Markdown", "MDX"]
+tags: ["Style", "Markdown", "Typography"]
 ---
 
 import Figure from '../../components/Figure.astro';
@@ -11,27 +11,27 @@ import Callout from '../../components/Callout.astro';
 import Aside from '../../components/Aside.astro';
 import PullQuote from '../../components/PullQuote.astro';
 
-## Paragraphs (H2)
+This page exercises every element available in posts. It serves as a development reference and a living typography specimen — any change to the prose styles is immediately visible here. Elements are grouped by function; Markdown primitives and MDX components appear side by side where they serve similar purposes.
 
-I normally wouldn't publish a style example page like this, but in the interest of transparency, I'm including it. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.  
+## Text
 
-This is a new paragraph. Paragraph spacing and line height should feel relaxed and readable for long-form content.
+Paragraph spacing and line height should feel relaxed and readable for long-form content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.
 
-### Emphasis and inline text
+This is a second paragraph. The gap between paragraphs should create a clear visual break without feeling disconnected.
+
+### Emphasis and inline styles
 
 - **Bold text**
 - *Italic text*
 - ***Bold italic text***
 - ~~Strikethrough text~~
-- `Inline code` such as `Astro.props` or `font-variation-settings`.
+- `Inline code` such as `Astro.props` or `font-variation-settings`
 
 Here is a sentence with a [link to an example](https://example.com).
 
 ---
 
-## Headings (H2)
-
-Use headings to structure longer essays and technical posts.
+## Headings
 
 ### Subheading example (H3)
 
@@ -69,17 +69,75 @@ Less common, but should still look good.
 
 ---
 
-## Quotes
+## Quotes and pull quotes
 
-### Markdown blockquote
+### Blockquote (Markdown)
+
+Standard blockquotes for inline citations and referenced material.
 
 > A blockquote should be visibly different from body text.
 >
 > Multi-paragraph quotes should maintain spacing and alignment.
 
+### Pull quote (MDX)
+
+Pull quotes highlight a key passage from the surrounding text. They use the headline font and a decorative quote mark rather than the left-border treatment of blockquotes.
+
+<PullQuote>
+Good typography is invisible — the reader focuses on content, not on the mechanics of reading.
+</PullQuote>
+
+With attribution:
+
+<PullQuote attribution="Robert Bringhurst">
+Typography exists to honor content.
+</PullQuote>
 
 ---
 
+## Callouts (MDX)
+
+Callouts draw attention to supplementary information — context, tips, or warnings that sit outside the main narrative.
+
+<Callout type="note">
+This is a **note** callout. Use it for general annotations that don't fit neatly into the main text.
+</Callout>
+
+<Callout type="info">
+This is an **info** callout. Use it to highlight background context or supplementary information.
+</Callout>
+
+<Callout type="tip">
+This is a **tip** callout. Use it for practical advice or recommendations.
+</Callout>
+
+<Callout type="warning">
+This is a **warning** callout. Use it for caveats, gotchas, or things the reader should be cautious about.
+</Callout>
+
+<Callout type="tip" title="Custom title">
+Callouts accept an optional `title` prop that overrides the default label.
+</Callout>
+
+---
+
+## Asides (MDX)
+
+Asides are margin notes. On narrow screens they render as inline blocks; on wide screens (80rem+) they float into the right margin beside the paragraph that precedes them. Space asides apart in the content so they don't overlap in the margin.
+
+<Aside label="Note">
+This is a margin note with a label. It appears in the right margin on wide screens and as an inline block on narrower viewports.
+</Aside>
+
+Here is some intervening content to demonstrate how asides work when spaced apart. The margin note above should be clearly visible alongside this paragraph without overlapping the one below.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi.
+
+<Aside>
+A label-less aside for smaller observations.
+</Aside>
+
+---
 
 ## Code
 
@@ -133,79 +191,25 @@ const { title } = Astro.props;
 
 ## Images
 
-### Markdown image (standard)
+### Markdown image
 
 ![Placeholder image](https://picsum.photos/seed/style-md/1200/675)
 
-### Figure component (standard with caption)
+### Figure component (MDX)
+
+Standard, wide, full-bleed, and small variants. The Figure component adds captions and credits that plain Markdown images don't support.
 
 <Figure src="https://picsum.photos/seed/style-std/1200/675" alt="Standard figure with caption" caption="Standard size — stays within the content column at 65ch." credit='Photo: <a href="https://picsum.photos">Lorem Picsum</a>' />
 
-### Wide image
-
 <Figure src="https://picsum.photos/seed/style-wide/1200/675" alt="Wide figure example" size="wide" caption="Wide size — extends to ~1000px, breaking out of the content column." credit='Photo: <a href="https://picsum.photos">Lorem Picsum</a>' />
 
-### Full-bleed image
-
 <Figure src="https://picsum.photos/seed/style-full/1200/675" alt="Full-bleed figure example" size="full" caption="Full size — extends edge-to-edge with minimal gutters." credit='Photo: <a href="https://picsum.photos">Lorem Picsum</a>' />
-
-### Small image
 
 <Figure src="https://picsum.photos/seed/style-sm/600/400" alt="Small figure example" size="small" caption="Small size — constrained to 45ch, centered within the content column." credit='Photo: <a href="https://picsum.photos">Lorem Picsum</a>' />
 
 ### HTML image
 
 <img src="https://picsum.photos/seed/style-gray/1200/675?grayscale" alt="Grayscale placeholder" loading="lazy" />
-
----
-
-## MDX Components
-
-### Callouts
-
-<Callout type="note">
-This is a **note** callout. Use it for general annotations or asides that don't fit neatly into the main text.
-</Callout>
-
-<Callout type="info">
-This is an **info** callout. Use it to highlight background context or supplementary information.
-</Callout>
-
-<Callout type="tip">
-This is a **tip** callout. Use it for practical advice or recommendations.
-</Callout>
-
-<Callout type="warning">
-This is a **warning** callout. Use it for caveats, gotchas, or things the reader should be cautious about.
-</Callout>
-
-<Callout type="tip" title="Custom title">
-Callouts accept an optional `title` prop that overrides the default label.
-</Callout>
-
-### Pull quote
-
-<PullQuote>
-Good typography is invisible — the reader focuses on content, not on the mechanics of reading.
-</PullQuote>
-
-<PullQuote attribution="Robert Bringhurst">
-Typography exists to honor content.
-</PullQuote>
-
-### Aside
-
-The aside component renders as an inline block on narrow screens and floats into the right margin on wide screens.
-
-<Aside label="Note">
-This is a margin note. On wide viewports it sits beside the paragraph that precedes it, keeping the main column uninterrupted.
-</Aside>
-
-An aside without a label works too — it's just a quieter annotation in the margin.
-
-<Aside>
-A label-less aside for smaller observations.
-</Aside>
 
 ---
 
@@ -226,7 +230,7 @@ Footnotes can be useful for references.[^1]
 <details>
 <summary>Expandable section</summary>
 
-This content is hidden by default. It’s useful for tangents, raw notes, or optional details.
+This content is hidden by default. It's useful for tangents, raw notes, or optional details.
 
 - It should inherit body typography.
 - It should maintain spacing rhythm.
