@@ -2,26 +2,27 @@
 title: "Images — Responsive, Modern, and Good Enough for Now"
 description: "CSS Grid breakout layout for Medium-style image sizing, a Figure component for captions and lazy loading, and the decision to defer optimization until the content demands it."
 published: 2026-03-07T12:00:00
-draft: true
+updated: 2026-03-22T12:00:00
+draft: false
 tags: ["Web Development", "Astro", "Images"]
 ---
 
 import Figure from '../../components/Figure.astro';
 
-The [SEO and syndication post](/posts/seo-rss-sitemap) covered the invisible features — SEO metadata, RSS, the sitemap, and `robots.txt`. That work serves machines: crawlers, feed readers, social platforms. Images are the opposite — they're the most immediately visible element on a page, and the easiest to get wrong.
+The [SEO and syndication post](/posts/seo-rss-sitemap) covered the invisible features: SEO metadata, RSS, the sitemap, and `robots.txt`. That work serves machines. Images are the opposite. They're the most immediately visible element on a page, and the easiest to get wrong.
 
-But this is a text-first blog. Most posts are long-form writing with code samples. Images are occasional illustrations, not the primary content. That shapes the decision: get the layout right, keep optimization simple, and revisit when the content demands it.
+But this is a text-first blog. The content is the point, not the platform. Most posts are long-form writing with code samples, and images are occasional illustrations. That shapes the decision: get the layout right, keep optimization simple, and revisit when the content demands it.
 
-This post documents the evaluation of image handling options in Astro 6 beta, the layout system built for image sizing, and what "good enough" looks like in practice. It's a point-in-time snapshot — Astro 6 was in beta when this was written, and the image landscape may shift as the framework stabilizes.
+Astro 6 was in beta when this was written, so what follows is a point-in-time snapshot. The options may shift as the framework stabilizes.
 
 ## What Astro 6 offers
 
 Astro has built-in image optimization through the `astro:assets` module. The core tools:
 
-- **`<Image>`** — Accepts a local import or remote URL, outputs an optimized `<img>` with `width`, `height`, `loading="lazy"`, and `decoding="async"` attributes. Converts to WebP by default. Prevents cumulative layout shift by requiring explicit dimensions.
-- **`<Picture>`** — Same optimization, but outputs a `<picture>` element with multiple `<source>` elements for format negotiation. Lets the browser choose WebP, AVIF, or the original format based on support.
+- **`<Image>`** accepts a local import or remote URL and outputs an optimized `<img>` with `width`, `height`, `loading="lazy"`, and `decoding="async"` attributes. Converts to WebP by default. Prevents cumulative layout shift by requiring explicit dimensions.
+- **`<Picture>`** does the same optimization but outputs a `<picture>` element with multiple `<source>` elements for format negotiation. Lets the browser choose WebP, AVIF, or the original format based on support.
 
-Both components process local images at build time using Sharp. The processing is zero-runtime — no image service needed for a static site. A typical usage looks like this:
+Both components process local images at build time using Sharp. The processing is zero-runtime; no image service needed for a static site. In practice:
 
 ```astro
 ---
@@ -32,11 +33,11 @@ import hero from '../assets/hero-placeholder.png';
 <Image src={hero} alt="A descriptive caption for the image" />
 ```
 
-The output is a fully attributed `<img>` tag — optimized format, explicit dimensions, lazy loading, async decoding — generated at build time from a single import.
+The output is a fully attributed `<img>` tag with optimized format, explicit dimensions, lazy loading, and async decoding, all generated at build time from a single import.
 
-Astro 6 also introduced a `responsiveImages` configuration that can generate `srcset` and `sizes` attributes automatically, producing multiple resolutions from a single source. In the beta, this was available as an experimental flag. The concept is sound — responsive variants at build time without manual breakpoint management — but I wasn't confident enough in the API stability to build on it yet.
+Astro 6 also introduced a `responsiveImages` configuration that can generate `srcset` and `sizes` attributes automatically, producing multiple resolutions from a single source. In the beta, this was available as an experimental flag. The concept is sound (responsive variants at build time without manual breakpoint management), but I wasn't confident enough in the API stability to build on it yet.
 
-There's a second constraint specific to this project. Astro's image processing relies on Sharp, which runs in Node.js. The Cloudflare adapter runs the dev server in `workerd` — Cloudflare's JavaScript runtime — and Sharp doesn't work there. In Astro 6 beta, using the `<Image>` component with the Cloudflare adapter throws a CJS compatibility error. The default dev image endpoint imports `picomatch`, which uses `require()`, and `workerd` doesn't support CommonJS.
+A second constraint is specific to this project. Astro's image processing relies on Sharp, which runs in Node.js. The Cloudflare adapter runs the dev server in `workerd` (Cloudflare's JavaScript runtime), and Sharp doesn't work there. In Astro 6 beta, using the `<Image>` component with the Cloudflare adapter throws a CJS compatibility error. The default dev image endpoint imports `picomatch`, which uses `require()`, and `workerd` doesn't support CommonJS.
 
 This is [a known issue](https://github.com/withastro/astro/issues/15437). There's [an open PR](https://github.com/withastro/astro/pull/15435) to fix it by updating the Cloudflare adapter's default image service, but it hasn't merged yet. The built-in image optimization tools exist, they just don't work with this project's deployment target right now.
 
@@ -52,31 +53,31 @@ That produces:
 <img src="https://picsum.photos/1200/675" alt="A placeholder image" />
 ```
 
-No optimization, no lazy loading, no format conversion. Between the Cloudflare adapter incompatibility and the MDX rendering gap, Astro's built-in image tools aren't directly usable for this site's primary use case — images inside blog posts.
+No optimization, no lazy loading, no format conversion. Between the Cloudflare adapter incompatibility and the MDX rendering gap, Astro's built-in image tools aren't directly usable for this site's primary use case: images inside blog posts.
 
 ## The options I evaluated
 
 Beyond Astro's built-in tools, I looked at three categories:
 
-**Framework-agnostic libraries.** [Unpic](https://unpic.pics/) generates responsive `<img>` tags with `srcset` and `sizes` attributes and has an Astro integration. The appeal is portability — if I ever moved away from Astro, the image handling would transfer. The cost is another dependency and another abstraction layer between content and output.
+**Framework-agnostic libraries.** [Unpic](https://unpic.pics/) generates responsive `<img>` tags with `srcset` and `sizes` attributes and has an Astro integration. The appeal is portability: if I ever moved away from Astro, the image handling would transfer. The cost is another dependency and another abstraction layer between content and output.
 
-**Cloud image services.** Cloudinary and Cloudflare Images both offer on-the-fly transformation via URL parameters — resize, crop, convert formats, adjust quality. Cloudinary has a generous free tier. Cloudflare Images is a natural fit since the site already runs on Cloudflare Workers. Both shift processing from build time to request time, which is powerful for dynamic content but adds cost and complexity for a static blog with a handful of images.
+**Cloud image services.** Cloudinary and Cloudflare Images both offer on-the-fly transformation via URL parameters: resize, crop, convert formats, adjust quality. Cloudinary has a generous free tier. Cloudflare Images is a natural fit since the site already runs on Cloudflare Workers. Both shift processing from build time to request time, which handles dynamic content well but adds cost and complexity for a static blog with a handful of images.
 
 **The minimal path.** Standard Markdown images, styled with CSS, served as-is. No optimization pipeline, no additional dependencies. The images display correctly and respond to viewport changes. They just aren't optimized for file size or modern formats.
 
 ## The decision
 
-I chose the minimal path for optimization — but invested in layout.
+I chose the minimal path for optimization, but spent the time on layout instead.
 
-Two factors converge. First, this blog currently has very few images. The posts are primarily text and code. Adding a build-time optimization pipeline, a cloud service, or an image CDN for a small number of images introduces complexity that doesn't pay for itself yet. Second, the most natural option — Astro's built-in tools — doesn't work with the Cloudflare adapter in beta. I could work around that, but working around a beta incompatibility to optimize images that barely exist is exactly the kind of yak-shaving this project tries to avoid.
+This blog currently has very few images. The posts are primarily text and code. Adding a build-time optimization pipeline, a cloud service, or an image CDN for a small number of images introduces complexity that doesn't pay for itself yet. And the most natural option, Astro's built-in tools, doesn't work with the Cloudflare adapter in beta. I could work around that, but working around a beta incompatibility to optimize images that barely exist felt like the wrong use of time.
 
-What I *did* invest in is the layout foundation. Medium-style image sizing — standard, wide, full-bleed — is a layout concern, not an optimization concern. It's pure CSS, zero dependencies, and it makes images a first-class layout element in the prose column. When optimization becomes relevant, it layers on top of the layout system without any structural changes.
+The layout was the part worth doing now. Medium-style image sizing (standard, wide, full-bleed) is a layout concern, not an optimization concern. It's pure CSS, zero dependencies, and it makes images a real layout element in the prose column. It also keeps accessibility straightforward: semantic HTML, required alt text enforced at the component level, and decorative images handled correctly from the start. When optimization becomes relevant, it layers on top without any structural changes.
 
 ## The layout: CSS Grid breakouts
 
-The previous prose layout was a simple `max-width: 65ch` centered box. That works perfectly for text, but it caps everything at the content column width. There's no room for a wider image to breathe.
+The previous prose layout was a simple `max-width: 65ch` centered box. That works for text, but it caps everything at the content column width. No room for a wider image to breathe.
 
-The solution is a CSS Grid with named column lines — a pattern [documented by Ryan Mulligan](https://ryanmulligan.dev/blog/layout-breakouts/). The grid defines three named regions:
+There are several ways to handle breakout layouts. I landed on a CSS Grid with named column lines, a pattern [documented by Ryan Mulligan](https://ryanmulligan.dev/blog/layout-breakouts/). It's not the only approach, but it's well-tested and did what I needed without requiring me to overthink it. The grid defines three named regions:
 
 ```css
 .prose {
@@ -97,11 +98,11 @@ The solution is a CSS Grid with named column lines — a pattern [documented by 
 .prose > * { grid-column: content; }
 ```
 
-**Content** (center, `65ch`) — the default column. All text, headings, code blocks, lists, and standard images land here. Same measure as before — nothing changes for existing content.
+**Content** (center, `65ch`) is the default column. All text, headings, code blocks, lists, and standard images land here. Same measure as before. Nothing changes for existing content.
 
-**Wide** (`~1000px`) — extends into the margins on both sides. Good for large diagrams, screenshots, or images that benefit from more horizontal space without going edge-to-edge.
+**Wide** (`~1000px`) extends into the margins on both sides. Good for large diagrams, screenshots, or images that benefit from more horizontal space without going edge-to-edge.
 
-**Full** (edge-to-edge) — bleeds to the viewport edges, minus a minimum gutter. The `minmax(var(--prose-gap), 1fr)` ensures there's always at least `clamp(1rem, 6vw, 3rem)` of breathing room — the image never truly touches the browser chrome.
+**Full** (edge-to-edge) bleeds to the viewport edges, minus a minimum gutter. The `minmax(var(--prose-gap), 1fr)` ensures there's always at least `clamp(1rem, 6vw, 3rem)` of breathing room. The image never truly touches the browser chrome.
 
 The breakout is controlled by CSS classes on direct children of `.prose`:
 
@@ -111,17 +112,17 @@ The breakout is controlled by CSS classes on direct children of `.prose`:
 .prose > .small { grid-column: content; max-width: 45ch; margin-inline: auto; }
 ```
 
-There's also a **small** variant — still within the content column but constrained to `45ch` and centered. Useful for screenshots of narrow UI elements or small illustrations that would look stretched at full content width.
+There's also a **small** variant, still within the content column but constrained to `45ch` and centered. Useful for screenshots of narrow UI elements or small illustrations that would look stretched at full content width.
 
 ### What this required upstream
 
-The grid approach needs room to expand. The previous layout chain — `max-w-3xl` on the page wrapper, then `max-w-[65ch]` on the article — capped everything at ~768px. There was physically no space for "wide" to go.
+The grid approach needs room to expand. The previous layout chain (`max-w-3xl` on the page wrapper, then `max-w-[65ch]` on the article) capped everything at ~768px. There was physically no space for "wide" to go.
 
-The fix: post pages now opt into `flush={true}` on the base layout, which removes the outer `max-w-3xl` container. The back link, header, and pagination self-center at `65ch` with matching gutters (`px-[clamp(1rem,6vw,3rem)]`), aligning perfectly with the prose grid's content column. The grid handles the prose content width; the surrounding elements handle their own.
+The fix: post pages now opt into `flush={true}` on the base layout, which removes the outer `max-w-3xl` container. The back link, header, and pagination self-center at `65ch` with matching gutters (`px-[clamp(1rem,6vw,3rem)]`), aligning with the prose grid's content column. The grid handles the prose content width; the surrounding elements handle their own.
 
 ### Responsive behavior
 
-The `minmax(0, ...)` on the wide track means it collapses gracefully at narrow viewports. No breakpoints needed:
+The `minmax(0, ...)` on the wide track means it collapses at narrow viewports without any breakpoints:
 
 | Viewport | Content | Wide | Full |
 |----------|---------|------|------|
@@ -129,7 +130,7 @@ The `minmax(0, ...)` on the wide track means it collapses gracefully at narrow v
 | 768px | ~676px | collapses toward content | near-edge |
 | 375px | ~330px | collapses to content | near-edge |
 
-At mobile widths, "wide" and "content" converge — the wide track shrinks to zero. "Full" still extends to the edges minus the minimum gutter. The layout degrades naturally without any responsive logic.
+At mobile widths, "wide" and "content" converge. The wide track shrinks to zero. "Full" still extends to the edges minus the minimum gutter. The layout degrades naturally without any responsive logic.
 
 ### Margin adjustment for grid
 
@@ -141,7 +142,7 @@ The fix is to reduce `margin-top` values: headings from `2.5em` to `1.5em`, imag
 
 Standard Markdown images (`![alt](url)`) continue to work for inline images at content width. But Markdown syntax has gaps: no `loading="lazy"`, no `<figcaption>`, no size control.
 
-The `Figure` component bridges those gaps:
+The `Figure` component covers what Markdown can't:
 
 ```astro
 ---
@@ -167,7 +168,7 @@ const { src, alt, caption, credit, size = 'standard' } = Astro.props;
 </figure>
 ```
 
-Captions and credits are string props rendered with `set:html`, which allows inline HTML like links. I considered a slot-based approach — named `caption` and `credit` slots on `Figure` with the string props as default content — which would give native XSS protection and full MDX composability inside captions. But for a blog where I control all the content, the props approach is simpler: one line per image, no child elements to wrangle. If credits become frequent or captions need rich MDX content beyond simple links, named slots are a clean upgrade path.
+Captions and credits are string props rendered with `set:html`, which allows inline HTML like links. I considered a slot-based approach with named `caption` and `credit` slots, which would give native XSS protection and full MDX composability inside captions. But for a blog where I control all the content, the props approach is simpler: one line per image, no child elements to wrangle. If credits become frequent or captions need rich MDX content beyond simple links, named slots are a clean upgrade path.
 
 Usage in MDX:
 
@@ -192,11 +193,11 @@ import Figure from '../../components/Figure.astro';
 <Figure src="image-url.jpg" alt="Description" size="small" caption="A smaller image." />
 ```
 
-The component outputs a `<figure>` element as a direct child of `.prose`, so the breakout classes (`wide`, `full`, `small`) work through the grid. `loading="lazy"` and `decoding="async"` are applied automatically — solving the lazy loading gap without an optimization pipeline. Captions are rendered as `<figcaption>` in the UI font, muted and centered.
+The component outputs a `<figure>` element as a direct child of `.prose`, so the breakout classes (`wide`, `full`, `small`) work through the grid. `loading="lazy"` and `decoding="async"` are applied automatically, which solves the lazy loading gap without an optimization pipeline. Captions render as `<figcaption>` in the UI font, muted and centered.
 
 ### Live examples
 
-Here's each size variant in action:
+Each size variant in practice:
 
 <Figure src="https://picsum.photos/seed/img-std/1200/675" alt="Standard image example" caption="Standard — stays within the 65ch content column." credit='Photo: <a href="https://picsum.photos">Lorem Picsum</a>' />
 
@@ -214,34 +215,13 @@ The content schema already has an optional `image` field:
 image: z.string().optional(),
 ```
 
-When a post includes an `image` in its frontmatter, the post page now renders it as a featured image between the header and the prose content. It displays at `max-width: 1000px` — matching the wide column — with `loading="eager"` since it's above the fold. The alt text is intentionally empty (`alt=""`) because the post title immediately above provides the context; the image is decorative in this position.
+When a post includes an `image` in its frontmatter, the post page now renders it as a featured image between the header and the prose content. It displays at `max-width: 1000px` (matching the wide column) with `loading="eager"` since it's above the fold. The alt text is intentionally empty (`alt=""`) because the post title immediately above provides the context; the image is decorative in this position.
 
 This is the same field that feeds into the SEO component for Open Graph and Twitter Card meta tags. One field, two uses: social previews and on-page display.
 
-## What's in place
+## Social previews
 
-The image system has three layers:
-
-**CSS Grid breakout layout** — `.prose` uses a named-column grid with content (65ch), wide (~1000px), and full (edge-to-edge) regions. All existing content defaults to the content column unchanged. Breakout classes (`.wide`, `.full`, `.small`) assign wider or narrower columns.
-
-**Figure component** — `<Figure>` wraps `<figure>`/`<img>`/`<figcaption>` with typed props for `src`, `alt`, `caption`, and `size`. Adds `loading="lazy"` and `decoding="async"` automatically. Works in MDX content, outputs grid-compatible markup.
-
-**Featured images** — Posts with an `image` frontmatter field render a featured image between the header and content at wide width, with eager loading.
-
-**Standard Markdown images** still work at content width:
-
-```css
-.prose img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin: 1em 0;
-}
-```
-
-The styling is the same CSS-only approach — responsive by default, no JavaScript, no build-time processing. The grid just gives images more room to work with.
-
-For social previews, the frontmatter `image` field feeds into the SEO component through a fallback chain:
+The frontmatter `image` field feeds into the SEO component through a fallback chain:
 
 ```typescript
 const resolvedImage = image ?? post?.image ?? '/og-default.png';
@@ -252,19 +232,19 @@ An explicit image prop takes priority, then the post's frontmatter image, then a
 
 ## Alt text as a requirement
 
-`CONVENTIONS.md` includes a clear rule: alt text is required on all `<img>` elements. This isn't a style preference — it's an accessibility requirement under WCAG 2.2. Images without alt text are invisible to screen readers. Decorative images without an empty `alt=""` create noise in the accessibility tree.
+`CONVENTIONS.md` includes a clear rule: alt text is required on all `<img>` elements. This isn't a style preference. It's an accessibility requirement under WCAG 2.2. Images without alt text are invisible to screen readers. Decorative images without an empty `alt=""` create noise in the accessibility tree.
 
-Markdown image syntax makes the mechanics easy — the alt text is the first thing written: `![Description of the image](url)`. The `Figure` component requires `alt` as a prop — TypeScript enforces its presence at build time. The challenge isn't syntax, it's discipline. "Screenshot" or "Image" aren't meaningful descriptions. Alt text should convey what the image communicates in context — what would a reader need to know if the image didn't load?
+Markdown image syntax makes the mechanics easy. The alt text is the first thing written: `![Description of the image](url)`. The `Figure` component requires `alt` as a prop, and TypeScript enforces its presence at build time. The challenge isn't syntax, it's discipline. "Screenshot" or "Image" aren't meaningful descriptions. Alt text should convey what the image communicates in context. What would a reader need to know if the image didn't load?
 
-For purely decorative images — a background texture, an ornamental divider — an empty alt attribute (`alt=""`) tells assistive technology to skip it entirely. That's the correct behavior, and it requires an intentional choice for each image rather than a blanket rule.
+For purely decorative images (a background texture, an ornamental divider), an empty alt attribute (`alt=""`) tells assistive technology to skip it entirely. That's the correct behavior, and it requires an intentional choice for each image rather than a blanket rule.
 
-## What we're deferring
+## What I'm deferring
 
-- **Build-time image optimization** — Astro's `<Image>` and `<Picture>` components are the natural first step, once the [Cloudflare adapter fix](https://github.com/withastro/astro/pull/15435) lands and the API stabilizes. When the blog has enough images to justify the build-time cost, this is the first lever to pull.
-- **Cloud image services** — Cloudinary or Cloudflare Images for on-the-fly transformation. Worth revisiting if the image count grows or if dynamic resizing becomes useful for responsive art direction.
-- **Responsive image markup** — `srcset` and `sizes` attributes for resolution switching across viewports. The experimental `responsiveImages` configuration in Astro 6 is the natural path here, once the API stabilizes.
-- **Image galleries** — MDX components for image grids or lightboxes. These are content patterns that don't exist in the blog yet — building the components before the content needs them would be speculative.
+- **Build-time image optimization.** Astro's `<Image>` and `<Picture>` components are the natural first step. The trigger is two things happening together: the [Cloudflare adapter fix](https://github.com/withastro/astro/pull/15435) merging and the blog accumulating enough images that file size starts to matter. Neither is true yet.[^1]
+- **Cloud image services.** Cloudinary or Cloudflare Images for on-the-fly transformation. This becomes relevant if the blog shifts toward image-heavy content or if responsive art direction (different crops at different viewports) becomes a real need. For a handful of illustrations in text-heavy posts, it's overhead.
+- **Responsive image markup.** `srcset` and `sizes` attributes for resolution switching across viewports. The experimental `responsiveImages` configuration in Astro 6 is the natural path once the API stabilizes.[^1]
+- **Image galleries.** MDX components for image grids or lightboxes. These are content patterns that don't exist in the blog yet. The trigger is a post that actually needs a gallery. Building the component before that post exists would be speculative.
 
-The layout foundation is in place. The `Figure` component handles lazy loading and captions. When optimization becomes relevant — format conversion, responsive `srcset`, a CDN — it layers on top without changing the layout or content structure.
+The layout foundation is in place. When optimization becomes relevant, it layers on top without changing the layout or content structure.
 
-The [next post](/posts/view-transitions) covers view transitions — making a static site feel like a single-page application, and the rough edges that come with animating complex SVG content across navigations.
+[^1]: The Cloudflare adapter incompatibility described in this post was resolved before Astro 6 left beta. The `<Image>` and `<Picture>` components now work with the Cloudflare adapter in the GA release, and `responsiveImages` is a stable configuration option. The decisions documented here were made during the beta; the constraints that informed them have since shifted.
