@@ -6,32 +6,42 @@ interface Props {
 const { label } = Astro.props;
 ---
 
-<aside class="aside-note">
-  {label && <p class="aside-label">{label}</p>}
-  <div class="aside-body">
-    <slot />
-  </div>
-</aside>
+<div class="aside-wrapper">
+  <aside class="aside-note">
+    {label && <p class="aside-label">{label}</p>}
+    <div class="aside-body">
+      <slot />
+    </div>
+  </aside>
+</div>
 
 <style>
+  .aside-wrapper {
+    position: relative;
+  }
+
   .aside-note {
     font-family: var(--font-ui);
     font-size: 0.875rem;
     line-height: 1.5;
     color: var(--color-muted);
-  }
-
-  /* Narrow screens: inline block */
-  .aside-note {
     background: color-mix(in oklab, var(--color-text) 4%, var(--color-main-bg));
     padding: 1rem 1.25rem;
     border-radius: 6px;
     margin-bottom: 1.5em;
   }
 
-  /* Wide screens: positioned in right margin */
-  @media (min-width: 1024px) {
+  /* Wide screens: position in right margin, collapse wrapper height */
+  @media (min-width: 80rem) {
+    .aside-wrapper {
+      height: 0;
+      overflow: visible;
+    }
+
     .aside-note {
+      position: absolute;
+      left: calc(100% + 2rem);
+      width: 220px;
       background: transparent;
       padding: 0;
       border-radius: 0;
