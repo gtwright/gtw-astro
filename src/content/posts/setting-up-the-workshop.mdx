@@ -8,11 +8,11 @@ tags: ["Web Development", "AI", "Developer Experience"]
 
 The [previous post](/posts/first-boot) left a scaffolded project deployed and running. Before writing any components or content, I spent time on something that produces nothing visible: project documentation.
 
-The project had four config files and a single page. But the documentation wasn't about the project's current size — it was about how I planned to build everything that followed.
+The project had four config files and a single page. But the documentation wasn't about the project's current size. It was about how I planned to build everything that followed.
 
 ## Choosing tools in a moving landscape
 
-There's a real tension in AI-assisted development right now: spread your time across many tools and get a shallow feel for each, or commit to one pairing and learn it deeply. The landscape moves fast enough that either choice carries risk. Committing means you might miss the better option that ships next month. Spreading thin means you never learn any tool well enough to know what it's actually capable of.
+There's a real tension in AI-assisted development right now: spread your time across many tools and get a shallow feel for each, or commit to one pairing and learn it deeply. The landscape moves fast enough that either choice carries risk. Committing means I might miss the better option that ships next month. Spreading thin means never learning any tool well enough to know what it's actually capable of.
 
 I've spent time in [Windsurf](https://windsurf.com/) and [Kiro](https://kiro.dev/) alongside Cursor and my old standby VS Code on the IDE side. For AI assistants, I've worked with Claude, ChatGPT/Codex, and Gemini, plus some experiments with foundation models via AWS Bedrock. I follow the broader landscape as much as I can, but there isn't enough time to go deep on everything.
 
@@ -22,11 +22,11 @@ This could change at any moment. What I care about is **not being so deeply vend
 
 ## Onboarding my AI collaborators
 
-AI coding assistants read certain files automatically at the start of each session to understand the project. Claude Code reads `CLAUDE.md`. Cursor reads `.cursorrules`. These files shape every interaction that follows — the conventions the assistant should follow, the patterns it should use, the mistakes it should avoid.
+AI coding assistants read certain files automatically at the start of each session to understand the project. Claude Code reads `CLAUDE.md`. Cursor reads `.cursorrules`. These files shape every interaction that follows: the conventions the assistant should follow, the patterns it should use, the mistakes it should avoid.
 
 As a manager, I've seen the difference between onboarding a new team member with good documentation versus throwing them into the job cold. AI assistants are the same, except they get onboarded fresh every session. The investment compounds: write the context once, and every future session starts with a collaborator who already understands your architecture, preferences, and constraints.
 
-This matters to me beyond the personal project. I work in a large nonprofit, and even large nonprofits are resource-constrained in ways that are hard to overstate. If AI assistants can meaningfully multiply what a small team produces, the quality of that collaboration becomes a capacity question — not a novelty. Learning to onboard them effectively on a personal project is part of understanding what's realistic before introducing these tools to teams.
+This matters to me beyond the personal project. I work in a large nonprofit, and even large nonprofits are resource-constrained in ways that are hard to overstate. If AI assistants can meaningfully multiply what a small team produces, the quality of that collaboration becomes a capacity question, not a novelty. Learning to onboard them effectively on a personal project is part of understanding what's realistic before introducing these tools to teams.
 
 The question is how to structure that documentation while balancing tool-specific best practice with portability.
 
@@ -53,7 +53,7 @@ and architecture details.
 - Never add a `Co-Authored-By` line to commit messages
 ```
 
-Five rules specific to Claude Code's behavior, and a pointer to the real conventions document. `.cursorrules` is nearly identical — same pointer, same rules, minus the commit message convention (which is Claude Code-specific).
+Five rules specific to Claude Code's behavior, and a pointer to the real conventions document. `.cursorrules` is nearly identical: same pointer, same rules, minus the commit message convention (which is Claude Code-specific).
 
 The same principle as a design system: define once, reference everywhere, allow local overrides where tools diverge. Maintaining one document is sustainable. Maintaining multiple copies of the same information is not. If a different assistant or IDE becomes the better choice next month, adding a new entry point is one file. The substance stays the same.
 
@@ -61,7 +61,7 @@ The same principle as a design system: define once, reference everywhere, allow 
 
 The conventions file is the real work. It covers:
 
-- **Tech stack** — not just what we're using, but the specific versions and why (Astro 6 beta, Tailwind v4, Bun, Cloudflare Workers)
+- **Tech stack** — not just what's in use, but the specific versions and why (Astro 6 beta, Tailwind v4, Bun, Cloudflare Workers)
 - **Project structure** — where things live and why
 - **Design tokens** — fonts, colors, and the pattern for deriving them (`color-mix` in oklab)
 - **Component conventions** — Props interfaces, scoped styles, View Transitions
@@ -70,33 +70,33 @@ The conventions file is the real work. It covers:
 - **Accessibility** — WCAG targets, landmark requirements
 - **Don'ts** — explicit anti-patterns (raw hex colors, missing Props interfaces, committing placeholder content)
 
-This file started small and grows alongside the project. Each architectural decision or established pattern goes into CONVENTIONS.md. The file is both documentation and contract — it describes what exists *and* constrains what gets built next.
+This file started small and grows alongside the project. Each architectural decision or established pattern goes into CONVENTIONS.md. The file is both documentation and contract. It describes what exists *and* constrains what gets built next.
 
 ## A style guide for voice
 
-Separate from the technical conventions, I wrote a style guide (`docs/STYLE_GUIDE.md`) that defines the editorial voice for blog content. To be clear about the workflow here: these posts are my ideas, my structure, my voice. I'm not handing off writing to an AI and publishing what comes back. But I am using AI tools to accelerate drafting, catch blind spots, and pressure-test structure — and that means the tools need to understand the tone I'm aiming for.
+Separate from the technical conventions, I wrote a style guide (`docs/STYLE_GUIDE.md`) that defines the editorial voice for blog content. To be clear about the workflow here: these posts are my ideas, my structure, my voice. I'm not handing off writing to an AI and publishing what comes back. But I am using AI tools to accelerate drafting, catch blind spots, and pressure-test structure. That means the tools need to understand the tone I'm aiming for.
 
-The guide describes a specific posture: lead with questions rather than conclusions, make reasoning visible, name downsides and uncertainty, treat the reader as a peer. It lists what to avoid — solutionist framing, "thought leadership" language, overconfident claims. The quality check at the end asks whether the writing sounds like someone thinking carefully or someone selling an idea.
+The guide describes a specific posture: lead with questions rather than conclusions, make reasoning visible, name downsides and uncertainty, treat the reader as a peer. It lists what to avoid: solutionist framing, "thought leadership" language, overconfident claims. The quality check at the end asks whether the writing sounds like someone thinking carefully or someone selling an idea.
 
 The style guide keeps me honest and on target. It's also a corrective for AI assistants, which are very good at producing confident, polished prose that says nothing. The guide tells both of us that uncertainty is a feature, not a weakness.
 
-The style guide didn't exist for the first several posts. Retrofitting voice consistency is harder than establishing it from the start — if you're building a content site with AI assistance, the editorial voice document might be the single most important file you create.
+The style guide didn't exist for the first several posts. Retrofitting voice consistency is harder than establishing it from the start. If I were doing this again, the editorial voice document would be one of the first files I created.
 
 ## Specialized agents
 
-Beyond the general project context, I've defined three review agents — specialized roles that Claude Code can delegate to:
+Beyond the general project context, I've defined three review agents, specialized roles that Claude Code can delegate to:
 
 - **Content reviewer** — checks posts against the style guide, validates SEO metadata, ensures series continuity
 - **UI reviewer** — audits components for design token usage, accessibility, CSS architecture, and technical SEO markup
 - **QA reviewer** — validates build pipeline, routing, Cloudflare compatibility, and content collection integrity
 
-Three agents rather than one because the checklists are different and the tool access should be different. Each is a Markdown file in `.claude/agents/` with a focused scope and limited permissions. The content reviewer can read files and search code but can't edit anything — keeping those roles separate means the review stays honest. The QA reviewer can also run shell commands to verify builds.
+Three agents rather than one because the checklists are different and the tool access should be different. Each is a Markdown file in `.claude/agents/` with a focused scope and limited permissions. The content reviewer can read files and search code but can't edit anything. Keeping those roles separate means the review stays honest. The QA reviewer can also run shell commands to verify builds.
 
-The content reviewer has been the most useful so far. Having a defined editorial checklist makes review feel less subjective, and it catches things I'd miss on my own read-through: metadata issues, voice drift, missing series links. The UI reviewer has flagged design token violations I wouldn't have noticed until they caused visual inconsistencies. The QA reviewer is currently a checklist waiting for a test suite — its "Testing" section is all future considerations. The role exists even when the tooling doesn't, and having the checklist clarifies what "quality" means for this project.
+The content reviewer has been the most useful so far. Having a defined editorial checklist makes review feel less subjective, and it catches things I'd miss on my own read-through: metadata issues, voice drift, missing series links. The UI reviewer has flagged design token violations I wouldn't have noticed until they caused visual inconsistencies. The QA reviewer is currently a checklist waiting for a test suite. Its "Testing" section is all future considerations. The role exists even when the tooling doesn't, and having the checklist clarifies what "quality" means for this project.
 
 ## Content planning documents
 
-The last piece of the documentation system is content planning. I started with a single flat list of post ideas. It didn't take long for that to break down — some ideas were half-formed fragments, others were ready to draft, and a few only made sense as part of a sequence. A single list couldn't represent those differences.
+The last piece of the documentation system is content planning. I started with a single flat list of post ideas. It didn't take long for that to break down. Some ideas were half-formed fragments, others were ready to draft, and a few only made sense as part of a sequence. A single list couldn't represent those differences.
 
 What evolved was a three-level structure:
 
@@ -104,7 +104,7 @@ What evolved was a three-level structure:
 - **Series outlines** (`docs/series/*.md`) — themed collections with an arc, a sequence, and scope definitions for each post. The Site Build outline is the most developed.
 - **Draft posts** (`src/content/posts/*.mdx` with `draft: true`) — once an idea graduates from outline to draft, it lives in the content directory.
 
-Ideas flow from backlog to series to draft to published. The backlog is intentionally loose — a place to capture something interesting without committing to a format or sequence. Series outlines add structure and explicit scope. Drafts are real writing.
+Ideas flow from backlog to series to draft to published. The backlog is intentionally loose, a place to capture something interesting without committing to a format or sequence. Series outlines add structure and explicit scope. Drafts are real writing.
 
 ## A few decisions to recap
 
@@ -113,4 +113,4 @@ Ideas flow from backlog to series to draft to published. The backlog is intentio
 - **Scoped agent access** — review agents have read-only access by default. Reviewing and editing stay separate.
 - **Three-level content planning** — backlog, series outline, draft. Each level adds structure as an idea matures.
 
-The [next post](/posts/content-collections-blog-loop) covers content collections and the blog loop — defining a content schema, setting up MDX, and building the routes that give the project something to look at.
+The [next post](/posts/content-collections-blog-loop) covers content collections and the blog loop: defining a content schema, setting up MDX, and building the routes that give the project something to look at.
