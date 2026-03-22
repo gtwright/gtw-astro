@@ -21,20 +21,20 @@ bun create astro
 The interactive wizard walks you through a few choices. I went with:
 
 - **Empty project** — no starter template. I wanted to understand every file in the repo, not inherit someone else's opinions.
-- **TypeScript, strict mode** — on a personal blog this is less about necessity and more about reinforcing habits I rely on in larger projects. It catches real bugs in component props and content schemas, and it gives AI assistants more to work with — they generate better code when they have types to anchor on.
+- **TypeScript, strict mode** — on a personal blog this is less about necessity and more about reinforcing habits I rely on in larger projects. It catches real bugs in component props and content schemas, and it gives AI assistants more to work with. They generate better code when they have types to anchor on.
 - **No sample files** — just `astro.config.mjs`, `tsconfig.json`, `package.json`, and a single `src/pages/index.astro`.
 
-The result is a project with about five files — running Astro v5 (stable). Since I'd already decided to build on v6, the next step was upgrading.
+The result is a project with about five files, running Astro v5 (stable). Since I'd already decided to build on v6, the next step was upgrading.
 
-Neither `bun create astro@latest` nor `npx create astro -- --ref next` installed the v6 beta — both gave me stable v5. The scaffolder doesn't have a beta channel. The solution was straightforward: scaffold with stable, then upgrade:
+Neither `bun create astro@latest` nor `npx create astro -- --ref next` installed the v6 beta. Both gave me stable v5. The scaffolder doesn't have a beta channel. The solution was straightforward: scaffold with stable, then upgrade:
 
 ```bash
 bun add astro@beta
 ```
 
-This pulls in the latest v6 beta and updates `package.json` accordingly. The [Astro v6 upgrade guide](https://v6.docs.astro.build/en/guides/upgrade-to/v6/) covers what's changed. From here on out, everything I build is on the version Cloudflare will be optimizing for — the same bet I outlined in the [previous post](/posts/why-astro-cloudflare).
+This pulls in the latest v6 beta and updates `package.json` accordingly. The [Astro v6 upgrade guide](https://v6.docs.astro.build/en/guides/upgrade-to/v6/) covers what's changed. From here on out, everything I build is on the version Cloudflare will be optimizing for. The same bet I outlined in the [previous post](/posts/why-astro-cloudflare).
 
-If you're adopting a beta, expect a two-step process — scaffold stable, then upgrade. Minor, but the kind of thing that costs you thirty minutes if you don't expect it.
+The beta added a two-step process: scaffold stable, then upgrade. Minor, but it cost me about thirty minutes I didn't expect.
 
 ## Adding the Cloudflare adapter
 
@@ -44,7 +44,7 @@ The Cloudflare decision from the [previous post](/posts/why-astro-cloudflare) ne
 bun add @astrojs/cloudflare@beta
 ```
 
-Since we're on Astro v6 beta, we need the matching v13 beta of the adapter — the stable release targets Astro v5. The [Cloudflare adapter docs](https://v6.docs.astro.build/en/guides/integrations-guide/cloudflare/) cover the full configuration reference.
+Since the project is on Astro v6 beta, the adapter needs to match. The stable release targets Astro v5. The [Cloudflare adapter docs](https://v6.docs.astro.build/en/guides/integrations-guide/cloudflare/) cover the full configuration reference.
 
 And in `astro.config.mjs`:
 
@@ -57,9 +57,9 @@ export default defineConfig({
 });
 ```
 
-Two things worth noting here. First, `output: 'static'` — Astro defaults to static rendering, and that's what I want. The adapter handles deploying the static output to Cloudflare Workers. Second, I'm adding the adapter before I have anything to deploy. This is deliberate. I've seen too many projects build for weeks against a local dev server and then scramble to sort out deployment late in the process. Wiring up the target environment early — even when there's nothing meaningful to deploy — surfaces integration issues when they're easier to fix.
+Two things worth noting here. First, `output: 'static'`. Astro defaults to static rendering, and that's what I want. The adapter handles deploying the static output to Cloudflare Workers. Second, I'm adding the adapter before I have anything to deploy. This is deliberate. I've seen too many projects build for weeks against a local dev server and then scramble to sort out deployment late in the process. Wiring up the target environment early, even when there's nothing meaningful to deploy, surfaces integration issues when they're easier to fix.
 
-The Wrangler config is similarly minimal — a `wrangler.jsonc` that names the project, points at the build output, and pins the runtime version:
+The Wrangler config is similarly minimal. A `wrangler.jsonc` that names the project, points at the build output, and pins the runtime version:
 
 ```jsonc
 {
@@ -74,7 +74,7 @@ The Wrangler config is similarly minimal — a `wrangler.jsonc` that names the p
 }
 ```
 
-The `compatibility_date` locks the Workers runtime behavior to a known version — important for reproducibility. And `html_handling: "drop-trailing-slash"` tells Cloudflare to serve clean URLs (`/about` instead of `/about/`), which is a small detail worth getting right early. The production domain and route configuration will come later.
+The `compatibility_date` locks the Workers runtime behavior to a known version, which matters for reproducibility. And `html_handling: "drop-trailing-slash"` tells Cloudflare to serve clean URLs (`/about` instead of `/about/`), which is a small detail worth getting right early. The production domain and route configuration will come later.
 
 ## First boot
 
@@ -84,7 +84,7 @@ bun run dev
 
 Astro's dev server starts, Vite spins up, and there's a page at `localhost:4321` with whatever I put in `index.astro`. At this point that's a single `<h1>` tag. Not much to look at, but it confirms the toolchain works: Bun resolves dependencies, Vite serves the project, Astro renders the page, and TypeScript is checking types.
 
-I've learned not to take this step for granted. A working dev server means the foundation is solid. Everything after this is building on something real; everything before it is speculation.
+A working dev server means the foundation is solid. Everything after this builds on something real.
 
 ## First build
 
@@ -115,17 +115,17 @@ Then the first deploy was a single command:
 bun run deploy
 ```
 
-Wrangler comes along with the Cloudflare adapter, so there's nothing additional to install. Astro builds the static output and Wrangler pushes the result to Cloudflare Workers. The site goes live at a `.workers.dev` subdomain — not a real domain yet, but proof that the full pipeline works from source to production. No GitHub integration needed yet — this is just a manual push from my machine to Cloudflare's edge. Note: I'll plan on doing some experiments with hybrid or server Astro setups in the future, but for now, static is fine.
+Wrangler comes along with the Cloudflare adapter, so there's nothing additional to install. Astro builds the static output and Wrangler pushes the result to Cloudflare Workers. The site goes live at a `.workers.dev` subdomain. Not a real domain yet, but proof that the full pipeline works from source to production. No GitHub integration needed at this point, just a manual push from my machine to Cloudflare's edge. I'll likely experiment with hybrid or server Astro setups in the future, but static is the right starting point.
 
-I'm skipping over the Cloudflare account setup and Wrangler authentication here — you'll need a Cloudflare account and a one-time `wrangler login`, both [well-documented](https://developers.cloudflare.com/workers/get-started/guide/).
+I'm skipping over the Cloudflare account setup and Wrangler authentication here. Both are straightforward and [well-documented](https://developers.cloudflare.com/workers/get-started/guide/).
 
-The takeaway from this step is how little is required, even with Astro v6 beta. Five config files, three commands (scaffold, build, deploy), and the site is live at the edge. The beta adds some minor version-matching friction — making sure Astro and the Cloudflare adapter are on compatible beta tracks — but the core workflow is clean.
+Even with Astro v6 beta, the total setup was five config files and three commands (scaffold, build, deploy), and the site is live at the edge. The beta adds some version-matching friction, but the core workflow is clean.
 
 ## Connecting GitHub
 
 With the manual deploy confirmed, the next step was reducing friction for future updates. I connected the GitHub repo to Cloudflare's deployment integration. Commits to `main` now trigger automatic deploys.
 
-This isn't CI/CD in any serious sense — there are no tests, no linting, no checks beyond what `astro build` does. A broken commit goes live immediately. At some point I'll want quality gates — type checking, maybe accessibility checks, maybe Lighthouse scores. But fast feedback loops matter more at this stage than safety nets. I'll add guardrails later.
+This isn't CI/CD in any serious sense. There are no tests, no linting, no checks beyond what `astro build` does. A broken commit goes live immediately. At some point I'll want quality gates: type checking, maybe accessibility checks, maybe Lighthouse scores. But fast feedback loops matter more at this stage. I'll add guardrails later.
 
 ## What the project looks like at this point
 
@@ -143,7 +143,7 @@ After scaffolding, the project is sparse:
 
 No components, no layouts, no styles, no content directory. Just config and a single page. I want to add each layer intentionally, understanding what it does and why it's there. That's a luxury of a personal project — at work, scaffolding decisions often get made quickly and lived with for years. Here, I can be deliberate.
 
-## What we're deferring
+## What I'm deferring
 
 A few decisions to recap:
 
