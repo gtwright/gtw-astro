@@ -97,16 +97,14 @@ const nextPost = allPosts[currentIndex - 1];
               </span>
             )}
           </div>
-          <p transition:name={`post-desc-${post.id}`} class="font-(family-name:--font-body) text-[1.25rem] leading-relaxed text-(--color-muted) mt-0 mb-4">
+          <p transition:name={`post-desc-${post.id}`} class="font-(family-name:--font-body) text-base sm:text-lg leading-relaxed text-(--color-muted) mt-0 mb-4">
             {post.data.description}
           </p>
           <div transition:name={`post-byline-${post.id}`} class="flex flex-wrap items-center gap-x-3 gap-y-1 font-(family-name:--font-ui) text-sm text-(--color-muted)">
             {author.url ? (
-              <a href={author.url} class="no-underline text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors">
-                {author.name}
-              </a>
+              <span>By <a href={author.url} class="no-underline text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors">{author.name}</a></span>
             ) : (
-              <span>{author.name}</span>
+              <span>By {author.name}</span>
             )}
             <span class="text-(--color-border)">·</span>
             <time datetime={post.data.published.toISOString()}>

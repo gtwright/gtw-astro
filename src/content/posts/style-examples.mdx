@@ -7,6 +7,9 @@ tags: ["Style", "Markdown", "MDX"]
 ---
 
 import Figure from '../../components/Figure.astro';
+import Callout from '../../components/Callout.astro';
+import Aside from '../../components/Aside.astro';
+import PullQuote from '../../components/PullQuote.astro';
 
 ## Paragraphs (H2)
 
@@ -153,6 +156,56 @@ const { title } = Astro.props;
 ### HTML image
 
 <img src="https://picsum.photos/seed/style-gray/1200/675?grayscale" alt="Grayscale placeholder" loading="lazy" />
+
+---
+
+## MDX Components
+
+### Callouts
+
+<Callout type="note">
+This is a **note** callout. Use it for general annotations or asides that don't fit neatly into the main text.
+</Callout>
+
+<Callout type="info">
+This is an **info** callout. Use it to highlight background context or supplementary information.
+</Callout>
+
+<Callout type="tip">
+This is a **tip** callout. Use it for practical advice or recommendations.
+</Callout>
+
+<Callout type="warning">
+This is a **warning** callout. Use it for caveats, gotchas, or things the reader should be cautious about.
+</Callout>
+
+<Callout type="tip" title="Custom title">
+Callouts accept an optional `title` prop that overrides the default label.
+</Callout>
+
+### Pull quote
+
+<PullQuote>
+Good typography is invisible — the reader focuses on content, not on the mechanics of reading.
+</PullQuote>
+
+<PullQuote attribution="Robert Bringhurst">
+Typography exists to honor content.
+</PullQuote>
+
+### Aside
+
+The aside component renders as an inline block on narrow screens and floats into the right margin on wide screens.
+
+<Aside label="Note">
+This is a margin note. On wide viewports it sits beside the paragraph that precedes it, keeping the main column uninterrupted.
+</Aside>
+
+An aside without a label works too — it's just a quieter annotation in the margin.
+
+<Aside>
+A label-less aside for smaller observations.
+</Aside>
 
 ---
 

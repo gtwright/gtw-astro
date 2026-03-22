@@ -6,7 +6,8 @@ interface Props {
 const { attribution } = Astro.props;
 ---
 
-<figure class="pull-quote wide">
+<figure class="pull-quote">
+  <div class="quote-mark" aria-hidden="true">&ldquo;</div>
   <blockquote>
     <slot />
   </blockquote>
@@ -17,11 +18,20 @@ const { attribution } = Astro.props;
 
 <style>
   .pull-quote {
-    text-align: center;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 0.5rem;
     padding: 1.5rem 0;
     margin: 2em 0;
-    border-top: 2px solid var(--color-accent-interactive);
-    border-bottom: 2px solid var(--color-accent-interactive);
+  }
+
+  .quote-mark {
+    grid-row: 1 / -1;
+    font-family: var(--font-headline);
+    font-size: 4.5rem;
+    line-height: 0.8;
+    color: var(--color-accent-interactive);
+    align-self: start;
   }
 
   .pull-quote blockquote {
@@ -40,9 +50,11 @@ const { attribution } = Astro.props;
   }
 
   figcaption {
+    grid-column: 1 / -1;
     font-family: var(--font-ui);
     font-size: 0.875rem;
     color: var(--color-muted);
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
+    text-align: right;
   }
 </style>

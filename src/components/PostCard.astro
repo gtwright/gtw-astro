@@ -39,7 +39,7 @@ const formattedDate = published.toLocaleDateString('en-US', {
   </a>
   <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3">
     <div transition:name={`post-byline-${slug}`} class="flex items-center gap-3">
-      <span class="font-(family-name:--font-ui) text-sm text-(--color-muted)">{author?.name ?? 'Graham Wright'}</span>
+      <span class="font-(family-name:--font-ui) text-sm text-(--color-muted)">By {author?.name ?? 'Graham Wright'}</span>
       <span class="text-(--color-border)">·</span>
       <time datetime={published.toISOString()} class="font-(family-name:--font-ui) text-sm text-(--color-muted)">
         {formattedDate}
