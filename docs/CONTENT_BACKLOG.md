@@ -6,16 +6,12 @@ Raw ideas, observations, and topics that might become posts or series. No commit
 
 ## Active: Near-Term Publishing Queue
 
-### 1. Images — Responsive, Modern, and Good Enough for Now
-**Status:** Draft complete. Publish now.
-Site build post. Done, sitting in drafts.
+### 1. ~~Images~~ — Published 2026-03-22
 
-### 2. AWS Imagine Nonprofit 2026
-**Status:** ~30% drafted. Finish while fresh.
-JGI section is strong. Remaining: opening framing (contrast with Snowflake event), keynote summary, executive roundtable (Sara Seba conversation on governance sweet spot), performing arts peer network (Lincoln Center, Met Opera, Kimmel Center), closing. Waiting on potential slide deck release from AWS for reference.
+### 2. ~~AWS Imagine Nonprofit 2026~~ — Published 2026-03-22
 
 ### 3. Machines for the Machine Work (flagship)
-**Status:** Outline ready. New post.
+**Status:** Outline ready. Draft file: `machines-for-the-machine-work.mdx` (renamed from tedious-work-that-matters).
 The gear shift from AI moonshots to broad-base workflow transformation. Three-zone appropriateness framework. Connects to AWS Imagine governance conversations. See: [`docs/series/ai-in-practice-v2.md`](series/actionable-ai.md)
 
 ### 4. What Changed Yesterday (working title)
@@ -72,7 +68,7 @@ Previous outline preserved at: [`docs/series/data-modernization.md`](series/data
 Preparing for the AWS AI Practitioner certification. Posts built around applied exercises. On hold.
 
 ### Performance History & Data Visualization
-Beethoven/BSO chart and broader programming data stories. Parked until visualization exists.
+Reproducing and expanding the Beethoven performance history visualization from the previous site. Two goals: testing data visualization tools for the blog, and exploring the history of performing Beethoven at the BSO (ties to the Beethoven festival, January 2026). A similar Tchaikovsky visualization could follow for the planned Tchaikovsky festival. Source data comes from the BSO performance archives (henry marts in Snowflake). Parked until visualization tooling is evaluated.
 
 ### HENRY 2.0
 Archives.bso.org rebuild. Parked — the content research tools work may produce blog content that overlaps.
