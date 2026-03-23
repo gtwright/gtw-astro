@@ -12,7 +12,7 @@ Site build post. Done, sitting in drafts.
 
 ### 2. AWS Imagine Nonprofit 2026
 **Status:** ~30% drafted. Finish while fresh.
-JGI section is strong. Remaining: opening framing (contrast with Snowflake event), keynote summary, executive roundtable (Sarah Seba conversation on governance sweet spot), performing arts peer network (Lincoln Center, Met Opera, Kimmel Center), closing. Waiting on potential slide deck release from AWS for reference.
+JGI section is strong. Remaining: opening framing (contrast with Snowflake event), keynote summary, executive roundtable (Sara Seba conversation on governance sweet spot), performing arts peer network (Lincoln Center, Met Opera, Kimmel Center), closing. Waiting on potential slide deck release from AWS for reference.
 
 ### 3. Machines for the Machine Work (flagship)
 **Status:** Outline ready. New post.
