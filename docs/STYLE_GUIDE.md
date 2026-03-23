@@ -120,6 +120,12 @@ Write as someone working through complex questions at the intersection of **tool
 
 ---
 
+## Frontmatter Conventions
+
+- **`description`**: Target 120–155 characters. This field does triple duty: meta description for search engines (Google truncates at ~160), OG description for social share cards (LinkedIn, Bluesky), and subtitle copy on the blog itself. Lead with the event or topic name, then the most specific and genuinely interesting details from the post. Avoid generic summaries.
+
+---
+
 ## Quality Check
 
 Before finalizing a post, ask:
