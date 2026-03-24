@@ -73,7 +73,7 @@ function buildMarkup(title: string, dateStr: string) {
       style: {
         width: WIDTH,
         height: HEIGHT,
-        backgroundColor: tokens.color.bg,
+        backgroundColor: tokens.color.atmosphere,
         display: 'flex',
         flexDirection: 'column' as const,
         padding: `${SAFE_Y}px ${SAFE_X}px`,
@@ -93,9 +93,9 @@ function buildMarkup(title: string, dateStr: string) {
               props: {
                 style: {
                   fontFamily: tokens.font.headline,
-                  fontSize: 54,
+                  fontSize: 60,
                   fontWeight: 700,
-                  color: tokens.color.text,
+                  color: '#ffffff',
                   lineHeight: 1.15,
                 },
                 children: title,
@@ -120,7 +120,7 @@ function buildMarkup(title: string, dateStr: string) {
                   style: {
                     fontFamily: tokens.font.ui,
                     fontSize: 22,
-                    color: tokens.color.atmosphere,
+                    color: 'rgba(255, 255, 255, 0.7)',
                   },
                   children: dateStr,
                 },
