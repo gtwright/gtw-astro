@@ -8,10 +8,11 @@
   "scripts": {
     "dev": "astro dev",
     "check": "astro check",
-    "build": "astro check && astro build",
+    "og": "bun run scripts/generate-og.ts",
+    "build": "bun run og && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "astro build && wrangler deploy"
+    "deploy": "bun run og && astro build && wrangler deploy"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.1",
@@ -31,6 +32,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.7",
+    "@resvg/resvg-js": "^2.6.2",
+    "gray-matter": "^4.0.3",
+    "satori": "^0.26.0",
     "typescript": "^5.9.3",
     "wrangler": "^4.68.1"
   }
