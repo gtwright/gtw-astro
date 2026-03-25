@@ -1,5 +1,6 @@
 ---
-import { Image } from 'astro:assets';
+import { transformProps } from '@unpic/core';
+import { getMediaMeta, getPlaceholder, resolveImageSrc } from '../lib/media';
 
 interface Props {
   src: string | ImageMetadata;
@@ -7,19 +8,37 @@ interface Props {
   caption?: string;
   credit?: string;
   size?: 'standard' | 'wide' | 'full' | 'small';
-  width?: number;
-  height?: number;
+  loading?: 'lazy' | 'eager';
 }
 
-const { src, alt, caption, credit, size = 'standard', width = 1200, height = 675 } = Astro.props;
+const { src, alt, caption, credit, size = 'standard', loading = 'lazy' } = Astro.props;
+
+const isLocal = typeof src === 'object';
+const rawSrc = isLocal ? (src as ImageMetadata).src : src;
+const resolvedSrc = isLocal ? rawSrc : resolveImageSrc(rawSrc);
+const meta = isLocal ? null : getMediaMeta(rawSrc);
+const placeholder = isLocal ? undefined : getPlaceholder(rawSrc);
+
+const width = isLocal ? (src as ImageMetadata).width : (meta?.width ?? 1200);
+const height = isLocal ? (src as ImageMetadata).height : (meta?.height ?? 675);
+
+const imgAttrs = transformProps({
+  src: resolvedSrc,
+  width,
+  height,
+  alt,
+  loading,
+  layout: 'constrained',
+});
 ---
 
 <figure class:list={[size !== 'standard' && size]}>
-  {typeof src === 'string' ? (
-    <Image src={src} alt={alt} width={width} height={height} widths={[400, 800, 1200]} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px" loading="lazy" decoding="async" />
-  ) : (
-    <Image src={src} alt={alt} widths={[400, 800, 1200]} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px" loading="lazy" decoding="async" />
-  )}
+  <div
+    class="figure-img-wrapper"
+    style={placeholder ? `background-image:url(${placeholder});background-size:cover;background-position:center;aspect-ratio:${width}/${height};border-radius:8px;overflow:hidden` : undefined}
+  >
+    <img {...imgAttrs as any} decoding="async" />
+  </div>
   {(caption || credit) && (
     <figcaption>
       {caption && <Fragment set:html={caption} />}
