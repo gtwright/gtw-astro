@@ -37,3 +37,6 @@ pnpm-debug.log*
 # playwright MCP
 .playwright-mcp/
 
+# media staging (uploaded to R2, not committed)
+media/
+

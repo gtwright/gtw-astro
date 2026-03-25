@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "check": "astro check",
     "og": "bun run scripts/generate-og.ts",
+    "media:manifest": "bun run scripts/generate-media-manifest.ts",
     "build": "bun run og && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -26,15 +27,18 @@
     "@iconify-json/lucide": "^1.2.93",
     "@iconify-json/simple-icons": "^1.2.71",
     "@tailwindcss/vite": "^4.2.1",
+    "@unpic/astro": "^1.0.2",
     "astro": "^6.0.4",
     "astro-icon": "^1.1.5",
-    "tailwindcss": "^4.2.1"
+    "tailwindcss": "^4.2.1",
+    "thumbhash": "^0.1.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.7",
     "@resvg/resvg-js": "^2.6.2",
     "gray-matter": "^4.0.3",
     "satori": "^0.26.0",
+    "sharp": "^0.34.5",
     "typescript": "^5.9.3",
     "wrangler": "^4.68.1"
   }

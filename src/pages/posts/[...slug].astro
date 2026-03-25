@@ -2,14 +2,16 @@
 export const prerender = true;
 import type { InferGetStaticPropsType } from 'astro';
 import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
+import { transformProps } from '@unpic/core';
 import Base from '../../layouts/Base.astro';
 import Prose from '../../components/Prose.astro';
+import MdxImage from '../../components/MdxImage.astro';
 import TagList from '../../components/TagList.astro';
 import AuthorCard from '../../components/AuthorCard.astro';
 import ShareLinks from '../../components/ShareLinks.astro';
 import { SITE } from '../../consts';
 import { resolveAuthor } from '../../lib/authors';
+import { resolveImageSrc, getMediaMeta } from '../../lib/media';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => {
@@ -121,24 +123,26 @@ const nextPost = allPosts[currentIndex - 1];
           </div>
         </header>
 
-        {post.data.image && (
-          <figure class="col-[wide] mb-10">
-            <Image
-              src={post.data.image}
-              alt=""
-              width={1200}
-              height={675}
-              widths={[400, 800, 1200]}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-              loading="eager"
-              decoding="async"
-              class="w-full h-auto rounded-lg"
-            />
-          </figure>
-        )}
+        {post.data.image && (() => {
+          const resolvedImage = resolveImageSrc(post.data.image);
+          const meta = getMediaMeta(post.data.image);
+          const imgAttrs = transformProps({
+            src: resolvedImage,
+            width: meta?.width ?? 1200,
+            height: meta?.height ?? 675,
+            alt: '',
+            loading: 'eager' as const,
+            layout: 'constrained' as const,
+          });
+          return (
+            <figure class="col-[wide] mb-10">
+              <img {...imgAttrs as any} decoding="async" class="w-full h-auto rounded-lg" />
+            </figure>
+          );
+        })()}
 
         <Prose>
-          <Content />
+          <Content components={{ img: MdxImage }} />
         </Prose>
       </article>
     </div>

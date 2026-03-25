@@ -1,0 +1,45 @@
+---
+/**
+ * MDX component override for <img> elements.
+ * Maps plain markdown images (![alt](url)) to responsive images with
+ * lazy loading, srcset, and ThumbHash placeholders via @unpic/core.
+ */
+import { transformProps } from '@unpic/core';
+import { getMediaMeta, getPlaceholder, resolveImageSrc } from '../lib/media';
+
+interface Props {
+  src?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+}
+
+const { src = '', alt = '', width, height } = Astro.props;
+
+const resolvedSrc = resolveImageSrc(src);
+const meta = getMediaMeta(src);
+const placeholder = getPlaceholder(src);
+
+const imgWidth = width ?? meta?.width ?? 1200;
+const imgHeight = height ?? meta?.height ?? 675;
+
+const imgAttrs = transformProps({
+  src: resolvedSrc,
+  width: imgWidth,
+  height: imgHeight,
+  alt,
+  loading: 'lazy' as const,
+  layout: 'constrained',
+});
+---
+
+{placeholder ? (
+  <div
+    class="figure-img-wrapper"
+    style={`background-image:url(${placeholder});background-size:cover;background-position:center;aspect-ratio:${imgWidth}/${imgHeight};border-radius:8px;overflow:hidden`}
+  >
+    <img {...imgAttrs as any} decoding="async" />
+  </div>
+) : (
+  <img {...imgAttrs as any} decoding="async" />
+)}
