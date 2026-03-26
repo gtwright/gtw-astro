@@ -8,8 +8,8 @@ export type MediaMeta = {
   uploadedAt: string | null;
 };
 
-const CDN_BASE = import.meta.env.PUBLIC_CDN_BASE as string | undefined;
-const CLOUDINARY_CLOUD = import.meta.env.PUBLIC_CLOUDINARY_CLOUD as string | undefined;
+const CDN_BASE = 'https://cdn.graham-wright.com';
+const CLOUDINARY_CLOUD = 'dfbgv0ocj';
 
 const typedManifest = manifest as Record<string, MediaMeta>;
 
@@ -47,23 +47,11 @@ export function resolveImageSrc(src: string): string {
     return src;
   }
 
-  // /media/ path → resolve to CDN or keep as-is for local dev
+  // /media/ path → Cloudinary fetch wrapping the R2 CDN origin
   if (src.startsWith('/media/')) {
     const mediaPath = src.slice('/media/'.length);
-
-    if (CDN_BASE && CLOUDINARY_CLOUD) {
-      // Full production path: Cloudinary fetch from CDN
-      const origin = `${CDN_BASE}/${mediaPath}`;
-      return `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/fetch/${origin}`;
-    }
-
-    if (CDN_BASE) {
-      // CDN configured but no Cloudinary — serve directly from R2
-      return `${CDN_BASE}/${mediaPath}`;
-    }
-
-    // No CDN configured — serve from local path (dev fallback)
-    return src;
+    const origin = `${CDN_BASE}/${mediaPath}`;
+    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/fetch/${origin}`;
   }
 
   return src;
