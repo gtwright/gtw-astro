@@ -21,7 +21,8 @@ interface Props {
 
 const { title, description, image, post, person = false } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const pathname = Astro.url.pathname.replace(/(?<=.)\/+$/, '');
+const canonicalURL = new URL(pathname, Astro.site);
 
 // OG image priority: explicit prop → post frontmatter → generated → default
 const slug = Astro.url.pathname.replace(/^\/posts\//, '').replace(/\/$/, '');

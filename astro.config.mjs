@@ -34,6 +34,8 @@ export default defineConfig({
         return true;
       },
       serialize(item) {
+        // Strip trailing slash to match Cloudflare's drop-trailing-slash
+        item.url = item.url.replace(/(?<=.)\/+$/, '');
         const lastmod = lastmodDates.get(item.url);
         if (lastmod) item.lastmod = lastmod;
         return item;
