@@ -1,6 +1,7 @@
 import { execSync } from 'node:child_process';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { parseFrontmatter } from '@astrojs/markdown-remark';
+import { parse as parseYaml } from 'yaml';
 
 /**
  * Content collections with `published`/`updated` frontmatter dates.
@@ -43,4 +44,24 @@ export function buildLastmodMap(siteUrl: string): Map<string, string> {
   }
 
   return map;
+}
+
+/**
+ * Returns slugs of tags that have a YAML file with a `description` field.
+ * Tag pages without descriptions are thin content — exclude from sitemap.
+ */
+export function buildDescribedTagSlugs(): Set<string> {
+  const dir = './src/content/tags';
+  const slugs = new Set<string>();
+  if (!existsSync(dir)) return slugs;
+
+  for (const file of readdirSync(dir)) {
+    if (!file.endsWith('.yaml') && !file.endsWith('.yml')) continue;
+    const raw = readFileSync(`${dir}/${file}`, 'utf-8');
+    const data = parseYaml(raw);
+    if (data?.description) {
+      slugs.add(file.replace(/\.ya?ml$/, ''));
+    }
+  }
+  return slugs;
 }

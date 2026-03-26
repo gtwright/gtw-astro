@@ -6,10 +6,11 @@ import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
 import { SITE } from './src/consts';
-import { buildLastmodMap } from './src/lib/sitemap';
+import { buildLastmodMap, buildDescribedTagSlugs } from './src/lib/sitemap';
 import { remarkReadingTime } from './src/lib/reading-time';
 
 const lastmodDates = buildLastmodMap(SITE.url);
+const describedTags = buildDescribedTagSlugs();
 
 export default defineConfig({
   site: SITE.url,
@@ -24,6 +25,14 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
+      filter(page) {
+        const url = new URL(page);
+        const match = url.pathname.match(/^\/tags\/([^/]+)/);
+        if (match) return describedTags.has(match[1]);
+        // Exclude the /tags/ index page too
+        if (url.pathname === '/tags/' || url.pathname === '/tags') return false;
+        return true;
+      },
       serialize(item) {
         const lastmod = lastmodDates.get(item.url);
         if (lastmod) item.lastmod = lastmod;
