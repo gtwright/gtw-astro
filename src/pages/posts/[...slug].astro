@@ -93,11 +93,6 @@ const nextPost = allPosts[currentIndex - 1];
             >
               {post.data.title}
             </h1>
-            {post.data.draft && (
-              <span transition:name={`post-${post.id}-draft`} class="font-(family-name:--font-ui) text-xs font-bold uppercase tracking-widest px-2.5 mb-2 py-1 max-w-max rounded bg-amber-400 text-amber-950 hidden lg:block">
-                Draft
-              </span>
-            )}
           </div>
           <p transition:name={`post-desc-${post.id}`} class="font-(family-name:--font-body) text-base sm:text-lg leading-relaxed text-(--color-muted) mt-0 mb-4">
             {post.data.description}
@@ -119,6 +114,11 @@ const nextPost = allPosts[currentIndex - 1];
                 <span class="text-(--color-border)">·</span>
                 <span>Updated {formattedUpdated}</span>
               </>
+            )}
+            {post.data.draft && (
+              <span class="font-(family-name:--font-ui) text-xs font-bold uppercase tracking-widest text-amber-500">
+                Draft
+              </span>
             )}
           </div>
         </header>
