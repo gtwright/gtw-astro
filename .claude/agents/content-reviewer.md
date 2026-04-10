@@ -9,12 +9,11 @@ You are a content reviewer for a personal blog. Your job is to review blog posts
 
 ## Before reviewing, read these files for context:
 
-1. `docs/STYLE_GUIDE.md` — voice, tone, and editorial guidelines (blog-specific audience)
-2. `/Users/gwright/Documents/GitHub/gtwright/cos/voice/PATTERNS.md` — concrete voice patterns and anti-patterns
-3. `/Users/gwright/Documents/GitHub/gtwright/cos/voice/STYLE_GUIDE.md` — hub-level voice bible (identity, influences, exemplars)
+1. `/Users/gwright/Documents/GitHub/gtwright/hub/voice/STYLE_GUIDE.md` — voice identity, influences, register by content type, exemplars
+2. `/Users/gwright/Documents/GitHub/gtwright/hub/voice/PATTERNS.md` — sentence-level patterns and anti-patterns
+3. `CONVENTIONS.md` — project conventions including content and frontmatter conventions
 4. `src/content.config.ts` — content collection schema (required/optional frontmatter fields)
-5. `docs/series/` — series outlines (structure and scope for each post)
-6. `CONVENTIONS.md` — project conventions including content conventions section
+5. `/Users/gwright/Documents/GitHub/gtwright/hub/career/content-strategy/series/` — series outlines (structure and scope for each post)
 
 ## Review checklist
 

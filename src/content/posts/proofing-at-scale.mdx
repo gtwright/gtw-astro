@@ -1,0 +1,41 @@
+---
+title: Proofing at Scale
+description: "How making the BSO's source of truth accessible through AI saved 20+ hours in 30 days during peak season announcements."
+published: 2026-04-07T12:00:00
+draft: true
+tags: ["AI in Practice"]
+---
+
+The Boston Symphony Orchestra manages hundreds of events every year across multiple seasons and venues. We produce thousands of assets from that information — brochures, program books, website pages, ads, emails, social posts. Some are digital and can be updated in place. Others are printed and can't.
+
+During season announcements, event information changes frequently — repertoire shifts, artists change, programs evolve, sometimes several times in a single day. Every one of those changes needs to be reflected in every derivative asset that references the affected event.
+
+We've spent years building a source of truth system for this — Word documents that represent the canonical state of each season's event information, maintained by the team, shared through M365 with layered access as information moves from early planning to public. It works. But even with a source of truth in place, the proofing workflow has always been manual. The source documents still need manual updating. Changes still need to be communicated. And every derivative asset still needs to be checked against the current state. That verification is meticulous, distributed across multiple people, and time-consuming.
+
+## What we built
+
+The source of truth documents already existed. What we built is an MCP server that makes them accessible through Claude.
+
+That means team members can now open Claude on their desktop or phone and ask what the current state of an event is. They can upload a PDF of a brochure and proof it against the source of truth. They can pull up an unpublished page from our content management system — a preview of what a season page will look like before it goes live — and check it directly.
+
+The system answers two questions: what is right today, and what has changed since you last checked.
+
+The second question turned out to matter as much as the first. If someone was out for a day and wants to know what moved, they can ask. If a press release went out a week ago and we need to check whether anything it references has changed since, we can answer that specifically. Instead of re-proofing everything from scratch, the team can focus on what actually needs attention.
+
+## What this has meant
+
+Over the last 30 days — which coincided with our Tanglewood and BSO season announcements, a period where information was particularly fluid — we've saved at least 20 hours of staff time on proofing. That's a conservative estimate, and the ongoing number is still developing as we understand how usage patterns settle outside of peak periods.
+
+The team's workflow didn't change. They still maintain the same Word documents they've been maintaining for years. The system watches, converts, and makes that information queryable. The work that changed is the verification step — from manually comparing documents side by side to asking a specific question and getting a specific answer.
+
+The person whose validation mattered most is the architect and air traffic controller of our source of truth system — the person who built the proofing workflow, who knows every formatting convention and every edge case, and who tracks hundreds of changes across dozens of assets simultaneously. Getting her confident enough to fold this tool into her production workflow wasn't about training. It was about reliability. The tool had to be right often enough, and wrong in predictable enough ways, that she could use it as a starting point for verification rather than a replacement for her judgment.
+
+## Under the hood
+
+The technical challenge was making Word documents — which carry meaning in formatting conventions built up over years — available in a format that AI tools can compare against. We built a pipeline that converts the source of truth documents to a machine-readable format, tracks changes through version control, and serves it all through Claude via a custom MCP server. The build details are their own story, but the key decisions were about preserving institutional conventions through the conversion and making pragmatic governance choices about who gets access to what.
+
+The creative services team is using it now for brochures and ads. The website team is using it for event detail pages. There are still many asset types that aren't benefiting yet — we're rolling this out deliberately.
+
+## What changes
+
+The verification work doesn't disappear. What changes is how attention gets allocated. Instead of scanning everything to find what moved, the team starts from a list of what's different and verifies those specific items. The human judgment — knowing that a particular change matters more than another, catching implications a machine wouldn't flag, understanding the institutional context behind a formatting choice — is still essential. The mechanical scanning is what the system handles.

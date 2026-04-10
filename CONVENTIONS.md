@@ -1,6 +1,6 @@
 # Project Conventions
 
-Personal blog for GTW. Astro 6 beta, pre-launch. Site Build series (see `docs/series/site-build.md`).
+Personal blog for GTW. Astro 6 beta, pre-launch. Content strategy docs live in the hub repo at `career/content-strategy/`.
 
 ## Tech Stack
 
@@ -65,6 +65,7 @@ src/
 - Blog posts live in `src/content/posts/` as `.mdx` files
 - **Required frontmatter:** `title` (string), `description` (string), `published` (datetime, e.g. `2026-02-14T12:00:00`)
 - **Optional frontmatter:** `updated` (datetime), `draft` (boolean, default `false`), `tags` (display-ready string[], see below), `image` (string)
+- **`description` field:** Target 120–155 characters. Does triple duty: meta description for search engines (Google truncates at ~160), OG description for social share cards (LinkedIn, Bluesky), and subtitle copy on the blog itself. Lead with the event or topic name, then the most specific details from the post. Avoid generic summaries.
 - **Dates:** Use local datetime without timezone offset (e.g. `2026-02-14T12:00:00`). All dates are assumed to be America/New_York. Only the date portion is displayed currently, but time is tracked for potential future use. Add `updated` when a published post has been revised after its initial publication.
 - **Draft:** `false` (default) = published · `true` = work-in-progress. Drafts are filtered from production listings but visible in dev.
 - **Tags** are display-ready in frontmatter (e.g. `"Site Build"`, `"MDX"`, `"AI"`). URL slugs are derived automatically via `toSlug()` in `src/lib/tags.ts`. An optional `tags` content collection (`src/content/tags/*.yaml`) can provide extra metadata (descriptions) for individual tags but is not required for basic tag usage.
@@ -130,6 +131,10 @@ Review and update after any PR that changes architecture, design tokens, compone
 
 ## Related Docs
 
-- `docs/CONTENT_BACKLOG.md` — Raw ideas and series candidates
-- `docs/series/site-build.md` — Site Build series outline
-- `docs/series/` — Series outlines (one file per series)
+Content planning docs live in the hub repo (`/Users/gwright/Documents/GitHub/gtwright/hub/career/content-strategy/`):
+- `CONTENT_BACKLOG.md` — Raw ideas and series candidates
+- `series/` — Series outlines (one file per series)
+
+Voice and editorial style live in the hub repo (`/Users/gwright/Documents/GitHub/gtwright/hub/voice/`):
+- `STYLE_GUIDE.md` — Voice identity, influences, register by content type
+- `PATTERNS.md` — Sentence-level patterns and anti-patterns
