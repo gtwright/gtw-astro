@@ -24,7 +24,7 @@ const formattedDate = published.toLocaleDateString('en-US', {
 ---
 
 <article class="py-8" transition:name={`post-${slug}`}>
-  <a href={`/posts/${slug}`} class="relative group no-underline block">
+  <a href={`/posts/${slug}/`} class="relative group no-underline block">
     {draft && (
       <span transition:name={`post-${slug}-draft`} class="absolute -left-20 top-[0.5lh] font-(family-name:--font-ui) text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-amber-400 text-amber-950 hidden lg:block">
         Draft

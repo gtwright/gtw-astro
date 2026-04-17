@@ -52,7 +52,7 @@ Two breakout sessions covered a lot of ground. What resonated:
 
 **Semantic view autopilot** auto-generates semantic views from existing table metadata and can import from Tableau, Looker, and Power BI. It analyzes incoming queries and suggests improvements. Average setup time drops from roughly six days to two hours. For us, anything that lowers the barrier to building a semantic layer matters — that's the gap the keynote identified, and this is tooling aimed directly at closing it.
 
-**Iceberg and the Horizon Catalog** reinforce the open-format direction. Full interoperability with Iceberg and Delta tables, auto-discovery of data assets. This aligns with [what we've been building on our end](/posts/open-formats-commercial-compute).
+**Iceberg and the Horizon Catalog** reinforce the open-format direction. Full interoperability with Iceberg and Delta tables, auto-discovery of data assets. This aligns with [what we've been building on our end](/posts/open-formats-commercial-compute/).
 
 **Governance flowing through to agents** was the thread I kept coming back to. In the enterprise agents session, Al Uber demoed Snowflake Intelligence — each agent scoped to specific data and roles, RBAC and masking policies carrying through to responses. The hallucination prevention demo was telling: the agent queried for a product that didn't exist, got no results, and said so instead of fabricating. The governance story is what makes this enterprise-grade, not the natural language interface.
 
@@ -62,7 +62,7 @@ Two breakout sessions covered a lot of ground. What resonated:
 
 I'm writing this up almost two weeks after the event. Some of these takeaways are already in motion.
 
-**Open formats, confirmed.** I'd already [moved our pipeline to Apache Iceberg](/posts/open-formats-commercial-compute) before this event. Seeing Iceberg interoperability as a leading narrative at a Snowflake event, and hearing that the performance penalty for external tables is gone, reinforces the direction. One less thing to second-guess.
+**Open formats, confirmed.** I'd already [moved our pipeline to Apache Iceberg](/posts/open-formats-commercial-compute/) before this event. Seeing Iceberg interoperability as a leading narrative at a Snowflake event, and hearing that the performance penalty for external tables is gone, reinforces the direction. One less thing to second-guess.
 
 **Cortex as the path to conversational BI.** Snowflake was leaning hard into Cortex Analyst, Cortex Search, and Cortex Agent throughout the day. For us, these tools could be what connects the data platform to the people who need to ask questions of it — fundraising, marketing, education and community programs. Every minute someone spends hunting for a report or waiting for a dashboard to get built is a minute better spent increasing the impact of our work. If I can offer them a way to just ask the question and get the answer, that time goes back to mission. (I've since built a light proof of concept connecting our Snowflake data to Claude, which is what we're using for our AI pilot, to test the pattern before asking the team to invest time in it.)
 

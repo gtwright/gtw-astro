@@ -6,7 +6,7 @@ import WaveBackground from '../components/WaveBackground.astro';
 import { SITE } from '../consts';
 import { buildBaseGraph, buildSimplePageGraph, toGraph } from '../lib/seo-graph';
 
-const canonicalURL = new URL('/waves', SITE.url).href;
+const canonicalURL = new URL('/waves/', SITE.url).href;
 const graph = toGraph([
   ...buildBaseGraph(),
   ...buildSimplePageGraph('Waves', canonicalURL, 'Wavy neon threads with animated pulses.'),

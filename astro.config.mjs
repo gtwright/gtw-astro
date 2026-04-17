@@ -15,6 +15,7 @@ const describedTags = buildDescribedTagSlugs();
 
 export default defineConfig({
   site: SITE.url,
+  trailingSlash: 'always',
   output: 'server',
   adapter: cloudflare(),
   image: {
@@ -28,15 +29,12 @@ export default defineConfig({
     sitemap({
       filter(page) {
         const url = new URL(page);
+        if (url.pathname === '/tags/') return false;
         const match = url.pathname.match(/^\/tags\/([^/]+)/);
         if (match) return describedTags.has(match[1]);
-        // Exclude the /tags/ index page too
-        if (url.pathname === '/tags/' || url.pathname === '/tags') return false;
         return true;
       },
       serialize(item) {
-        // Strip trailing slash to match Cloudflare's drop-trailing-slash
-        item.url = item.url.replace(/(?<=.)\/+$/, '');
         const lastmod = lastmodDates.get(item.url);
         if (lastmod) item.lastmod = lastmod;
         return item;

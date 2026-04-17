@@ -28,7 +28,7 @@ import type { PostAuthor } from './authors';
 
 // ── Stable @id factory ──
 
-export const ids = makeIds({ siteUrl: SITE.url, personUrl: `${SITE.url}/about` });
+export const ids = makeIds({ siteUrl: SITE.url, personUrl: `${SITE.url}/about/` });
 
 // ── Organization helpers ──
 
@@ -65,9 +65,9 @@ export function buildBaseGraph(): Piece[] {
       '@id': ids.person,
       name: AUTHOR.name,
       alternateName: [...AUTHOR.alternateName],
-      url: `${SITE.url}/about`,
+      url: `${SITE.url}/about/`,
       jobTitle: AUTHOR.jobTitle,
-      publishingPrinciples: `${SITE.url}/about`,
+      publishingPrinciples: `${SITE.url}/about/`,
       knowsAbout: [...AUTHOR.knowsAbout],
       homeLocation: {
         '@type': 'Place',
@@ -111,9 +111,9 @@ export function buildBaseGraph(): Piece[] {
   pieces.push(
     buildPiece<Blog>({
       '@type': 'Blog',
-      '@id': `${SITE.url}/posts#blog`,
+      '@id': `${SITE.url}/posts/#blog`,
       name: `${SITE.title} Blog`,
-      url: `${SITE.url}/posts`,
+      url: `${SITE.url}/posts/`,
       isPartOf: { '@id': ids.website } as any,
       publisher: { '@id': ids.person } as any,
     }),
@@ -207,8 +207,8 @@ export function buildPostGraph(post: PostGraphInput): Piece[] {
       {
         url,
         items: [
-          { name: 'Home', url: SITE.url },
-          { name: 'Posts', url: `${SITE.url}/posts` },
+          { name: 'Home', url: `${SITE.url}/` },
+          { name: 'Posts', url: `${SITE.url}/posts/` },
           { name: post.title, url },
         ],
       },

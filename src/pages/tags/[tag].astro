@@ -47,7 +47,7 @@ const postsWithMeta = await Promise.all(
 );
 
 const tagDescription = description ?? `Essays and notes on ${displayName} — from building systems in nonprofit and performing arts organizations.`;
-const canonicalURL = new URL(`/tags/${slug}`, SITE.url).href;
+const canonicalURL = new URL(`/tags/${slug}/`, SITE.url).href;
 const graph = toGraph([
   ...buildBaseGraph(),
   ...buildCollectionPageGraph({
@@ -66,7 +66,7 @@ const graph = toGraph([
 <Base title={`Posts tagged "${displayName}"`} description={tagDescription} graph={graph}>
   <header class="mb-12">
     <a
-      href="/tags"
+      href="/tags/"
       class="inline-flex items-center gap-2 font-(family-name:--font-ui) text-sm text-(--color-muted) no-underline hover:text-(--color-accent-interactive) transition-colors mb-6"
     >
       <span aria-hidden="true">&larr;</span>

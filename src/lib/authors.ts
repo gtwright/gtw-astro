@@ -28,7 +28,7 @@ export async function resolveAuthor(name: string): Promise<PostAuthor> {
   if (isSiteAuthor) {
     return {
       name: AUTHOR.name,
-      url: '/about',
+      url: '/about/',
       isSiteAuthor: true,
     };
   }

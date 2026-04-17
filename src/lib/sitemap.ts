@@ -16,8 +16,8 @@ const collections = ['posts'];
  * To add a new page, add an entry — e.g. 'uses.astro': '/uses/'.
  */
 const staticPages: Record<string, string> = {
-  'about.astro': '/about',
-  'waves.astro': '/waves',
+  'about.astro': '/about/',
+  'waves.astro': '/waves/',
 };
 
 export function buildLastmodMap(siteUrl: string): Map<string, string> {
@@ -32,7 +32,7 @@ export function buildLastmodMap(siteUrl: string): Map<string, string> {
       if (frontmatter.draft) continue;
       const slug = file.replace(/\.mdx?$/, '');
       const date = frontmatter.updated ?? frontmatter.published;
-      if (date) map.set(`${siteUrl}/${collection}/${slug}`, new Date(date).toISOString());
+      if (date) map.set(`${siteUrl}/${collection}/${slug}/`, new Date(date).toISOString());
     }
   }
 

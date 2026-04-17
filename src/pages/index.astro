@@ -45,7 +45,7 @@ const graph = toGraph([
             <h2 class="font-(family-name:--font-ui) text-xs uppercase tracking-widest text-(--color-muted)">
               Recent posts
             </h2>
-            <a href="/posts" class="font-(family-name:--font-ui) text-sm font-medium text-(--color-accent-interactive) no-underline hover:underline">
+            <a href="/posts/" class="font-(family-name:--font-ui) text-sm font-medium text-(--color-accent-interactive) no-underline hover:underline">
               View all
             </a>
           </div>
@@ -53,7 +53,7 @@ const graph = toGraph([
             {posts.map((post) => (
               <li class="py-3 flex items-baseline justify-between gap-4">
                 <a
-                  href={`/posts/${post.id}`}
+                  href={`/posts/${post.id}/`}
                   class="min-w-0 font-(family-name:--font-headline) text-lg sm:text-xl font-medium leading-snug text-(--color-text) no-underline hover:text-(--color-accent-interactive) transition-colors line-clamp-1"
                 >
                   {post.data.title}
