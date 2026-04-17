@@ -29,15 +29,12 @@ export default defineConfig({
     sitemap({
       filter(page) {
         const url = new URL(page);
+        if (url.pathname === '/tags/') return false;
         const match = url.pathname.match(/^\/tags\/([^/]+)/);
         if (match) return describedTags.has(match[1]);
-        // Exclude the /tags/ index page too
-        if (url.pathname === '/tags/' || url.pathname === '/tags') return false;
         return true;
       },
       serialize(item) {
-        // Ensure trailing slash to match Cloudflare's force-trailing-slash
-        if (!item.url.endsWith('/')) item.url = `${item.url}/`;
         const lastmod = lastmodDates.get(item.url);
         if (lastmod) item.lastmod = lastmod;
         return item;
