@@ -23,10 +23,11 @@ interface Props {
     section?: string;
   };
   graph?: Record<string, unknown> | null;
+  noindex?: boolean;
   flush?: boolean;
 }
 
-const { title, description, ogImage, ogImageAlt, article, graph, flush = false } = Astro.props;
+const { title, description, ogImage, ogImageAlt, article, graph, noindex, flush = false } = Astro.props;
 
 const pageTitle = title === 'Home'
   ? `${SITE.title} | Home`
@@ -66,6 +67,7 @@ const imageURL = ogImage
         ...(article.section ? { section: article.section } : {}),
       } : undefined}
       author={SITE.author.name}
+      noindex={noindex}
       graph={graph}
       extraLinks={[
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
