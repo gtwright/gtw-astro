@@ -9,10 +9,12 @@ import MdxImage from '../../components/MdxImage.astro';
 import TagList from '../../components/TagList.astro';
 import AuthorCard from '../../components/AuthorCard.astro';
 import ShareLinks from '../../components/ShareLinks.astro';
+import Newsletter from '../../components/Newsletter.astro';
 import { SITE } from '../../consts';
 import { resolveAuthor } from '../../lib/authors';
 import { resolveImageSrc, getMediaMeta } from '../../lib/media';
 import { buildBaseGraph, buildPostGraph, toGraph } from '../../lib/seo-graph';
+import { toTagUrl } from '../../lib/tags';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => {
@@ -106,7 +108,7 @@ const nextPost = allPosts[currentIndex - 1];
     </div>
 
     <div class="post-grid">
-      <article transition:name={`post-${post.id}`}>
+      <article>
         <header class="col-[content] mb-10">
           <div class="relative">
             <h1
@@ -116,10 +118,10 @@ const nextPost = allPosts[currentIndex - 1];
               {post.data.title}
             </h1>
           </div>
-          <p transition:name={`post-desc-${post.id}`} class="font-(family-name:--font-body) text-base sm:text-lg leading-relaxed text-(--color-muted) mt-0 mb-4">
+          <p class="font-(family-name:--font-body) text-base sm:text-lg leading-relaxed text-(--color-muted) mt-0 mb-4">
             {post.data.description}
           </p>
-          <div transition:name={`post-byline-${post.id}`} class="flex flex-wrap items-center gap-x-3 gap-y-1 font-(family-name:--font-ui) text-sm text-(--color-muted)">
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-(family-name:--font-ui) text-sm text-(--color-muted)">
             {author.url ? (
               <span>By <a href={author.url} class="no-underline text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors">{author.name}</a></span>
             ) : (
@@ -143,6 +145,19 @@ const nextPost = allPosts[currentIndex - 1];
               </span>
             )}
           </div>
+          {post.data.tags && post.data.tags.length > 0 && (
+            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 font-(family-name:--font-ui) text-sm text-(--color-muted) mt-1">
+              <span>Tagged</span>
+              {post.data.tags.map((tag, i) => (
+                <>
+                  {i > 0 && <span class="text-(--color-border)">·</span>}
+                  <a href={toTagUrl(tag)} class="no-underline text-(--color-muted) hover:text-(--color-accent-interactive) transition-colors">
+                    {tag}
+                  </a>
+                </>
+              ))}
+            </div>
+          )}
         </header>
 
         {post.data.image && (() => {
@@ -170,31 +185,35 @@ const nextPost = allPosts[currentIndex - 1];
     </div>
 
     <div class="mx-auto max-w-3xl px-6 mt-16">
-      <hr class="border-t border-(--color-border) mb-8" />
-      <TagList tags={post.data.tags} />
-      <AuthorCard author={author} />
-      <ShareLinks url={canonicalURL} title={post.data.title} />
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-10">
+        <AuthorCard author={author} />
+        <ShareLinks url={canonicalURL} title={post.data.title} />
+      </div>
+      <Newsletter />
     </div>
 
-    {(prevPost || nextPost) && (
-      <nav aria-label="Post pagination" class="mx-auto max-w-3xl px-6 mt-8 pt-8 border-t border-(--color-border) grid grid-cols-2 gap-8">
-        {prevPost ? (
-          <a href={`/posts/${prevPost.id}/`} class="group no-underline">
-            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Older</span>
-            <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
-              {prevPost.data.title}
-            </p>
-          </a>
-        ) : <div />}
-        {nextPost ? (
-          <a href={`/posts/${nextPost.id}/`} class="group no-underline text-right">
-            <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Newer</span>
-            <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
-              {nextPost.data.title}
-            </p>
-          </a>
-        ) : <div />}
-      </nav>
-    )}
+    <div class="mx-auto max-w-3xl px-6 mt-20">
+      <TagList tags={post.data.tags} />
+      {(prevPost || nextPost) && (
+        <nav aria-label="Post pagination" class="mt-8 pt-8 border-t border-(--color-border) grid grid-cols-2 gap-8">
+          {prevPost ? (
+            <a href={`/posts/${prevPost.id}/`} class="group no-underline">
+              <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Older</span>
+              <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
+                {prevPost.data.title}
+              </p>
+            </a>
+          ) : <div />}
+          {nextPost ? (
+            <a href={`/posts/${nextPost.id}/`} class="group no-underline text-right">
+              <span class="font-(family-name:--font-ui) text-xs text-(--color-muted) uppercase tracking-wide">Newer</span>
+              <p class="font-(family-name:--font-headline) text-lg font-medium mt-1 group-hover:text-(--color-accent-interactive) transition-colors m-0">
+                {nextPost.data.title}
+              </p>
+            </a>
+          ) : <div />}
+        </nav>
+      )}
+    </div>
   </div>
 </Base>
