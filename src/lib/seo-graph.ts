@@ -29,21 +29,12 @@ import type { PostAuthor } from './authors';
 
 export const ids = makeIds({ siteUrl: SITE.url, personUrl: `${SITE.url}/about` });
 
-// ── Organization data ──
+// ── Organization helpers ──
 
-interface OrgData {
-  slug: string;
-  name: string;
-  url: string;
-  role: string;
-  startDate?: string;
-  endDate?: string;
+/** Derive a URL-safe slug from an org name. */
+function orgSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
-
-const organizations: OrgData[] = [
-  { slug: 'bso', name: 'Boston Symphony Orchestra', url: 'https://www.bso.org', role: 'Director of Content and Digital Services', startDate: '2019' },
-  { slug: 'opus-affair', name: 'Opus Affair', url: 'https://www.opusaffair.com', role: 'Founder', startDate: '2009' },
-];
 
 // ── Base graph (every page) ──
 
@@ -94,25 +85,25 @@ export function buildBaseGraph(): Piece[] {
         name: school.name,
         url: school.url,
       })) as any,
-      worksFor: organizations.map((org) => ({
-        '@type': 'EmployeeRole',
-        roleName: org.role,
-        ...(org.startDate ? { startDate: org.startDate } : {}),
-        ...(org.endDate ? { endDate: org.endDate } : {}),
-        worksFor: { '@id': ids.organization(org.slug) },
-      })) as any,
+      worksFor: AUTHOR.affiliations
+        .filter((a) => 'role' in a && a.role)
+        .map((a) => ({
+          '@type': 'EmployeeRole',
+          roleName: (a as { role: string }).role,
+          worksFor: { '@id': ids.organization(orgSlug(a.name)) },
+        })) as any,
       sameAs: [...AUTHOR.sameAs] as any,
     }),
   );
 
-  // Organization entities
-  for (const org of organizations) {
+  // Organization entities — one per affiliation that has a role
+  for (const aff of AUTHOR.affiliations.filter((a) => 'role' in a && a.role)) {
     pieces.push(
       buildPiece<Organization>({
         '@type': 'Organization',
-        '@id': ids.organization(org.slug),
-        name: org.name,
-        url: org.url,
+        '@id': ids.organization(orgSlug(aff.name)),
+        name: aff.name,
+        url: aff.url,
       }),
     );
   }
