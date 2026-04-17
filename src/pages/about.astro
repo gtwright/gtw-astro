@@ -2,9 +2,17 @@
 export const prerender = true;
 import Base from '../layouts/Base.astro';
 import Prose from '../components/Prose.astro';
+import { SITE } from '../consts';
+import { buildBaseGraph, buildProfilePageGraph, toGraph } from '../lib/seo-graph';
+
+const canonicalURL = new URL('/about', SITE.url).href;
+const graph = toGraph([
+  ...buildBaseGraph(),
+  ...buildProfilePageGraph(canonicalURL, 'Nonprofit marketing and technology leader currently at the Boston Symphony Orchestra. Formerly founder of Opus Affair. Who am I and what am I working on?'),
+]);
 ---
 
-<Base title="About" description="About the author and this site." person>
+<Base title="About" description="Nonprofit marketing and technology leader currently at the Boston Symphony Orchestra. Formerly founder of Opus Affair. Who am I and what am I working on?" graph={graph}>
   <Prose>
     <p class="font-(family-name:--font-ui) uppercase tracking-widest text-(--color-muted) text-xs">About</p>
     <h1>Graham Wright</h1>

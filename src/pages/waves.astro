@@ -3,9 +3,17 @@ export const prerender = true;
 import Base from '../layouts/Base.astro';
 import Prose from '../components/Prose.astro';
 import WaveBackground from '../components/WaveBackground.astro';
+import { SITE } from '../consts';
+import { buildBaseGraph, buildSimplePageGraph, toGraph } from '../lib/seo-graph';
+
+const canonicalURL = new URL('/waves', SITE.url).href;
+const graph = toGraph([
+  ...buildBaseGraph(),
+  ...buildSimplePageGraph('Waves', canonicalURL, 'Wavy neon threads with animated pulses.'),
+]);
 ---
 
-<Base title="Waves" description="Wavy neon threads with animated pulses." flush>
+<Base title="Waves" description="Wavy neon threads with animated pulses." graph={graph} flush>
   <WaveBackground animated={true}>
     <article class="mx-auto max-w-3xl px-6 pt-16 pb-12">
       <Prose>

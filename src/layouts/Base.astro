@@ -7,21 +7,38 @@ import '../styles/global.css';
 import { SITE } from '../consts';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import SEO from '../components/SEO.astro';
+import Seo from '@jdevalk/astro-seo-graph/Seo.astro';
 import { ClientRouter } from 'astro:transitions';
 import PostHog from '../components/posthog.astro';
-import type { PostAuthor } from '../lib/authors';
 
 interface Props {
   title: string;
   description: string;
-  image?: string;
-  post?: { published: Date; updated?: Date; image?: string; tags?: string[]; readingTimeMinutes?: number; wordCount?: number; author?: PostAuthor };
+  ogImage?: string;
+  ogImageAlt?: string;
+  article?: {
+    publishedTime: Date;
+    modifiedTime?: Date;
+    tags?: readonly string[];
+    section?: string;
+  };
+  graph?: Record<string, unknown> | null;
   flush?: boolean;
-  person?: boolean;
 }
 
-const { title, description, image, post, flush = false, person = false } = Astro.props;
+const { title, description, ogImage, ogImageAlt, article, graph, flush = false } = Astro.props;
+
+const pageTitle = title === 'Home'
+  ? `${SITE.title} | Home`
+  : `${title} | ${SITE.title}`;
+
+const pathname = Astro.url.pathname.replace(/(?<=.)\/+$/, '');
+const canonicalURL = new URL(pathname, Astro.site);
+
+// OG image: explicit prop or default
+const imageURL = ogImage
+  ? new URL(ogImage, Astro.site).href
+  : new URL('/og-default.png', Astro.site).href;
 ---
 
 <!doctype html>
@@ -29,15 +46,32 @@ const { title, description, image, post, flush = false, person = false } = Astro
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
-    <SEO
-      title={title}
+    <Seo
+      title={pageTitle}
       description={description}
-      image={image}
-      post={post}
-      person={person}
+      canonical={canonicalURL.href}
+      ogType={article ? 'article' : 'website'}
+      ogImage={imageURL}
+      ogImageAlt={ogImageAlt ?? title}
+      ogImageWidth={1200}
+      ogImageHeight={630}
+      siteName={SITE.title}
+      locale="en_US"
+      twitter={{ card: 'summary_large_image' }}
+      article={article ? {
+        publishedTime: article.publishedTime,
+        ...(article.modifiedTime ? { modifiedTime: article.modifiedTime } : {}),
+        authors: [SITE.author.url],
+        ...(article.tags?.length ? { tags: [...article.tags] } : {}),
+        ...(article.section ? { section: article.section } : {}),
+      } : undefined}
+      author={SITE.author.name}
+      graph={graph}
+      extraLinks={[
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'sitemap', href: '/sitemap-index.xml' },
+        { rel: 'alternate', type: 'application/rss+xml', title: SITE.title, href: '/rss.xml' },
+      ]}
     />
     <PostHog />
     <ClientRouter fallback="animate"/>

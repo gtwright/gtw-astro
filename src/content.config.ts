@@ -6,7 +6,7 @@ const posts = defineCollection({
   loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/posts' }),
   schema: z.object({
     title: z.string(),
-    description: z.string(),
+    description: z.string().min(70, 'Description must be at least 70 characters').max(200, 'Description must be at most 200 characters'),
     published: z.coerce.date(),
     updated: z.coerce.date().optional(),
     draft: z.boolean().default(false),
