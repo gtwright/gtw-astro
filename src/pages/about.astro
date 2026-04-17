@@ -5,7 +5,7 @@ import Prose from '../components/Prose.astro';
 import { SITE } from '../consts';
 import { buildBaseGraph, buildProfilePageGraph, toGraph } from '../lib/seo-graph';
 
-const canonicalURL = new URL('/about', SITE.url).href;
+const canonicalURL = new URL('/about/', SITE.url).href;
 const graph = toGraph([
   ...buildBaseGraph(),
   ...buildProfilePageGraph(canonicalURL, 'Nonprofit marketing and technology leader currently at the Boston Symphony Orchestra. Formerly founder of Opus Affair. Who am I and what am I working on?'),

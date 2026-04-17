@@ -15,6 +15,7 @@ const describedTags = buildDescribedTagSlugs();
 
 export default defineConfig({
   site: SITE.url,
+  trailingSlash: 'always',
   output: 'server',
   adapter: cloudflare(),
   image: {
@@ -35,8 +36,8 @@ export default defineConfig({
         return true;
       },
       serialize(item) {
-        // Strip trailing slash to match Cloudflare's drop-trailing-slash
-        item.url = item.url.replace(/(?<=.)\/+$/, '');
+        // Ensure trailing slash to match Cloudflare's force-trailing-slash
+        if (!item.url.endsWith('/')) item.url = `${item.url}/`;
         const lastmod = lastmodDates.get(item.url);
         if (lastmod) item.lastmod = lastmod;
         return item;

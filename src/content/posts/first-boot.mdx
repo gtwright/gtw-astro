@@ -6,7 +6,7 @@ tags: ["Web Development", "Astro", "Cloudflare"]
 title: First Boot — Scaffolding an Astro v6 Project
 ---
 
-The [previous post](/posts/why-astro-cloudflare) covered the reasoning behind choosing Astro and Cloudflare Workers. This one covers what happened next: turning those decisions into a running project.
+The [previous post](/posts/why-astro-cloudflare/) covered the reasoning behind choosing Astro and Cloudflare Workers. This one covers what happened next: turning those decisions into a running project.
 
 The goal was narrow on purpose. Get a dev server running, get the deployment target wired up, and stop. No design, no content system, no styling — just confirm that the toolchain works end to end before building on top of it.
 
@@ -32,13 +32,13 @@ Neither `bun create astro@latest` nor `npx create astro -- --ref next` installed
 bun add astro@beta
 ```
 
-This pulls in the latest v6 beta and updates `package.json` accordingly. The [Astro v6 upgrade guide](https://v6.docs.astro.build/en/guides/upgrade-to/v6/) covers what's changed. From here on out, everything I build is on the version Cloudflare will be optimizing for. The same bet I outlined in the [previous post](/posts/why-astro-cloudflare).
+This pulls in the latest v6 beta and updates `package.json` accordingly. The [Astro v6 upgrade guide](https://v6.docs.astro.build/en/guides/upgrade-to/v6/) covers what's changed. From here on out, everything I build is on the version Cloudflare will be optimizing for. The same bet I outlined in the [previous post](/posts/why-astro-cloudflare/).
 
 The beta added a two-step process: scaffold stable, then upgrade. Minor, but it cost me about thirty minutes I didn't expect.
 
 ## Adding the Cloudflare adapter
 
-The Cloudflare decision from the [previous post](/posts/why-astro-cloudflare) needed to connect to real config. That meant adding the adapter early, before building anything else:
+The Cloudflare decision from the [previous post](/posts/why-astro-cloudflare/) needed to connect to real config. That meant adding the adapter early, before building anything else:
 
 ```bash
 bun add @astrojs/cloudflare@beta
@@ -151,4 +151,4 @@ A few decisions to recap:
 - **No real domain yet** — the site initially lives at a `.workers.dev` URL. The deployment pipeline works end to end, which is what mattered at this stage. Domain, DNS, and production routing are a separate set of decisions.
 - **No quality gates** — commits to `main` auto-deploy with no checks beyond `astro build`. Fast feedback loops now, guardrails when there's something worth guarding.
 
-The [next post](/posts/setting-up-the-workshop) covers what I did before writing any components or content: setting up the project documentation that shapes every AI-assisted building session.
+The [next post](/posts/setting-up-the-workshop/) covers what I did before writing any components or content: setting up the project documentation that shapes every AI-assisted building session.

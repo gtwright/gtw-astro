@@ -5,7 +5,7 @@ published: 2026-02-21T14:00:00
 tags: ["Web Development", "Design", "Typography"]
 ---
 
-The [design system post](/posts/design-system) defined the design token system — fonts, colors, and the `@theme` block that gives components a shared vocabulary. But tokens don't style content. A blog post is rendered Markdown: headings, paragraphs, lists, blockquotes, code blocks, tables. Each of those elements needs intentional typographic treatment, and those styles need to live in one place so every post looks consistent without per-element classes.
+The [design system post](/posts/design-system/) defined the design token system — fonts, colors, and the `@theme` block that gives components a shared vocabulary. But tokens don't style content. A blog post is rendered Markdown: headings, paragraphs, lists, blockquotes, code blocks, tables. Each of those elements needs intentional typographic treatment, and those styles need to live in one place so every post looks consistent without per-element classes.
 
 Good typography is invisible — the reader focuses on content, not on the mechanics of reading. That's the goal here: spacing, sizing, and hierarchy decisions that make a long article feel approachable rather than dense. For someone reading on a phone during a commute or on a laptop between meetings, the typography should reduce friction, not add to it.
 
@@ -57,7 +57,7 @@ With the component structure in place, the rest of this post walks through the t
 
 ## Line length: why 65 characters
 
-The [design system post](/posts/design-system) introduced the prose measure as a layout constraint — a `max-width: 65ch` that sits inside the `max-w-3xl` page container, centered with `margin-left: auto; margin-right: auto`. The container frames the full page; the prose centers and narrows the body text for reading — the same pattern you'll find on Medium or the New York Times. Here's why that specific value.
+The [design system post](/posts/design-system/) introduced the prose measure as a layout constraint — a `max-width: 65ch` that sits inside the `max-w-3xl` page container, centered with `margin-left: auto; margin-right: auto`. The container frames the full page; the prose centers and narrows the body text for reading — the same pattern you'll find on Medium or the New York Times. Here's why that specific value.
 
 Typographic convention puts the comfortable reading range at 45-75 characters per line. Shorter lines cause too many line breaks, making the eye jump constantly. Longer lines make it hard to track back to the start of the next line. 65 characters sits comfortably in the middle of that range.
 
@@ -259,7 +259,7 @@ The remaining elements follow the same principles: consistent spacing, token-bas
 
 ## The style specimen
 
-The site includes a [Markdown & MDX Style Examples](/posts/style-examples) post that exercises every Markdown element: headings at all levels, paragraphs, emphasis, links, blockquotes, ordered and unordered lists with nesting, fenced code blocks in multiple languages, tables, images, horizontal rules, footnotes, and disclosure elements. It's a living typography specimen — any change to the `.prose` styles is immediately visible in this post.
+The site includes a [Markdown & MDX Style Examples](/posts/style-examples/) post that exercises every Markdown element: headings at all levels, paragraphs, emphasis, links, blockquotes, ordered and unordered lists with nesting, fenced code blocks in multiple languages, tables, images, horizontal rules, footnotes, and disclosure elements. It's a living typography specimen — any change to the `.prose` styles is immediately visible in this post.
 
 This isn't a hidden test page. It's a published post that serves a dual purpose: it's a reference for the design system (useful during development), and it demonstrates the full range of typographic treatments to anyone reading the site. If the prose styles handle this page well, they'll handle any blog post.
 
@@ -272,6 +272,6 @@ The placeholder posts created during early development served a similar function
 - **Dark mode typography adjustments** — the inverted code blocks and muted colors will need different treatments in dark mode. That's a future pass.
 - **Print styles** — a print stylesheet would adjust font sizes, hide navigation, and ensure links are usable on paper. That's a future refinement.
 
-That covers the full `prose.css` file — every rule that governs how rendered Markdown looks on this site. The [style examples page](/posts/style-examples) exercises all of these elements in one place, serving as both a development reference and a living typography specimen.
+That covers the full `prose.css` file — every rule that governs how rendered Markdown looks on this site. The [style examples page](/posts/style-examples/) exercises all of these elements in one place, serving as both a development reference and a living typography specimen.
 
-The [next post](/posts/seo-rss-sitemap) covers the invisible infrastructure — SEO metadata, the RSS feed, the sitemap, and robots.txt.
+The [next post](/posts/seo-rss-sitemap/) covers the invisible infrastructure — SEO metadata, the RSS feed, the sitemap, and robots.txt.

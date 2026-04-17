@@ -33,7 +33,7 @@ const pageTitle = title === 'Home'
   ? `${SITE.title} | Home`
   : `${title} | ${SITE.title}`;
 
-const pathname = Astro.url.pathname.replace(/(?<=.)\/+$/, '');
+const pathname = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
 const canonicalURL = new URL(pathname, Astro.site);
 
 // OG image: explicit prop or default

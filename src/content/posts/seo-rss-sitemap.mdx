@@ -12,7 +12,7 @@ import Callout from '../../components/Callout.astro';
 This post describes the hand-rolled SEO component I built at launch. The site has since migrated to [`@jdevalk/astro-seo-graph`](https://github.com/jdevalk/seo-graph) — a linked JSON-LD graph with build-time validation, IndexNow, and agent discovery features. The principles here still hold; the implementation has evolved.
 </Callout>
 
-The [typography post](/posts/typography) covered the typographic details that make prose readable — spacing, sizing, and visual hierarchy inside the `<Prose>` component. That work is for human readers. This post is about the features that serve a different audience: search engines, feed readers, social platforms, and web crawlers.
+The [typography post](/posts/typography/) covered the typographic details that make prose readable — spacing, sizing, and visual hierarchy inside the `<Prose>` component. That work is for human readers. This post is about the features that serve a different audience: search engines, feed readers, social platforms, and web crawlers.
 
 None of this is visible to someone reading a post. But when someone shares a link on Bluesky, the card that appears — title, description, image — is assembled from Open Graph tags. When Google indexes a blog post, the structured data tells it this is an article with a specific author and publication date. When someone subscribes to an RSS feed, they're relying on a machine-readable version of the content. These invisible features shape how the site participates in the broader web.
 
@@ -284,4 +284,4 @@ I'm deferring this intentionally. The infrastructure is in place: the SEO compon
 - **Schema.org expansion** — `BreadcrumbList` for navigation trails, `FAQPage` for structured Q&A content. The current `WebSite` and `BlogPosting` schemas cover the essentials; additional types can be added as the content types warrant them.
 - **Analytics** — understanding which content performs well. That's its own post.
 
-The [next post](/posts/images) covers images — responsive sizing, modern formats, and the state of image handling in Astro 6 beta.
+The [next post](/posts/images/) covers images — responsive sizing, modern formats, and the state of image handling in Astro 6 beta.

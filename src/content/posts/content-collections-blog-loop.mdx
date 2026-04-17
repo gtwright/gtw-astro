@@ -8,7 +8,7 @@ tags:
 title: Content Collections and the Blog Loop
 ---
 
-With [project documentation](/posts/setting-up-the-workshop) in place, it was time to build something that actually produces pages — the content system and the routes that display it.
+With [project documentation](/posts/setting-up-the-workshop/) in place, it was time to build something that actually produces pages — the content system and the routes that display it.
 
 I deliberately built this before touching layout, navigation, or styling. A blog needs something to look at before there's any point deciding how it looks. The content schema defines what information each post carries. The routes define how that content becomes pages. Everything visual comes after.
 
@@ -150,7 +150,7 @@ const { Content } = await render(post);
 <Content />
 ```
 
-`getStaticPaths` tells Astro which pages to generate at build time — one per post, with the post data passed as props. The `render` function turns the MDX content into a component that can be placed directly in the template. Styling the rendered output comes later — the [typography post](/posts/typography) covers the typographic details.
+`getStaticPaths` tells Astro which pages to generate at build time — one per post, with the post data passed as props. The `render` function turns the MDX content into a component that can be placed directly in the template. Styling the rendered output comes later — the [typography post](/posts/typography/) covers the typographic details.
 
 The route also builds prev/next navigation by finding the current post's position in the sorted list:
 
@@ -169,4 +169,4 @@ This gives every post a link to its chronological neighbors — a small navigati
 - **MDX from the start** — no MDX features used yet, but migration cost avoided. The future-proofing costs nothing.
 - **Lean schema** — a single `posts` collection with only the fields that serve a purpose right now. Additional collections, richer metadata, and media support can come when there's a real need.
 
-The [next post](/posts/layout-navigation-bones) covers layout, navigation, and the structural skeleton that every page inherits.
+The [next post](/posts/layout-navigation-bones/) covers layout, navigation, and the structural skeleton that every page inherits.
