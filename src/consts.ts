@@ -7,6 +7,3 @@ export const SITE = {
   url: 'https://graham-wright.com',
   author: { name: AUTHOR.name, url: AUTHOR.url },
 } as const;
-
-/** IndexNow key — not secret, published at /<key>.txt by design. */
-export const INDEXNOW_KEY = '2eba94803b9bcc9cd352bd53fa79c5a2';
