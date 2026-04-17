@@ -2,8 +2,15 @@
 title: "The Invisible Features"
 description: "The parts of a site no visitor sees but search engines, feed readers, and social platforms depend on — structured data, syndication, and discoverability."
 published: 2026-03-05T12:00:00
+updated: 2026-04-17T12:00:00
 tags: ["Web Development", "SEO"]
 ---
+
+import Callout from '../../components/Callout.astro';
+
+<Callout type="note" title="Update">
+This post describes the hand-rolled SEO component I built at launch. The site has since migrated to [`@jdevalk/astro-seo-graph`](https://github.com/jdevalk/seo-graph) — a linked JSON-LD graph with build-time validation, IndexNow, and agent discovery features. The principles here still hold; the implementation has evolved.
+</Callout>
 
 The [typography post](/posts/typography) covered the typographic details that make prose readable — spacing, sizing, and visual hierarchy inside the `<Prose>` component. That work is for human readers. This post is about the features that serve a different audience: search engines, feed readers, social platforms, and web crawlers.
 

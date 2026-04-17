@@ -26,6 +26,8 @@
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@iconify-json/lucide": "^1.2.93",
     "@iconify-json/simple-icons": "^1.2.71",
+    "@jdevalk/astro-seo-graph": "^1.2.0",
+    "@jdevalk/seo-graph-core": "^0.6.1",
     "@tailwindcss/vite": "^4.2.1",
     "@unpic/astro": "^1.0.2",
     "astro": "^6.0.4",

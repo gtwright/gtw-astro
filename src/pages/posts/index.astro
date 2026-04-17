@@ -5,6 +5,7 @@ import { SITE } from '../../consts';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import { resolveAuthor } from '../../lib/authors';
+import { buildBaseGraph, buildCollectionPageGraph, toGraph } from '../../lib/seo-graph';
 
 const posts = (await getCollection('posts', ({ data }) => {
     if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
@@ -19,9 +20,19 @@ const postsWithMeta = await Promise.all(
     return { post, readingTime: remarkPluginFrontmatter.readingTime as string, author };
   })
 );
+
+const canonicalURL = new URL('/posts', SITE.url).href;
+const graph = toGraph([
+  ...buildBaseGraph(),
+  ...buildCollectionPageGraph({
+    title: 'Blog',
+    description: `All posts from ${SITE.title}.`,
+    canonicalUrl: canonicalURL,
+  }),
+]);
 ---
 
-<Base title="Blog" description={`All posts from ${SITE.title}.`}>
+<Base title="Blog" description={`All posts from ${SITE.title}.`} graph={graph}>
   <header class="mb-4">
     <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tight mb-4">
       All Posts

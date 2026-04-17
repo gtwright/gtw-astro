@@ -5,7 +5,8 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
-import { SITE } from './src/consts';
+import seoGraph from '@jdevalk/astro-seo-graph/integration';
+import { SITE, INDEXNOW_KEY } from './src/consts';
 import { buildLastmodMap, buildDescribedTagSlugs } from './src/lib/sitemap';
 import { remarkReadingTime } from './src/lib/reading-time';
 
@@ -39,6 +40,18 @@ export default defineConfig({
         const lastmod = lastmodDates.get(item.url);
         if (lastmod) item.lastmod = lastmod;
         return item;
+      },
+    }),
+    seoGraph({
+      indexNow: {
+        key: INDEXNOW_KEY,
+        host: 'graham-wright.com',
+        siteUrl: SITE.url,
+      },
+      llmsTxt: {
+        title: SITE.title,
+        siteUrl: SITE.url,
+        summary: SITE.description,
       },
     }),
     icon(),

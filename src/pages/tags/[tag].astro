@@ -6,6 +6,7 @@ import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import { toSlug } from '../../lib/tags';
 import { resolveAuthor } from '../../lib/authors';
+import { buildBaseGraph, buildCollectionPageGraph, toGraph } from '../../lib/seo-graph';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => {
@@ -44,9 +45,25 @@ const postsWithMeta = await Promise.all(
     return { post, readingTime: remarkPluginFrontmatter.readingTime as string, author };
   })
 );
+
+const tagDescription = description ?? `All posts tagged "${displayName}" on ${SITE.title}.`;
+const canonicalURL = new URL(`/tags/${slug}`, SITE.url).href;
+const graph = toGraph([
+  ...buildBaseGraph(),
+  ...buildCollectionPageGraph({
+    title: `Posts tagged "${displayName}"`,
+    description: tagDescription,
+    canonicalUrl: canonicalURL,
+    breadcrumbs: [
+      { name: 'Home', url: SITE.url },
+      { name: 'Tags', url: `${SITE.url}/tags` },
+      { name: displayName, url: canonicalURL },
+    ],
+  }),
+]);
 ---
 
-<Base title={`Posts tagged "${displayName}"`} description={description ?? `All posts tagged "${displayName}" on ${SITE.title}.`}>
+<Base title={`Posts tagged "${displayName}"`} description={tagDescription} graph={graph}>
   <header class="mb-12">
     <a
       href="/tags"

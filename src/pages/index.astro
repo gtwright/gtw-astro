@@ -5,7 +5,7 @@ import { Icon } from 'astro-icon/components';
 import { SITE } from '../consts';
 import { SOCIAL } from '../lib/author';
 import Base from '../layouts/Base.astro';
-// import heroImage from '../assets/Freebie-GradientTextures-02.jpg';
+import { buildBaseGraph, buildCollectionPageGraph, toGraph } from '../lib/seo-graph';
 
 const posts = (await getCollection('posts', ({ data }) => {
     if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
@@ -13,9 +13,19 @@ const posts = (await getCollection('posts', ({ data }) => {
   }))
   .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf())
   .slice(0, 3);
+
+const canonicalURL = new URL('/', SITE.url).href;
+const graph = toGraph([
+  ...buildBaseGraph(),
+  ...buildCollectionPageGraph({
+    title: 'Home',
+    description: SITE.description,
+    canonicalUrl: canonicalURL,
+  }),
+]);
 ---
 
-<Base title="Home" description={SITE.description} flush>
+<Base title="Home" description={SITE.description} graph={graph} flush>
   <div class="relative isolate overflow-hidden">
     <div class="mx-auto max-w-3xl px-6 min-h-[calc(100svh-4.5rem)] py-10">
       <div class="min-h-[calc(100svh-4.5rem-5rem)] flex flex-col items-center justify-center w-full">

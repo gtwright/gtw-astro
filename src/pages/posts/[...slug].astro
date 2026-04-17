@@ -12,6 +12,7 @@ import ShareLinks from '../../components/ShareLinks.astro';
 import { SITE } from '../../consts';
 import { resolveAuthor } from '../../lib/authors';
 import { resolveImageSrc, getMediaMeta } from '../../lib/media';
+import { buildBaseGraph, buildPostGraph, toGraph } from '../../lib/seo-graph';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => {
@@ -48,6 +49,25 @@ const formattedUpdated = post.data.updated?.toLocaleDateString('en-US', {
 
 const canonicalURL = new URL(`/posts/${post.id}`, SITE.url).href;
 
+// OG image: custom image → generated → default
+const ogImage = post.data.image ?? `/og/${post.id}.png`;
+
+const graph = toGraph([
+  ...buildBaseGraph(),
+  ...buildPostGraph({
+    title: post.data.title,
+    description: post.data.description,
+    canonicalUrl: canonicalURL,
+    published: post.data.published,
+    updated: post.data.updated,
+    tags: post.data.tags,
+    wordCount,
+    readingTimeMinutes,
+    ogImageUrl: new URL(ogImage, SITE.url).href,
+    author,
+  }),
+]);
+
 const allPosts = (await getCollection('posts', ({ data }) => {
     if (import.meta.env.PROD) return !data.draft && data.published <= new Date();
     return true;
@@ -62,12 +82,14 @@ const nextPost = allPosts[currentIndex - 1];
 <Base
   title={post.data.title}
   description={post.data.description}
-  post={{
-    ...post.data,
-    author,
-    readingTimeMinutes,
-    wordCount,
+  ogImage={ogImage}
+  article={{
+    publishedTime: post.data.published,
+    modifiedTime: post.data.updated,
+    tags: post.data.tags,
+    section: post.data.tags?.[0],
   }}
+  graph={graph}
   flush={true}
 >
   <div class="pt-10 pb-12">

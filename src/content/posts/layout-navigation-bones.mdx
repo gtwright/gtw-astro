@@ -2,8 +2,15 @@
 title: "Layout, Navigation, and the Bones of Every Page"
 description: "Why heading hierarchy, landmarks, and keyboard flow get attention first. Building Astro's Base layout as a structural foundation."
 published: 2026-02-23T12:00:00
+updated: 2026-04-17T12:00:00
 tags: ["Web Development", "Astro", "Accessibility"]
 ---
+
+import Callout from '../../components/Callout.astro';
+
+<Callout type="note" title="Update">
+The `Base.astro` layout described here has been updated. The hand-rolled `SEO.astro` component was replaced with the `<Seo>` component from [`@jdevalk/astro-seo-graph`](https://github.com/jdevalk/seo-graph), and structured data now uses a linked JSON-LD `@graph` rendered per-page. The layout's structural role is unchanged.
+</Callout>
 
 The [content collections post](/posts/content-collections-blog-loop) built the content system — a schema, a blog listing, and routes that turn posts into pages. But every page rendered its content into a bare HTML document. No shared header, no footer, no navigation, no consistent structure.
 
