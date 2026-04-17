@@ -1,0 +1,235 @@
+---
+const id = crypto.randomUUID().slice(0, 8);
+---
+
+<section class="newsletter" aria-labelledby={`nl-heading-${id}`}>
+  <h2 id={`nl-heading-${id}`} class="heading">Email Updates</h2>
+  <p class="blurb">If you'd like to get an email when I publish a new post, subscribe here. Or follow my <a href="/rss.xml">RSS feed</a>.</p>
+  <form novalidate data-newsletter-form>
+    <label for={`nl-email-${id}`} class="sr-only">Email address</label>
+    <input
+      type="email"
+      required
+      name="email"
+      id={`nl-email-${id}`}
+      placeholder="you@example.com"
+      autocomplete="email"
+      inputmode="email"
+    />
+    <input
+      type="text"
+      name="website"
+      tabindex="-1"
+      autocomplete="off"
+      class="honeypot"
+      aria-hidden="true"
+    />
+    <button type="submit">Subscribe</button>
+  </form>
+  <p class="status" role="status" aria-live="polite" hidden></p>
+</section>
+
+<style>
+  .newsletter {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.5rem 1.5rem 1.25rem;
+  }
+
+  .heading {
+    font-family: var(--font-ui);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-accent-atmosphere);
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+  }
+
+  .blurb {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-muted);
+    margin: 0 0 1.25rem;
+    line-height: 1.6;
+  }
+
+  .blurb a {
+    color: var(--color-accent-interactive);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .blurb a:hover {
+    opacity: 0.8;
+  }
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  input[type="email"] {
+    flex: 1 1 14rem;
+    min-width: 0;
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  input[type="email"]::placeholder {
+    color: var(--color-muted);
+    opacity: 0.7;
+  }
+
+  input[type="email"]:focus-visible {
+    outline: none;
+    border-color: var(--color-accent-interactive);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent-interactive) 20%, transparent);
+  }
+
+  button {
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-accent-interactive);
+    border-radius: 6px;
+    background: var(--color-accent-interactive);
+    color: var(--color-surface);
+    cursor: pointer;
+    transition: filter 0.15s;
+    white-space: nowrap;
+  }
+
+  button:hover {
+    filter: brightness(0.92);
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--color-accent-interactive);
+    outline-offset: 2px;
+  }
+
+  button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  .honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .status {
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    margin: 1rem 0 0;
+    color: var(--color-accent-atmosphere);
+  }
+
+  .status[data-error="true"] {
+    color: var(--color-accent-interactive);
+  }
+
+  @media (max-width: 479px) {
+    form {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  function wireForms() {
+    document.querySelectorAll<HTMLFormElement>('form[data-newsletter-form]').forEach((form) => {
+      if (form.dataset.wired === 'true') return;
+      form.dataset.wired = 'true';
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const section = form.closest('.newsletter');
+        const status = section?.querySelector<HTMLParagraphElement>('.status');
+        const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+        const emailInput = form.elements.namedItem('email') as HTMLInputElement | null;
+        const websiteInput = form.elements.namedItem('website') as HTMLInputElement | null;
+
+        if (!status || !button || !emailInput) return;
+
+        const email = emailInput.value.trim();
+        const website = websiteInput?.value ?? '';
+
+        if (!email || !emailInput.checkValidity()) {
+          status.textContent = 'Please enter a valid email address.';
+          status.dataset.error = 'true';
+          status.hidden = false;
+          emailInput.focus();
+          return;
+        }
+
+        status.hidden = true;
+        status.removeAttribute('data-error');
+        button.disabled = true;
+        const originalLabel = button.textContent;
+        button.textContent = 'Subscribing…';
+
+        try {
+          const res = await fetch('/api/subscribe/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, website }),
+          });
+          const data = (await res.json()) as
+            | { ok: true; status: 'created' | 'existing' }
+            | { ok: false; error: string };
+
+          if (data.ok && data.status === 'created') {
+            form.hidden = true;
+            status.textContent = "You're in — check your inbox to confirm.";
+          } else if (data.ok && data.status === 'existing') {
+            form.hidden = true;
+            status.textContent = "Looks like you're already subscribed. Thanks!";
+          } else if (!data.ok && data.error === 'invalid') {
+            status.textContent = "That email didn't look right. Try again?";
+            status.dataset.error = 'true';
+          } else {
+            status.textContent = 'Something went wrong — please try again.';
+            status.dataset.error = 'true';
+          }
+        } catch {
+          status.textContent = 'Network error — please try again.';
+          status.dataset.error = 'true';
+        } finally {
+          status.hidden = false;
+          button.disabled = false;
+          button.textContent = originalLabel;
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', wireForms);
+</script>

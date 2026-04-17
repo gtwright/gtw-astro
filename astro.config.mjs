@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
@@ -18,6 +18,11 @@ export default defineConfig({
   trailingSlash: 'always',
   output: 'server',
   adapter: cloudflare(),
+  env: {
+    schema: {
+      BUTTONDOWN_API_KEY: envField.string({ context: 'server', access: 'secret' }),
+    },
+  },
   image: {
     domains: ['picsum.photos'],
   },
