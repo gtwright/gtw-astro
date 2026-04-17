@@ -67,15 +67,7 @@ export function buildBaseGraph(): Piece[] {
       url: `${SITE.url}/about`,
       jobTitle: AUTHOR.jobTitle,
       publishingPrinciples: `${SITE.url}/about`,
-      knowsAbout: [
-        'Digital Strategy',
-        'Nonprofit Technology',
-        'Content Management',
-        'AI for Nonprofits',
-        'Web Development',
-        'Performing Arts Marketing',
-        'Data Strategy',
-      ],
+      knowsAbout: [...AUTHOR.knowsAbout],
       homeLocation: {
         '@type': 'Place',
         name: AUTHOR.location,
@@ -85,25 +77,31 @@ export function buildBaseGraph(): Piece[] {
         name: school.name,
         url: school.url,
       })) as any,
-      worksFor: AUTHOR.affiliations
-        .filter((a) => 'role' in a && a.role)
-        .map((a) => ({
-          '@type': 'EmployeeRole',
-          roleName: (a as { role: string }).role,
-          worksFor: { '@id': ids.organization(orgSlug(a.name)) },
-        })) as any,
+      worksFor: {
+        '@type': 'EmployeeRole',
+        roleName: AUTHOR.jobTitle,
+        startDate: AUTHOR.worksFor.startDate,
+        worksFor: { '@id': ids.organization(orgSlug(AUTHOR.worksFor.name)) },
+      } as any,
+      affiliation: AUTHOR.affiliations.map((aff) => ({
+        '@id': ids.organization(orgSlug(aff.name)),
+      })) as any,
       sameAs: [...AUTHOR.sameAs] as any,
     }),
   );
 
-  // Organization entities — one per affiliation that has a role
-  for (const aff of AUTHOR.affiliations.filter((a) => 'role' in a && a.role)) {
+  // Organization entities — current employer + all affiliations
+  const allOrgs = [
+    { name: AUTHOR.worksFor.name, url: AUTHOR.worksFor.url },
+    ...AUTHOR.affiliations,
+  ];
+  for (const org of allOrgs) {
     pieces.push(
       buildPiece<Organization>({
         '@type': 'Organization',
-        '@id': ids.organization(orgSlug(aff.name)),
-        name: aff.name,
-        url: aff.url,
+        '@id': ids.organization(orgSlug(org.name)),
+        name: org.name,
+        url: org.url,
       }),
     );
   }
