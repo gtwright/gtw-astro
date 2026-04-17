@@ -13,6 +13,7 @@ import {
   buildWebPage,
   buildArticle,
   buildBreadcrumbList,
+  buildImageObject,
   buildPiece,
   type GraphEntity,
   type Reference,
@@ -214,6 +215,21 @@ export function buildPostGraph(post: PostGraphInput): Piece[] {
       ids,
     ),
   );
+
+  // Primary image
+  if (post.ogImageUrl) {
+    pieces.push(
+      buildImageObject(
+        {
+          pageUrl: url,
+          url: post.ogImageUrl,
+          width: 1200,
+          height: 630,
+        },
+        ids,
+      ),
+    );
+  }
 
   return pieces;
 }
