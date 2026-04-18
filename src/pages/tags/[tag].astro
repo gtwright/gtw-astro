@@ -85,8 +85,8 @@ const graph = toGraph([
     </p>
   </header>
 
-  <div class="divide-y divide-(--color-border)">
-    {postsWithMeta.map(({ post, readingTime, author }) => (
+  <div class="space-y-4">
+    {postsWithMeta.map(({ post, readingTime }) => (
       <PostCard
         title={post.data.title}
         description={post.data.description}
@@ -94,8 +94,8 @@ const graph = toGraph([
         slug={post.id}
         tags={post.data.tags}
         readingTime={readingTime}
-        updated={post.data.updated}
-        author={author}
+        variant="full"
+        headingLevel={2}
       />
     ))}
   </div>

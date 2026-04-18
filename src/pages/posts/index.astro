@@ -4,7 +4,6 @@ import { getCollection, render } from 'astro:content';
 import { SITE } from '../../consts';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
-import { resolveAuthor } from '../../lib/authors';
 import { buildBaseGraph, buildCollectionPageGraph, toGraph } from '../../lib/seo-graph';
 
 const posts = (await getCollection('posts', ({ data }) => {
@@ -16,8 +15,7 @@ const posts = (await getCollection('posts', ({ data }) => {
 const postsWithMeta = await Promise.all(
   posts.map(async (post) => {
     const { remarkPluginFrontmatter } = await render(post);
-    const author = await resolveAuthor(post.data.author);
-    return { post, readingTime: remarkPluginFrontmatter.readingTime as string, author };
+    return { post, readingTime: remarkPluginFrontmatter.readingTime as string };
   })
 );
 
@@ -42,8 +40,8 @@ const graph = toGraph([
     </p>
   </header>
 
-  <div class="divide-y divide-(--color-border)">
-    {postsWithMeta.map(({ post, readingTime, author }) => (
+  <div class="space-y-4">
+    {postsWithMeta.map(({ post, readingTime }) => (
       <PostCard
         title={post.data.title}
         description={post.data.description}
@@ -52,8 +50,8 @@ const graph = toGraph([
         tags={post.data.tags}
         draft={post.data.draft}
         readingTime={readingTime}
-        updated={post.data.updated}
-        author={author}
+        variant="full"
+        headingLevel={2}
       />
     ))}
   </div>

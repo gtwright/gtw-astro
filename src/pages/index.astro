@@ -1,10 +1,12 @@
 ---
 export const prerender = true;
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import { Icon } from 'astro-icon/components';
 import { SITE } from '../consts';
 import { SOCIAL } from '../lib/author';
 import Base from '../layouts/Base.astro';
+import Newsletter from '../components/Newsletter.astro';
+import PostCard from '../components/PostCard.astro';
 import { buildBaseGraph, buildCollectionPageGraph, toGraph } from '../lib/seo-graph';
 
 const posts = (await getCollection('posts', ({ data }) => {
@@ -13,6 +15,13 @@ const posts = (await getCollection('posts', ({ data }) => {
   }))
   .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf())
   .slice(0, 3);
+
+const postsWithMeta = await Promise.all(
+  posts.map(async (post) => {
+    const { remarkPluginFrontmatter } = await render(post);
+    return { post, readingTime: remarkPluginFrontmatter.readingTime as string | undefined };
+  })
+);
 
 const canonicalURL = new URL('/', SITE.url).href;
 const graph = toGraph([
@@ -26,63 +35,61 @@ const graph = toGraph([
 ---
 
 <Base title="Home" description={SITE.description} graph={graph} flush>
-  <div class="relative isolate overflow-hidden">
-    <div class="mx-auto max-w-3xl px-6 min-h-[calc(100svh-4.5rem)] py-10">
-      <div class="min-h-[calc(100svh-4.5rem-5rem)] flex flex-col items-center justify-center w-full">
-        <div class="text-center flex flex-col items-center -mt-4">
-          <p class="font-(family-name:--font-ui) uppercase tracking-widest text-(--color-muted) mb-4">
-            Welcome—
-          </p>
-          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-8">
-            I’m Graham Wright
-          </h1>
-          <p class="font-(family-name:--font-body) text-lg text-(--color-muted) leading-relaxed max-w-l mb-8">
-            Sharing essays and experiments from building systems in mission-driven orgs.</p>
-        </div>
+  <div class="mx-auto max-w-3xl px-6 pt-16 sm:pt-24 pb-16">
+    <header class="text-center mb-16 sm:mb-20">
+      <p class="font-(family-name:--font-ui) uppercase tracking-widest text-(--color-muted) mb-4">
+        Welcome—
+      </p>
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-6">
+        I'm Graham Wright
+      </h1>
+      <p class="font-(family-name:--font-body) text-lg text-(--color-muted) leading-relaxed mx-auto max-w-xl">
+        Sharing essays and experiments from building systems in mission-driven orgs.
+      </p>
+    </header>
 
-        <div class="mt-[clamp(2.5rem,6vh,4.5rem)] w-full max-w-xl">
-          <div class="flex items-baseline justify-between gap-4 mb-4">
-            <h2 class="font-(family-name:--font-ui) text-xs uppercase tracking-widest text-(--color-muted)">
-              Recent posts
-            </h2>
-            <a href="/posts/" class="font-(family-name:--font-ui) text-sm font-medium text-(--color-accent-interactive) no-underline hover:underline">
-              View all
-            </a>
-          </div>
-          <ul class="m-0 p-0 list-none divide-y divide-(--color-border) text-left">
-            {posts.map((post) => (
-              <li class="py-3 flex items-baseline justify-between gap-4">
-                <a
-                  href={`/posts/${post.id}/`}
-                  class="min-w-0 font-(family-name:--font-headline) text-lg sm:text-xl font-medium leading-snug text-(--color-text) no-underline hover:text-(--color-accent-interactive) transition-colors line-clamp-1"
-                >
-                  {post.data.title}
-                </a>
-                <time
-                  datetime={post.data.published.toISOString()}
-                  class="shrink-0 font-(family-name:--font-ui) text-xs sm:text-sm text-(--color-muted)"
-                >
-                  {post.data.published.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                </time>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <nav aria-label="Social links" class="mt-8 flex items-center justify-center gap-5">
-          {SOCIAL.map((link) => (
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.name}
-              class="text-(--color-accent-atmosphere) hover:text-(--color-accent-interactive) transition-colors"
-            >
-              <Icon name={link.icon} class="size-5" />
-            </a>
-          ))}
-        </nav>
+    <section class="mx-auto max-w-xl" aria-labelledby="recent-posts-heading">
+      <div class="flex items-baseline justify-between gap-4 mb-6">
+        <h2 id="recent-posts-heading" class="font-(family-name:--font-ui) text-xs uppercase tracking-widest text-(--color-muted) m-0">
+          Recent posts
+        </h2>
+        <a href="/posts/" class="font-(family-name:--font-ui) text-sm font-medium text-(--color-accent-interactive) no-underline hover:underline">
+          View all
+        </a>
       </div>
+      <ul class="m-0 p-0 list-none space-y-3">
+        {postsWithMeta.map(({ post, readingTime }) => (
+          <li>
+            <PostCard
+              title={post.data.title}
+              published={post.data.published}
+              slug={post.id}
+              draft={post.data.draft}
+              readingTime={readingTime}
+              variant="compact"
+            />
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <div class="mx-auto max-w-xl mt-16">
+      <Newsletter />
     </div>
+
+    <nav aria-label="Social links" class="mt-16 flex items-center justify-center gap-5">
+      {SOCIAL.map((link) => (
+        <a
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={link.name}
+          class="text-(--color-accent-atmosphere) hover:text-(--color-accent-interactive) transition-colors"
+        >
+          <Icon name={link.icon} class="size-5" />
+        </a>
+      ))}
+    </nav>
   </div>
 </Base>
+
