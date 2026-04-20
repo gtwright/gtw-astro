@@ -55,10 +55,11 @@ const graph = toGraph([
     description: tagDescription,
     canonicalUrl: canonicalURL,
     breadcrumbs: [
-      { name: 'Home', url: SITE.url },
-      { name: 'Tags', url: `${SITE.url}/tags` },
+      { name: 'Home', url: `${SITE.url}/` },
+      { name: 'Blog', url: `${SITE.url}/posts/` },
       { name: displayName, url: canonicalURL },
     ],
+    mainEntity: { '@id': `${SITE.url}/posts/#blog` },
   }),
 ]);
 ---
