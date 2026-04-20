@@ -113,9 +113,12 @@ export function buildBaseGraph(): Piece[] {
       '@type': 'Blog',
       '@id': `${SITE.url}/posts/#blog`,
       name: `${SITE.title} Blog`,
+      description: 'Sharing essays and experiments from building systems in mission-driven orgs.',
       url: `${SITE.url}/posts/`,
+      inLanguage: 'en',
       isPartOf: { '@id': ids.website } as any,
       publisher: { '@id': ids.person } as any,
+      copyrightHolder: { '@id': ids.person } as any,
     }),
   );
 
@@ -241,6 +244,7 @@ interface CollectionPageInput {
   description: string;
   canonicalUrl: string;
   breadcrumbs?: Array<{ name: string; url: string }>;
+  mainEntity?: Reference;
 }
 
 export function buildCollectionPageGraph(input: CollectionPageInput): Piece[] {
@@ -254,6 +258,7 @@ export function buildCollectionPageGraph(input: CollectionPageInput): Piece[] {
         description: input.description,
         isPartOf: { '@id': ids.website },
         ...(input.breadcrumbs ? { breadcrumb: { '@id': ids.breadcrumb(input.canonicalUrl) } } : {}),
+        ...(input.mainEntity ? { mainEntity: input.mainEntity as any } : {}),
       },
       ids,
       'CollectionPage',
