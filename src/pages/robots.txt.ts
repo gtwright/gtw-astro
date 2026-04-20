@@ -9,6 +9,7 @@ export function GET(_context: APIContext) {
     [
       'User-agent: *',
       'Allow: /',
+      'Content-Signal: search=yes, ai-train=no, ai-input=yes',
       '',
       `Sitemap: ${sitemapURL.href}`,
     ].join('\n'),
