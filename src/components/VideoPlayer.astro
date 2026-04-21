@@ -1,0 +1,171 @@
+---
+import { parseVideoSource } from '../lib/video';
+
+interface Props {
+  src: string;
+  title: string;
+  caption?: string;
+  credit?: string;
+  aspectRatio?: string;
+  poster?: string;
+  size?: 'standard' | 'wide' | 'full' | 'small';
+}
+
+const {
+  src,
+  title,
+  caption,
+  credit,
+  aspectRatio = '16/9',
+  poster,
+  size = 'standard',
+} = Astro.props;
+
+const parsed = parseVideoSource(src);
+const instanceId = `video-${Math.random().toString(36).slice(2, 10)}`;
+
+// ---------------------------------------------------------------------------
+// Player: Plyr (v3.8.4).
+// Revisit: Video.js v10 — currently in beta (released 2026-03-10, GA targeted
+// mid-2026). v10 beta already ships first-class support for HLS, DASH, MP4,
+// and Mux (including Mux Data analytics). It does NOT yet ship a YouTube
+// renderer — detection code is stubbed out, no PRs or branches open as of
+// 2026-04-20. Watch packages/html/src/media/youtube-video/ in videojs/v10
+// for the signal that v10 can replace Plyr for our YouTube-first content.
+// The team has committed to publishing a Plyr → v10 migration guide at GA.
+// ---------------------------------------------------------------------------
+---
+
+<figure class:list={[size !== 'standard' && size]}>
+  <div
+    class="video-wrapper"
+    data-video-id={instanceId}
+    data-video-provider={parsed.provider}
+    data-video-src-id={parsed.id}
+    data-video-title={title}
+    style={`aspect-ratio: ${aspectRatio}; --plyr-color-main: var(--color-accent-interactive);`}
+  >
+    {parsed.provider === 'youtube' && (
+      <div
+        data-plyr-mount
+        data-plyr-provider="youtube"
+        data-plyr-embed-id={parsed.id}
+      />
+    )}
+    {parsed.provider === 'mp4' && (
+      <video
+        data-plyr-mount
+        playsinline
+        controls
+        poster={poster}
+        preload="metadata"
+      >
+        <source src={parsed.id} type="video/mp4" />
+      </video>
+    )}
+    {parsed.provider === 'mux' && (
+      <div class="mux-stub">
+        Mux source detected ({parsed.id}). Plyr will play this via hls.js once wired;
+        Mux Data analytics will need separate setup via the mux-embed package.
+      </div>
+    )}
+  </div>
+  {(caption || credit) && (
+    <figcaption>
+      {caption && <Fragment set:html={caption} />}
+      {credit && <span class="figure-credit"><Fragment set:html={credit} /></span>}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .video-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+    position: relative;
+  }
+
+  .video-wrapper :global(.plyr) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mux-stub {
+    color: #e8e4df;
+    padding: 1rem;
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+</style>
+
+<script>
+  import Plyr from 'plyr';
+  import 'plyr/dist/plyr.css';
+  import { attachPlyrAnalytics } from '../lib/video-analytics.client';
+
+  const initialized = new WeakSet<HTMLElement>();
+
+  const init = () => {
+    document.querySelectorAll<HTMLElement>('[data-video-id]').forEach((wrapper) => {
+      if (initialized.has(wrapper)) return;
+      const mount = wrapper.querySelector<HTMLElement>('[data-plyr-mount]');
+      if (!mount) return;
+      initialized.add(wrapper);
+
+      const player = new Plyr(mount, {
+        controls: [
+          'play-large',
+          'play',
+          'progress',
+          'current-time',
+          'duration',
+          'mute',
+          'volume',
+          'captions',
+          'settings',
+          'pip',
+          'airplay',
+          'fullscreen',
+        ],
+        settings: ['captions', 'quality', 'speed'],
+        youtube: {
+          noCookie: false,
+          rel: 0,
+          modestbranding: 1,
+          // Nudges toward HD. `hd` and `vq` are deprecated in YouTube's public
+          // API but still honored as hints in many contexts. Real quality
+          // control over YouTube isn't available to the iframe consumer.
+          hd: 1,
+          vq: 'hd1080',
+          iv_load_policy: 3,
+          playsinline: 1,
+        },
+      });
+
+      // Second nudge: once the YouTube iframe is ready, call the deprecated
+      // setPlaybackQuality() on the underlying YT.Player. YouTube may still
+      // downshift under bandwidth pressure, but this asks for 1080p up front
+      // instead of letting the ABR ramp start at 360p.
+      if (wrapper.dataset.videoProvider === 'youtube') {
+        player.on('ready', () => {
+          const embed = (player as unknown as { embed?: { setPlaybackQuality?: (q: string) => void } }).embed;
+          if (embed && typeof embed.setPlaybackQuality === 'function') {
+            embed.setPlaybackQuality('hd1080');
+          }
+        });
+      }
+
+      attachPlyrAnalytics(wrapper, player);
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>

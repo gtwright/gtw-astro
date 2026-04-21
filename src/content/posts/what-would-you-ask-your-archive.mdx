@@ -1,0 +1,55 @@
+---
+title: Conversations with Program Notes
+description: An early look at natural-language search across 145 years of BSO program notes. Asking questions of our music history in ways we've never been able to ask before.
+published: 2026-04-20T12:00:00
+draft: false
+tags:
+- AI in Practice
+- Claude
+- MCP
+- BSO Archives
+---
+
+import VideoPlayer from '../../components/VideoPlayer.astro';
+import Aside from '../../components/Aside.astro';
+
+The BSO has 145 years of program notes online. They live in [HENRY](https://archives.bso.org/), our performance history archive. If you know what you're looking for and you're willing to pull an entire book (PDF) at a time, they're an incredible resource for exploring the BSO's performance history and the musicology around what we've played. I've been working on a way to ask those books questions directly — without having to know which one to open first.
+
+Here's a recent example.
+
+<VideoPlayer
+  src="https://cdn.graham-wright.com/videos/ClaudeTchaikDemo.mp4"
+  title="A conversation with the BSO program book archive: Tchaikovsky themes across 145 years"
+/>
+
+## A walk through the conversation
+
+I've explored some of this Tchaikovsky material before, so I had a rough sense of where the conversation might go.
+
+The first question was a warm-up. I already knew the answer and what might go wrong: the archive search is relevance-ranked, so the agent needs to look at date to assess recency. I've made some edits to the tool context to address this, but Claude missed it anyway. I happen to adore the Tchaik Violin Concerto and would not forget hearing it last summer, so that was an easy catch. At least the records were right, even if Claude made the wrong call on which one I was looking for.
+
+On to the big ask: "Everything we've ever written about Tchaikovsky. What are the consistent themes?" 229 essays. Nine themes come back in a couple of minutes. This is where my jaw dropped. I'm not a PhD musicologist, but this was a solid answer.
+
+If we're going to consider any serious use of a tool like this, we need to know whether the response is legitimate, or plausible nonsense. When I pressed for citations, they were there. Verbatim phrases like "inexorable fate" and the 1877 narrative repeat across many notes. The arc connecting notes across decades was partly Claude's original contribution.
+
+The Boston theme caught my eye. The 1875 American premiere of Tchaikovsky's First Piano Concerto is a point of pride for Boston, often misattributed to the Boston Symphony. The BSO didn't exist yet. Claude's first response wasn't wrong (it said "BSO's city"), but the theme "institutional pride" felt vague or perhaps even misleading.
+
+When I pressed, Claude shifted to "civic pride" and quoted the 1897 note verbatim: "This concerto was publicly played for the first time on any stage in the Boston Music Hall by Hans von Bülow on October 25, 1875; the orchestra was conducted by Mr. B.J. Lang." Right on the nose. I also asked whether "unknown" had been added or was in the source. It was from the same note: "Who Tchaikovsky was, few if any of us then knew; this outlandish name, which most of us even failed to catch, told us nothing."
+
+A few bumps, but out of the box the performance is already excellent.
+
+<Aside label="How we built it">
+The foundations for this project were laid by the BSO's archives team — Bridget and Sarah. Without their previous efforts cataloging and digitizing the BSO's program book collection, this type of work could never have started.
+
+Where I began was with running the program book PDFs through a two-pass Amazon Bedrock pipeline to create structured sections that land in Snowflake, indexed by Cortex Search. A Claude agent calls Cortex Search through a Cloudflare-hosted MCP wrapper. I'll write up the build in more detail in a future post.
+</Aside>
+
+## How are we using this?
+
+Right now we're treating this capability as a research tool, largely about helping the program publications team accelerate the groundwork they do in preparing for a season. For a season as large as Tanglewood, cross-referencing the list of repertoire against the archives to see what we've performed previously and determine which notes are reusable is a major project. A focused afternoon with this tool has already shaved a couple of weeks off of our typical planning timeline.
+
+The publications use case is the proving ground. They're the team best positioned to push back when something doesn't look right. If it's going to work more broadly, it has to work for them first.
+
+It's not hard to see where this could go next. The marketing team could use the program note archive as source material when drafting emails, social posts, and the kind of content that benefits from being grounded in a substantive source. We already do that where we can, but this tool makes it easier to scale.
+
+Beyond that, this could become an education tool across the staff: a way for everyone at the BSO to understand why our core repertoire matters, ask questions about the composers and works we've programmed over the decades, and see how the institution has thought about its programming over 145 years. What's changed, and where are the consistent throughlines? That's a lot of institutional thinking about what we do and why. There's a lot to learn from it if we can make it more accessible. And if we can trust it to consistently get things right, why not make it public?

@@ -32,6 +32,7 @@
     "@unpic/astro": "^1.0.2",
     "astro": "^6.1.7",
     "astro-icon": "^1.1.5",
+    "plyr": "^3.8.4",
     "tailwindcss": "^4.2.1",
     "thumbhash": "^0.1.1"
   },
