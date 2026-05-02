@@ -290,7 +290,7 @@ export function buildProfilePageGraph(canonicalUrl: string, description: string)
         name: 'About',
         description,
         isPartOf: { '@id': ids.website },
-        about: { '@id': ids.person },
+        mainEntity: { '@id': ids.person },
       },
       ids,
       'ProfilePage',
