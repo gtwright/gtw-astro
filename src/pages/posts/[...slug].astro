@@ -85,6 +85,7 @@ const nextPost = allPosts[currentIndex - 1];
   title={post.data.title}
   description={post.data.description}
   ogImage={ogImage}
+  noindex={post.id === 'style-examples' || undefined}
   article={{
     publishedTime: post.data.published,
     modifiedTime: post.data.updated,
