@@ -5,7 +5,7 @@ published: 2026-02-21T12:00:00
 tags: ["Web Development", "Design", "Tailwind"]
 ---
 
-The [layout and navigation post](/posts/layout-navigation-bones/) built the structural skeleton — a Base layout, header, footer, and semantic landmarks. Every page had the right document structure, but no visual identity. This post adds the design token system that gives the skeleton its skin: fonts, colors, and the rules that govern how they're used.
+The [layout and navigation post](/posts/layout-navigation/) built the structural skeleton — a Base layout, header, footer, and semantic landmarks. Every page had the right document structure, but no visual identity. This post adds the design token system that gives the skeleton its skin: fonts, colors, and the rules that govern how they're used.
 
 The phrase "design system" might be overloaded for what's here. There's no component library, no Figma file, no Storybook. What there is: a single CSS file that defines every font family, color value, and derived variant the site uses, expressed as Tailwind v4 theme tokens. Components never reach for raw values — they reference tokens, and the tokens live in one place.
 
