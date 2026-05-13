@@ -4,7 +4,7 @@ import '@fontsource-variable/source-serif-4';
 import '@fontsource-variable/inter';
 import '@fontsource/jetbrains-mono';
 import '../styles/global.css';
-import { SITE } from '../consts';
+import { SITE, NOINDEX_PATHS } from '../consts';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Seo from '@jdevalk/astro-seo-graph/Seo.astro';
@@ -28,6 +28,8 @@ interface Props {
 }
 
 const { title, description, ogImage, ogImageAlt, article, graph, noindex, flush = false } = Astro.props;
+
+const isNoindex = noindex || NOINDEX_PATHS.has(Astro.url.pathname);
 
 const pageTitle = title === 'Home'
   ? `${SITE.title} | Home`
@@ -66,7 +68,7 @@ const imageURL = ogImage
         ...(article.section ? { section: article.section } : {}),
       } : undefined}
       author={SITE.author.name}
-      noindex={noindex}
+      noindex={isNoindex}
       graph={graph}
       extraLinks={[
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },

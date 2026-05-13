@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
 import seoGraph from '@jdevalk/astro-seo-graph/integration';
-import { SITE } from './src/consts';
+import { SITE, NOINDEX_PATHS } from './src/consts';
 import { buildLastmodMap, buildDescribedTagSlugs } from './src/lib/sitemap';
 import { remarkReadingTime } from './src/lib/reading-time';
 
@@ -34,6 +34,7 @@ export default defineConfig({
     sitemap({
       filter(page) {
         const url = new URL(page);
+        if (NOINDEX_PATHS.has(url.pathname)) return false;
         if (url.pathname === '/tags/') return false;
         const match = url.pathname.match(/^\/tags\/([^/]+)/);
         if (match) return describedTags.has(match[1]);
