@@ -1,7 +1,20 @@
-import '@videojs/react/video/skin.css';
+import skinCssUrl from '@videojs/react/video/skin.css?url';
 import { createPlayer } from '@videojs/react';
 import { Video, VideoSkin, videoFeatures } from '@videojs/react/video';
 import { useEffect, useRef } from 'react';
+
+// Skin CSS is only needed once the player hydrates client-side. Loading it
+// via injected <link> avoids a render-blocking stylesheet on post pages.
+function useVideoSkinCss() {
+  useEffect(() => {
+    if (document.querySelector(`link[data-videojs-skin="1"]`)) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = skinCssUrl;
+    link.dataset.videojsSkin = '1';
+    document.head.appendChild(link);
+  }, []);
+}
 
 const Player = createPlayer({ features: videoFeatures });
 
@@ -91,6 +104,7 @@ interface Props {
 }
 
 export default function VideoIsland({ src, poster, title }: Props) {
+  useVideoSkinCss();
   return (
     <Player.Provider>
       <VideoSkin>

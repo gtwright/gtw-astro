@@ -1,9 +1,6 @@
 ---
-import '@fontsource-variable/fraunces/full.css';
-import '@fontsource-variable/source-serif-4';
-import '@fontsource-variable/inter';
-import '@fontsource/jetbrains-mono';
 import '../styles/global.css';
+import { Font } from 'astro:assets';
 import { SITE, NOINDEX_PATHS } from '../consts';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -48,6 +45,10 @@ const imageURL = ogImage
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Font cssVariable="--ff-fraunces" preload />
+    <Font cssVariable="--ff-source-serif" preload />
+    <Font cssVariable="--ff-inter" preload />
+    <Font cssVariable="--ff-jetbrains" />
     <Seo
       title={pageTitle}
       description={description}

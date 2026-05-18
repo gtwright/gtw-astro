@@ -53,19 +53,26 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   const response = await next();
+  const contentType = response.headers.get('Content-Type') ?? '';
+  const isHtml = contentType.includes('text/html');
+
+  if (isHtml) {
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+    response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  }
 
   // Attach Link response headers to the homepage HTML response (RFC 8288).
-  if (pathname === '/' || pathname === '') {
-    const contentType = response.headers.get('Content-Type') ?? '';
-    if (contentType.includes('text/html')) {
-      const links = [
-        `<${SITE.url}/about/>; rel="author"`,
-        `<${SITE.url}/rss.xml>; rel="alternate"; type="application/rss+xml"; title="Graham Wright RSS Feed"`,
-        `<${SITE.url}/sitemap-index.xml>; rel="sitemap"; type="application/xml"`,
-      ];
-      const existing = response.headers.get('Link');
-      response.headers.set('Link', existing ? `${existing}, ${links.join(', ')}` : links.join(', '));
-    }
+  if (isHtml && (pathname === '/' || pathname === '')) {
+    const links = [
+      `<${SITE.url}/about/>; rel="author"`,
+      `<${SITE.url}/rss.xml>; rel="alternate"; type="application/rss+xml"; title="Graham Wright RSS Feed"`,
+      `<${SITE.url}/sitemap-index.xml>; rel="sitemap"; type="application/xml"`,
+    ];
+    const existing = response.headers.get('Link');
+    response.headers.set('Link', existing ? `${existing}, ${links.join(', ')}` : links.join(', '));
   }
 
   return response;

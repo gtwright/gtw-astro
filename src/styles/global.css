@@ -3,10 +3,10 @@
 /* ── Tokens ── */
 
 @theme {
-  --font-headline: "Fraunces Variable", "Georgia", serif;
-  --font-body: "Source Serif 4 Variable", "Georgia", serif;
-  --font-ui: "Inter Variable", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  --font-headline: var(--ff-fraunces);
+  --font-body: var(--ff-source-serif);
+  --font-ui: var(--ff-inter);
+  --font-mono: var(--ff-jetbrains);
 
   /* Surfaces */
   --color-bg: #ffffff; /* header/footer + page frame */

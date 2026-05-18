@@ -1,7 +1,8 @@
 // @ts-check
 import { fileURLToPath } from 'node:url';
-import { defineConfig, envField } from 'astro/config';
+import { defineConfig, envField, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
+import { visualizer } from 'rollup-plugin-visualizer';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
@@ -22,6 +23,43 @@ export default defineConfig({
   trailingSlash: 'always',
   output: 'server',
   adapter: cloudflare(),
+  build: {
+    inlineStylesheets: 'always',
+  },
+  fonts: [
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Fraunces',
+      cssVariable: '--ff-fraunces',
+      weights: ['100 900'],
+      styles: ['normal', 'italic'],
+      fallbacks: ['Georgia', 'serif'],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Source Serif 4',
+      cssVariable: '--ff-source-serif',
+      weights: ['200 900'],
+      styles: ['normal', 'italic'],
+      fallbacks: ['Georgia', 'serif'],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Inter',
+      cssVariable: '--ff-inter',
+      weights: ['100 900'],
+      styles: ['normal'],
+      fallbacks: ['system-ui', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: 'JetBrains Mono',
+      cssVariable: '--ff-jetbrains',
+      weights: [400, 700],
+      styles: ['normal'],
+      fallbacks: ['Fira Code', 'monospace'],
+    },
+  ],
   env: {
     schema: {
       BUTTONDOWN_API_KEY: envField.string({ context: 'server', access: 'secret' }),
@@ -61,7 +99,12 @@ export default defineConfig({
     icon(),
   ],
   vite: {
-    plugins: [/** @type {any} */ (tailwindcss())],
+    plugins: [
+      /** @type {any} */ (tailwindcss()),
+      ...(process.env.ANALYZE
+        ? [visualizer({ emitFile: true, filename: 'stats.html', gzipSize: true, brotliSize: true })]
+        : []),
+    ],
     resolve: {
       alias: {
         debug: '/src/stubs/debug.js',
