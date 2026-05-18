@@ -1,7 +1,9 @@
 // @ts-check
+import { fileURLToPath } from 'node:url';
 import { defineConfig, envField } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import mdx from '@astrojs/mdx';
+import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
@@ -9,6 +11,8 @@ import seoGraph from '@jdevalk/astro-seo-graph/integration';
 import { SITE, NOINDEX_PATHS } from './src/consts';
 import { buildLastmodMap, buildDescribedTagSlugs } from './src/lib/sitemap';
 import { remarkReadingTime } from './src/lib/reading-time';
+
+const picomatchStub = fileURLToPath(new URL('./src/stubs/picomatch.js', import.meta.url));
 
 const lastmodDates = buildLastmodMap(SITE.url);
 const describedTags = buildDescribedTagSlugs();
@@ -30,6 +34,7 @@ export default defineConfig({
     remarkPlugins: [remarkReadingTime],
   },
   integrations: [
+    react(),
     mdx(),
     sitemap({
       filter(page) {
@@ -60,6 +65,7 @@ export default defineConfig({
     resolve: {
       alias: {
         debug: '/src/stubs/debug.js',
+        picomatch: picomatchStub,
       },
     },
   },

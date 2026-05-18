@@ -160,7 +160,10 @@ async function main() {
       day: 'numeric',
     });
 
-    const svg = await satori(buildMarkup(post.title, dateStr), {
+    // Satori accepts its own object-shaped pseudo-JSX, but its type signature
+    // expects a ReactNode now that @types/react is installed for the React
+    // island. The runtime shape is fine; cast away the structural mismatch.
+    const svg = await satori(buildMarkup(post.title, dateStr) as Parameters<typeof satori>[0], {
       width: WIDTH,
       height: HEIGHT,
       fonts: [
