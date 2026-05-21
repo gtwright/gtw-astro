@@ -1,6 +1,14 @@
 # Old blog slugs -> new canonical slugs
 /beethoven            /posts/beethoven/    301
 
+# Music-career era legacy pages (linked from wbur.org and elsewhere)
+/bio.htm              /about/              301
+/bio.html             /about/              301
+/res.htm              /about/              301
+/res.html             /about/              301
+/perf.htm             /about/              301
+/perf.html            /about/              301
+
 # Sitemap redirects
 /sitemap.xml        /sitemap-index.xml
 /sitemap            /sitemap-index.xml
