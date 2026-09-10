@@ -1,6 +1,6 @@
 # Project Conventions
 
-Personal blog for GTW. Astro 6 beta, pre-launch. Content strategy docs live in the hub repo at `career/content-strategy/`.
+Personal blog for GTW. Astro 6 beta, pre-launch. Content strategy docs live in `ops-home` at `career/content-strategy/`.
 
 ## Tech Stack
 
@@ -131,10 +131,10 @@ Review and update after any PR that changes architecture, design tokens, compone
 
 ## Related Docs
 
-Content planning docs live in the hub repo (`/Users/gwright/Documents/GitHub/gtwright/hub/career/content-strategy/`):
+Content planning docs live in `ops-home` (`/Users/gwright/Documents/GitHub/ops-home/career/content-strategy/`):
 - `CONTENT_BACKLOG.md` — Raw ideas and series candidates
 - `series/` — Series outlines (one file per series)
 
-Voice and editorial style live in the hub repo (`/Users/gwright/Documents/GitHub/gtwright/hub/voice/`):
+Voice and editorial style live in `ops-home` (`/Users/gwright/Documents/GitHub/ops-home/voice/`):
 - `STYLE_GUIDE.md` — Voice identity, influences, register by content type
 - `PATTERNS.md` — Sentence-level patterns and anti-patterns
