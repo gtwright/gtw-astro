@@ -167,6 +167,15 @@ const id = crypto.randomUUID().slice(0, 8);
 </style>
 
 <script>
+  type PostHog = {
+    capture: (event: string, properties: Record<string, unknown>) => void;
+  };
+
+  function captureSignup(result: 'created' | 'existing' | 'invalid' | 'error' | 'network') {
+    const posthog = (window as unknown as { posthog?: PostHog }).posthog;
+    posthog?.capture('newsletter_signup', { result });
+  }
+
   function wireForms() {
     document.querySelectorAll<HTMLFormElement>('form[data-newsletter-form]').forEach((form) => {
       if (form.dataset.wired === 'true') return;
@@ -213,19 +222,24 @@ const id = crypto.randomUUID().slice(0, 8);
           if (data.ok && data.status === 'created') {
             form.hidden = true;
             status.textContent = "You're in — check your inbox to confirm.";
+            captureSignup('created');
           } else if (data.ok && data.status === 'existing') {
             form.hidden = true;
             status.textContent = "Looks like you're already subscribed. Thanks!";
+            captureSignup('existing');
           } else if (!data.ok && data.error === 'invalid') {
             status.textContent = "That email didn't look right. Try again?";
             status.dataset.error = 'true';
+            captureSignup('invalid');
           } else {
             status.textContent = 'Something went wrong — please try again.';
             status.dataset.error = 'true';
+            captureSignup('error');
           }
         } catch {
           status.textContent = 'Network error — please try again.';
           status.dataset.error = 'true';
+          captureSignup('network');
         } finally {
           status.hidden = false;
           button.disabled = false;
