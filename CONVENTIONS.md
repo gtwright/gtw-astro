@@ -1,10 +1,10 @@
 # Project Conventions
 
-Personal blog for GTW. Astro 6 beta, pre-launch. Content strategy docs live in `ops-home` at `career/content-strategy/`.
+Personal blog for GTW. Astro 7. Content strategy docs live in `ops-home` at `career/content-strategy/`.
 
 ## Tech Stack
 
-Astro 6 beta · Tailwind CSS v4 (Vite plugin, no config file) · MDX · TypeScript strict · Cloudflare Workers (static output + adapter) · Wrangler for deploy · Bun as package manager/runtime
+Astro 7 · Tailwind CSS v4 (Vite plugin, no config file) · MDX · TypeScript strict · Cloudflare Workers (static output + adapter) · Wrangler for deploy · Bun as package manager/runtime
 
 ## Commands
 

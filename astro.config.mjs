@@ -2,6 +2,7 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig, envField, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
+import { unified } from '@astrojs/markdown-remark';
 import { visualizer } from 'rollup-plugin-visualizer';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
@@ -13,6 +14,7 @@ import { SITE, NOINDEX_PATHS } from './src/consts';
 import { buildLastmodMap, buildDescribedTagSlugs } from './src/lib/sitemap';
 import { remarkReadingTime } from './src/lib/reading-time';
 
+const debugStub = fileURLToPath(new URL('./src/stubs/debug.js', import.meta.url));
 const picomatchStub = fileURLToPath(new URL('./src/stubs/picomatch.js', import.meta.url));
 
 const lastmodDates = buildLastmodMap(SITE.url);
@@ -23,6 +25,8 @@ export default defineConfig({
   trailingSlash: 'always',
   output: 'server',
   adapter: cloudflare(),
+  // Keep Astro 6 whitespace handling; v7's 'jsx' default can drop inline spaces.
+  compressHTML: true,
   build: {
     inlineStylesheets: 'always',
   },
@@ -69,7 +73,7 @@ export default defineConfig({
     domains: ['picsum.photos'],
   },
   markdown: {
-    remarkPlugins: [remarkReadingTime],
+    processor: unified({ remarkPlugins: [remarkReadingTime] }),
   },
   integrations: [
     react(),
@@ -107,7 +111,7 @@ export default defineConfig({
     ],
     resolve: {
       alias: {
-        debug: '/src/stubs/debug.js',
+        debug: debugStub,
         picomatch: picomatchStub,
       },
     },

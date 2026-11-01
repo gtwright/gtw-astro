@@ -1,8 +1,10 @@
 # graham-wright.com
 
-Personal site for Graham Wright. Built with Astro 6, Tailwind CSS v4, and MDX, deployed to Cloudflare Workers.
+Personal site for Graham Wright. Built with Astro 7, Tailwind CSS v4, and MDX, deployed to Cloudflare Workers.
 
 ## Getting Started
+
+Requires Bun and Node.js 22.23.4 or later. Bun installs dependencies, but Astro must run under Node: the Cloudflare dev and prerender runtimes hang or fail under Bun alone.
 
 ```sh
 bun install
