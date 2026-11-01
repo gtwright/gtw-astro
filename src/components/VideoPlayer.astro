@@ -37,9 +37,8 @@ if (description) videoSchema.description = description;
 if (poster) videoSchema.thumbnailUrl = poster;
 if (uploadDate) videoSchema.uploadDate = uploadDate;
 
-// Video.js v10 (beta, GA targeted mid-2026). Pinned to 10.0.0-beta.23 — no
-// caret. Watch the changelog at each minor bump; v9 is the team's escape
-// valve for breaking changes pre-GA. Player lives in VideoIsland.tsx.
+// Video.js 10 follows semver, so the version no longer needs an exact pin.
+// Player lives in VideoIsland.tsx.
 ---
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify(videoSchema)} />

@@ -16,7 +16,7 @@ function useVideoSkinCss() {
   }, []);
 }
 
-const Player = createPlayer({ features: videoFeatures });
+const { Player, usePlayer } = createPlayer({ features: videoFeatures });
 
 declare global {
   interface Window {
@@ -36,7 +36,7 @@ function Analytics({ src, title }: AnalyticsProps) {
   // re-renders only happen when `milestone` actually steps up (0 → 25 → 50 →
   // 75), not on every timeupdate frame. currentTime/duration flow through so
   // the event payload has them; PostHog firing is gated by transition refs.
-  const { paused, ended, milestone, currentTime, duration } = Player.usePlayer(
+  const { paused, ended, milestone, currentTime, duration } = usePlayer(
     (s) => {
       const pct = s.duration > 0 ? (s.currentTime / s.duration) * 100 : 0;
       return {
@@ -106,11 +106,11 @@ interface Props {
 export default function VideoIsland({ src, poster, title }: Props) {
   useVideoSkinCss();
   return (
-    <Player.Provider>
+    <Player poster={poster}>
       <VideoSkin>
-        <Video src={src} poster={poster} playsInline preload="metadata" />
+        <Video src={src} playsInline preload="metadata" />
         <Analytics src={src} title={title} />
       </VideoSkin>
-    </Player.Provider>
+    </Player>
   );
 }

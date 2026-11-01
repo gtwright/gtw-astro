@@ -28,7 +28,7 @@
     "@jdevalk/seo-graph-core": "^0.6.1",
     "@tailwindcss/vite": "^4.2.1",
     "@unpic/astro": "^1.0.2",
-    "@videojs/react": "10.0.0-beta.23",
+    "@videojs/react": "^10.2.0",
     "astro": "^7.4.4",
     "astro-icon": "^1.2.0",
     "react": "^19",
